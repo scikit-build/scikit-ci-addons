@@ -2,6 +2,15 @@
 scikit-ci-addons
 ===============================
 
+.. image:: https://ci.appveyor.com/api/projects/status/gr60jc9hkjlqoo4a?svg=true
+    :target: https://ci.appveyor.com/project/scikit-build/scikit-ci-addons/branch/master
+
+.. image:: https://circleci.com/gh/scikit-build/scikit-ci-addons/tree/master.svg?style=svg
+    :target: https://circleci.com/gh/scikit-build/scikit-ci-addons/tree/master
+
+.. image:: https://img.shields.io/travis/scikit-build/scikit-ci-addons.svg?maxAge=2592000
+    :target: https://travis-ci.org/scikit-build/scikit-ci-addons
+
 scikit-ci-addons is a set of scripts useful to install prerequisites for building
 Python extension on CI services.
 
