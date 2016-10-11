@@ -7,7 +7,8 @@ branches:
 language: python
 
 # Used for testing
-env: EXPECTED_PYTHON_ARCH=64
+env:
+  global: EXPECTED_PYTHON_ARCH=64
 
 matrix:
   include:
