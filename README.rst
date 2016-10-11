@@ -59,6 +59,10 @@ Notes:
 ``tweak_environment.py``
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
+- Update ``notepad++`` settings:
+
+  - ``TabSetting.replaceBySpace`` set to ``yes``
+
 
 Circle
 ------
