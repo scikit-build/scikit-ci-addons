@@ -14,25 +14,33 @@ environment:
       PYTHON_VERSION: "2.7.x"
       PYTHON_ARCH: "32"
       BLOCK: "0"
+      # Used for testing
       EXPECTED_PYTHON_VERSION: 2,7,12
+      EXPECTED_PYTHON_ARCH: 32
 
     - PYTHON_DIR: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.x"
       PYTHON_ARCH: "64"
       BLOCK: "0"
+      # Used for testing
       EXPECTED_PYTHON_VERSION: 2,7,12
+      EXPECTED_PYTHON_ARCH: 64
 
     - PYTHON_DIR: "C:\\Python35"
       PYTHON_VERSION: "3.5.x"
       PYTHON_ARCH: "32"
       BLOCK: "0"
+      # Used for testing
       EXPECTED_PYTHON_VERSION: 3,5,2
+      EXPECTED_PYTHON_ARCH: 32
 
     - PYTHON_DIR: "C:\\Python35-x64"
       PYTHON_VERSION: "3.5.x"
       PYTHON_ARCH: "64"
       BLOCK: "0"
+      # Used for testing
       EXPECTED_PYTHON_VERSION: 3,5,2
+      EXPECTED_PYTHON_ARCH: 64
 
 init:
   - ps: "\
