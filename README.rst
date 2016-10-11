@@ -23,11 +23,11 @@ Appveyor
 
 These scripts are designed to work on worker from http://appveyor.com/
 
-  - install_cmake.py
-  - install_visual_studio_wrapper.py
-  - run-with-visual-studio.cmd
-  - patch_vs2008.py
-  - tweak_environment.py
+- ``install_cmake.py``
+- ``install_visual_studio_wrapper.py``
+- ``run-with-visual-studio.cmd``
+- ``patch_vs2008.py``
+- ``tweak_environment.py``
 
 
 Circle
@@ -35,7 +35,7 @@ Circle
 
 These scripts are designed to work on worker from http://circleci.com/
 
-  - install_cmake.py
+- ``install_cmake.py``
 
 
 Travis
@@ -43,9 +43,9 @@ Travis
 
 These scripts are designed to work on worker from http://travis-ci.org/
 
-  - install_cmake.py
-  - install_pyenv.py
-  - run-with-pyenv.sh
+- ``install_cmake.py``
+- ``install_pyenv.py``
+- ``run-with-pyenv.sh``
 
 
 Resources
