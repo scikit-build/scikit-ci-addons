@@ -30,11 +30,11 @@ Download and install in the PATH the specified version of CMake binaries.
 
 Usage:
 
-  python -c appveyor/install_cmake.py X.Y.Z
+  python appveyor/install_cmake.py X.Y.Z
 
 Example:
 
-  python -c appveyor/install_cmake.py 3.6.2
+  python appveyor/install_cmake.py 3.6.2
 
 Notes:
 
@@ -72,11 +72,11 @@ Download and install in the PATH the specified version of CMake binaries.
 
 Usage:
 
-  python -c appveyor/install_cmake.py X.Y.Z
+  python appveyor/install_cmake.py X.Y.Z
 
 Example:
 
-  python -c appveyor/install_cmake.py 3.6.2
+  python appveyor/install_cmake.py 3.6.2
 
 Notes:
 
@@ -96,11 +96,11 @@ Download and install in the PATH the specified version of CMake binaries.
 
 Usage:
 
-  python -c appveyor/install_cmake.py X.Y.Z
+  python appveyor/install_cmake.py X.Y.Z
 
 Example:
 
-  python -c appveyor/install_cmake.py 3.6.2
+  python appveyor/install_cmake.py 3.6.2
 
 
 Notes:
