@@ -4,8 +4,6 @@ branches:
  only:
   - master
 
-language: python
-
 # Used for testing
 env:
   global: EXPECTED_PYTHON_ARCH=64
