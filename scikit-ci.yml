@@ -32,4 +32,4 @@ build:
 
 test:
   commands:
-    - echo nothing to do
+    - python -c "import subprocess as sp; import sys; sys.exit(0 if '3.6.2' in str(sp.check_output(['cmake', '--version'])) else 1)"
