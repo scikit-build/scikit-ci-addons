@@ -33,3 +33,15 @@ build:
 test:
   commands:
     - python -c "import subprocess as sp; import sys; sys.exit(0 if '3.6.2' in str(sp.check_output(['cmake', '--version'])) else 1)"
+
+  circle:
+    commands:
+      - which cmake
+
+  travis:
+    linux:
+      commands:
+        - which cmake
+    osx:
+      commands:
+        - which cmake
