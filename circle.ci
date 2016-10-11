@@ -1,0 +1,26 @@
+machine:
+  python:
+    version: 2.7.11
+
+dependencies:
+  pre:
+    - pip install scikit-ci
+    - ci before_install
+  override:
+    - ci install
+
+test:
+  pre:
+    - ci before_build
+
+  override:
+    - ci build
+
+  post:
+    - ci test
+
+deployment:
+  master:
+    branch: master
+    commands:
+      - ci after_test
