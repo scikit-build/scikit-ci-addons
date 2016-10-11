@@ -75,10 +75,12 @@ def install(cmake_version=DEFAULT_CMAKE_VERSION, is_darwin=False):
         ])
 
     else:
-        _log("Copying", download_dir + "/" + cmake_name, "to /usr/local")
+        home = os.environ["HOME"]
+        assert os.path.exists(home)
+        _log("Copying", download_dir + "/" + cmake_name, "to", home)
         check_call([
-            "sudo", "rsync", "-avz",
-            download_dir + "/" + cmake_name + "/", "/usr/local"])
+            "rsync", "-avz",
+            download_dir + "/" + cmake_name + "/", home])
 
 
 if __name__ == '__main__':

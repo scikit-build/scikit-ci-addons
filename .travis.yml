@@ -1,0 +1,70 @@
+# Config file for automatic testing at travis-ci.org
+
+branches:
+ only:
+  - master
+
+language: python
+
+# Used for testing
+env:
+  global: EXPECTED_PYTHON_ARCH=64
+
+matrix:
+  include:
+    - os: linux
+      python: "3.4"
+      # Used for testing
+      env: EXPECTED_PYTHON_VERSION=3,4,2
+
+    - os: linux
+      python: "3.3.5"
+      # Used for testing
+      env: EXPECTED_PYTHON_VERSION=3,3,5
+
+    - os: linux
+      python: "2.7"
+      # Used for testing
+      env: EXPECTED_PYTHON_VERSION=2,7,9
+
+    - os: osx
+      language: generic
+      env:
+        # Used by pyenv
+        - PYTHONVERSION=3.4.5
+        # Used for testing
+        - EXPECTED_PYTHON_VERSION=3,4,5
+
+    - os: osx
+      language: generic
+      env:
+        # Used by pyenv
+        - PYTHONVERSION=3.3.6
+        # Used for testing
+        - EXPECTED_PYTHON_VERSION=3,3,6
+
+    - os: osx
+      language: generic
+      env:
+        # Used by pyenv
+        - PYTHONVERSION=2.7.12
+        # Used for testing
+        - EXPECTED_PYTHON_VERSION=2,7,12
+
+before_install:
+  - pip install scikit-ci
+
+install:
+  - ci before_install
+  - ci install
+
+before_script:
+  - ci before_build
+
+script:
+  - ci build
+  - ci test
+
+after_success:
+  - ci after_test
+
