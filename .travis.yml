@@ -10,15 +10,15 @@ matrix:
   include:
     - os: linux
       python: "3.4"
-      EXPECTED_PYTHON_VERSION: 3,4,4
+      EXPECTED_PYTHON_VERSION: "3,4,4"
 
     - os: linux
       python: "3.3.5"
-      EXPECTED_PYTHON_VERSION: 3,3,5
+      EXPECTED_PYTHON_VERSION: "3,3,5"
 
     - os: linux
       python: "2.7"
-      EXPECTED_PYTHON_VERSION: 2,7,12
+      EXPECTED_PYTHON_VERSION: "2,7,12"
 
     - os: osx
       language: generic
