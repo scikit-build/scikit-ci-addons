@@ -23,6 +23,7 @@ Appveyor
 
 These scripts are designed to work on worker from http://appveyor.com/
 
+
 ``install_cmake.py``
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -50,11 +51,88 @@ Notes:
 ``install_visual_studio_wrapper.py``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Usage:
+
+  python appveyor/install_visual_studio_wrapper.py
+
+Notes:
+
+- Download ``run-with-visual-studio.cmd`` from `gh:ogrisel/python-appveyor-demo <https://github.com/ogrisel/python-appveyor-demo/tree/master/appveyor>`_
+
+
 ``run-with-visual-studio.cmd``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+This is a wrapper script setting the Visual Studio environment
+matching the selected version of Python. This is particularly
+important when building Python C Extensions.
+
+
+Usage:
+
+  run-with-visual-studio.cmd \\path\\to\\command [arg1 [...]]
+
+
+Example:
+
+  SET PYTHON_DIR="C:\\Python35"
+  SET PYTHON_VERSION="3.5.x"
+  SET PATH=%PYTHON_DIR%;%PYTHON_DIR%\\Scripts;%PATH%
+  run-with-visual-studio.cmd python setup.by bdist_wheel
+
+
+Notes:
+
+- Python version selection is done by setting the ``PYTHON_VERSION`` and
+  ``PYTHON_ARCH`` environment variables.
+
+- Possible values for  ``PYTHON_VERSION`` are:
+
+  - ``"2.7.x"``
+
+  - ``"3.4.x"``
+
+  - ``"3.5.x"``
+
+- Possible values for ``PYTHON_ARCH`` are:
+
+  - ``"32"``
+
+  - ``"64"``
+
+Author:
+
+-  Olivier Grisel
+
+License:
+
+- `CC0 1.0 Universal <http://creativecommons.org/publicdomain/zero/1.0/>`_
+
+
+
 ``patch_vs2008.py``
 ^^^^^^^^^^^^^^^^^^^
+
+This script patches the installation of `Visual C++ 2008 Express <https://www.appveyor.com/docs/installed-software/#visual-studio-2008>`_
+so that it can be used to build 64-bit projects.
+
+Usage:
+
+  python appveyor/patch_vs2008.py
+
+Notes:
+
+- Download `vs2008_patch.zip <https://github.com/menpo/condaci/raw/master/vs2008_patch.zip>`_
+  and execute ``setup_x64.bat``.
+
+Credits:
+
+- Xia Wei, sunmast#gmail.com
+
+Links:
+
+- http://www.cppblog.com/xcpp/archive/2009/09/09/vc2008express_64bit_win7sdk.html
+
 
 ``tweak_environment.py``
 ^^^^^^^^^^^^^^^^^^^^^^^^
