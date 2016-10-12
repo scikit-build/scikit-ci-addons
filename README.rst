@@ -165,6 +165,12 @@ Links:
 ``tweak_environment.py``
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
+Usage::
+
+  python tweak_environment.py
+
+Notes:
+
 - Update ``notepad++`` settings:
 
   - ``TabSetting.replaceBySpace`` set to ``yes``
