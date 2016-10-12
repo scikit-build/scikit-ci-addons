@@ -264,4 +264,5 @@ version selected setting ``PYTHONVERSION`` environment variable.
 
 Usage::
 
+  PYTHONVERSION=X.Y.Z
   run-with-pyenv.sh python --version
