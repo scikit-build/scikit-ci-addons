@@ -7,20 +7,15 @@ machine:
     EXPECTED_PYTHON_ARCH: 64
 
 dependencies:
-  pre:
+  override:
     - pip install -U scikit-ci==0.5.0
     - ci before_install
-  override:
     - ci install
 
 test:
-  pre:
-    - ci before_build
-
   override:
+    - ci before_build
     - ci build
-
-  post:
     - ci test
 
 deployment:
