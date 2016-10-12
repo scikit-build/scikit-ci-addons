@@ -58,11 +58,11 @@ These scripts are designed to work on worker from http://appveyor.com/
 
 Download and install in the PATH the specified version of CMake binaries.
 
-Usage:
+Usage::
 
   python appveyor/install_cmake.py X.Y.Z
 
-Example:
+Example::
 
   python appveyor/install_cmake.py 3.6.2
 
@@ -80,7 +80,7 @@ Notes:
 ``install_visual_studio_wrapper.py``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Usage:
+Usage::
 
   python appveyor/install_visual_studio_wrapper.py
 
@@ -97,12 +97,11 @@ matching the selected version of Python. This is particularly
 important when building Python C Extensions.
 
 
-Usage:
+Usage::
 
   run-with-visual-studio.cmd \\path\\to\\command [arg1 [...]]
 
-
-Example:
+Example::
 
   SET PYTHON_DIR="C:\\Python35"
   SET PYTHON_VERSION="3.5.x"
@@ -145,7 +144,7 @@ License:
 This script patches the installation of `Visual C++ 2008 Express <https://www.appveyor.com/docs/installed-software/#visual-studio-2008>`_
 so that it can be used to build 64-bit projects.
 
-Usage:
+Usage::
 
   python appveyor/patch_vs2008.py
 
@@ -181,11 +180,11 @@ These scripts are designed to work on worker from http://circleci.com/
 
 Download and install in the PATH the specified version of CMake binaries.
 
-Usage:
+Usage::
 
   python appveyor/install_cmake.py X.Y.Z
 
-Example:
+Example::
 
   python appveyor/install_cmake.py 3.6.2
 
@@ -205,11 +204,11 @@ These scripts are designed to work on worker from http://travis-ci.org/
 
 Download and install in the PATH the specified version of CMake binaries.
 
-Usage:
+Usage::
 
   python appveyor/install_cmake.py X.Y.Z
 
-Example:
+Example::
 
   python appveyor/install_cmake.py 3.6.2
 
