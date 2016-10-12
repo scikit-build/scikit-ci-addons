@@ -105,6 +105,7 @@ Example::
 
   SET PYTHON_DIR="C:\\Python35"
   SET PYTHON_VERSION="3.5.x"
+  SET PYTHON_ARCH="64"
   SET PATH=%PYTHON_DIR%;%PYTHON_DIR%\\Scripts;%PATH%
   run-with-visual-studio.cmd python setup.by bdist_wheel
 
@@ -251,7 +252,7 @@ Notes:
 
 Usage::
 
-  PYTHONVERSION=X.Y.Z
+  export PYTHONVERSION=X.Y.Z
   python install_pyenv.py
 
 Notes:
@@ -270,5 +271,5 @@ version selected setting ``PYTHONVERSION`` environment variable.
 
 Usage::
 
-  PYTHONVERSION=X.Y.Z
+  export PYTHONVERSION=X.Y.Z
   run-with-pyenv.sh python --version
