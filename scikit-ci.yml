@@ -36,11 +36,11 @@ test:
     - cmake --version
     - python -c "import subprocess as sp; import sys; sys.exit(0 if '3.6.2' in str(sp.check_output(['cmake', '--version'])) else 1)"
     # Check Python version
-    - $<PYTHON> --version
-    - $<PYTHON> -c "import sys;sys.exit(0 if sys.version_info[:3] == ($<EXPECTED_PYTHON_VERSION>) else 1)"
+    - $<RUN_ENV> $<PYTHON> --version
+    - $<RUN_ENV> $<PYTHON> -c "import sys;sys.exit(0 if sys.version_info[:3] == ($<EXPECTED_PYTHON_VERSION>) else 1)"
     # Checking Python bitness: 32-bit vs 64-bit
-    - $<PYTHON> -c "import struct; print('{}-bit'.format(struct.calcsize('P') * 8))"
-    - $<PYTHON> -c "import sys,struct; sys.exit(0 if '{}-bit'.format(struct.calcsize('P') * 8) == '$<EXPECTED_PYTHON_ARCH>-bit' else 1)"
+    - $<RUN_ENV> $<PYTHON> -c "import struct; print('{}-bit'.format(struct.calcsize('P') * 8))"
+    - $<RUN_ENV> $<PYTHON> -c "import sys,struct; sys.exit(0 if '{}-bit'.format(struct.calcsize('P') * 8) == '$<EXPECTED_PYTHON_ARCH>-bit' else 1)"
 
   circle:
     commands:
