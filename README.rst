@@ -244,10 +244,25 @@ Notes:
 ``install_pyenv.py``
 ^^^^^^^^^^^^^^^^^^^^
 
-*Documentation will be added soon*
+Usage::
+
+  PYTHONVERSION=X.Y.Z
+  python install_pyenv.py
+
+Notes:
+
+- Update the version of ``pyenv`` using ``brew``.
+
+- Install the version of python selected setting ``PYTHONVERSION``
+  environment variable.
 
 
 ``run-with-pyenv.sh``
 ^^^^^^^^^^^^^^^^^^^^^
 
-*Documentation will be added soon*
+This is a wrapper script setting the environment corresponding to the
+version selected setting ``PYTHONVERSION`` environment variable.
+
+Usage::
+
+  run-with-pyenv.sh python --version
