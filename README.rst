@@ -23,6 +23,30 @@ Each directory contains scripts designed to be executed on the CI worker named
 after the directory.
 
 
+- `appveyor <#appveyor>`_
+
+  - `install_cmake.py <#install_cmakepy>`_
+
+  - `install_visual_studio_wrapper.py <#install_visual_studio_wrapperpy>`_
+
+  - `run-with-visual-studio.cmd <#run-with-visual-studiocmd>`_
+
+  - `patch_vs2008.py <#patch_vs2008py>`_
+
+- `circle <#circle>`_
+
+  - `install_cmake.py <#install_cmakepy-1>`_
+
+- `travis <#travis>`_
+
+  - `install_cmake.py <#install_cmakepy-2>`_
+
+  - `install_pyenv.py <#install_pyenvpy>`_
+
+  - `run-with-pyenv.sh <#run-with-pyenvsh>`_
+
+
+
 Appveyor
 --------
 
