@@ -12,7 +12,6 @@ before_install:
       RUN_ENV: .\\appveyor\\run-with-visual-studio.cmd
     commands:
       - python appveyor/patch_vs2008.py
-      - python appveyor/install_visual_studio_wrapper.py
       - python appveyor/tweak_environment.py
 
   travis:
