@@ -3,24 +3,19 @@ machine:
     version: 2.7.11
   environment:
     # Used for testing
-    EXPECTED_PYTHON_VERSION: 2,7,11
+    EXPECTED_PYTHON_VERSION: 2.7.11
     EXPECTED_PYTHON_ARCH: 64
 
 dependencies:
-  pre:
-    - pip install scikit-ci
-    - ci before_install
   override:
+    - pip install -U scikit-ci==0.5.0
+    - ci before_install
     - ci install
 
 test:
-  pre:
-    - ci before_build
-
   override:
+    - ci before_build
     - ci build
-
-  post:
     - ci test
 
 deployment:

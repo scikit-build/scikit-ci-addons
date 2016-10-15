@@ -15,17 +15,17 @@ matrix:
     - os: linux
       python: "3.4"
       # Used for testing
-      env: EXPECTED_PYTHON_VERSION=3,4,2
+      env: EXPECTED_PYTHON_VERSION=3.4.2
 
     - os: linux
       python: "3.3.5"
       # Used for testing
-      env: EXPECTED_PYTHON_VERSION=3,3,5
+      env: EXPECTED_PYTHON_VERSION=3.3.5
 
     - os: linux
       python: "2.7"
       # Used for testing
-      env: EXPECTED_PYTHON_VERSION=2,7,9
+      env: EXPECTED_PYTHON_VERSION=2.7.9
 
     - os: osx
       language: generic
@@ -33,7 +33,7 @@ matrix:
         # Used by pyenv
         - PYTHONVERSION=3.4.5
         # Used for testing
-        - EXPECTED_PYTHON_VERSION=3,4,5
+        - EXPECTED_PYTHON_VERSION=3.4.5
 
     - os: osx
       language: generic
@@ -41,7 +41,7 @@ matrix:
         # Used by pyenv
         - PYTHONVERSION=3.3.6
         # Used for testing
-        - EXPECTED_PYTHON_VERSION=3,3,6
+        - EXPECTED_PYTHON_VERSION=3.3.6
 
     - os: osx
       language: generic
@@ -49,19 +49,17 @@ matrix:
         # Used by pyenv
         - PYTHONVERSION=2.7.12
         # Used for testing
-        - EXPECTED_PYTHON_VERSION=2,7,12
+        - EXPECTED_PYTHON_VERSION=2.7.12
 
 before_install:
-  - pip install scikit-ci
+  - pip install -U scikit-ci==0.5.0
 
 install:
   - ci before_install
   - ci install
 
-before_script:
-  - ci before_build
-
 script:
+  - ci before_build
   - ci build
   - ci test
 

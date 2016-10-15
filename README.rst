@@ -77,18 +77,6 @@ Notes:
 
 
 
-``install_visual_studio_wrapper.py``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Usage::
-
-  python appveyor/install_visual_studio_wrapper.py
-
-Notes:
-
-- Download ``run-with-visual-studio.cmd`` from `gh:ogrisel/python-appveyor-demo <https://github.com/ogrisel/python-appveyor-demo/tree/master/appveyor>`_
-
-
 ``run-with-visual-studio.cmd``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
