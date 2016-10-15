@@ -27,8 +27,6 @@ after the directory.
 
   - `install_cmake.py <#install_cmakepy>`_
 
-  - `install_visual_studio_wrapper.py <#install_visual_studio_wrapperpy>`_
-
   - `run-with-visual-studio.cmd <#run-with-visual-studiocmd>`_
 
   - `patch_vs2008.py <#patch_vs2008py>`_
