@@ -4,7 +4,7 @@ before_install:
 
   environment:
     PYTHON: python
-    RUN_ENV: ./run.sh
+    RUN_ENV: ./anyci/run.sh
 
   appveyor:
     environment:
