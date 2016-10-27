@@ -34,8 +34,9 @@ setup(
 
     url='https://github.com/scikit-build/scikit-ci-addons',
 
-    description='scikit-ci-addons is a set of scripts useful to install'
-                'prerequisites for building Python extension on CI services.',
+    description='scikit-ci-addons is a command line tool and a set of scripts'
+                ' useful to install prerequisites for building Python extension'
+                ' on CI services.',
     long_description=readme + '\n\n' + history,
 
     entry_points={'console_scripts': ['ci_addons=ci_addons.__main__:main']},
