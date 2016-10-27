@@ -29,7 +29,8 @@ def test_addons():
 def test_execute(addon, capfd):
     ci_addons.execute(addon, ['foo', 'bar'])
     output_lines, _ = captured_lines(capfd)
-    assert os.path.join(ci_addons.home(), 'anyci/noop.py foo bar') in output_lines
+    noop_path = os.path.join(ci_addons.home(), 'anyci/noop.py')
+    assert noop_path + ' foo bar' in output_lines
 
 
 def test_install(tmpdir, capfd):

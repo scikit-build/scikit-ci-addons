@@ -33,6 +33,10 @@ install:
     - $<RUN_ENV> $<PYTHON> -m pip install -r requirements.txt
     - $<RUN_ENV> $<PYTHON> -m pip install -r requirements-dev.txt
 
+before_build:
+  commands:
+    - $<RUN_ENV> $<PYTHON> -m flake8
+
 build:
   commands:
     - $<RUN_ENV> $<PYTHON> setup.py build
