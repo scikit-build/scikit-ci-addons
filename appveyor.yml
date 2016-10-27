@@ -42,6 +42,9 @@ environment:
       EXPECTED_PYTHON_VERSION: 3.5.2
       EXPECTED_PYTHON_ARCH: 64
 
+cache:
+  - C:\\cmake-3.6.2
+
 init:
   - ps: "\
       iex (\
