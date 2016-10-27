@@ -40,6 +40,10 @@ def main():
         help="display addon path"
     )
     parser.add_argument(
+        "--install", type=str,
+        help="install addons in the selected directory"
+    )
+    parser.add_argument(
         "--version", action="version",
         version=version_str,
         help="display scikit-ci-addons version and import information"
@@ -64,8 +68,12 @@ def main():
         print(ci_addons.path(args.path))
         exit()
 
+    if args.install is not None:
+        ci_addons.install(args.install)
+        exit()
+
     if all([not getattr(args, arg)
-            for arg in ['addon', 'home', 'list', 'path']]):
+            for arg in ['addon', 'home', 'install', 'list', 'path']]):
         parser.print_usage()
         exit()
 
