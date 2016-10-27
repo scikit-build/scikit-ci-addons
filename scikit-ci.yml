@@ -6,6 +6,9 @@ before_install:
     PYTHON: python
     RUN_ENV: ./anyci/run.sh
 
+  command:
+    - python anyci/noop.py foo bar
+
   appveyor:
     environment:
       PYTHON: $<PYTHON_DIR>\\python.exe
