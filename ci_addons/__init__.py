@@ -20,10 +20,9 @@ def list_addons():
 
     for dirname, dirnames, filenames in os.walk(home()):
 
-        for skip_dir in ['.git', '_tests', 'ci_addons']:
-            if skip_dir in dirnames:
-                # do *NOT* recurse into any directory named ``skip_dir``.
-                dirnames.remove(skip_dir)
+        for v in list(dirnames):
+            dirnames.remove(v)
+        dirnames += ['anyci', 'appveyor', 'circle', 'travis']
 
         if dirname == home():
             continue
