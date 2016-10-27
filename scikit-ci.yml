@@ -27,13 +27,22 @@ before_install:
 install:
   commands:
     - python ./$<CI_NAME>/install_cmake.py 3.6.2
+    - $<RUN_ENV> $<PYTHON> -m pip install --disable-pip-version-check --upgrade pip
+    - $<RUN_ENV> $<PYTHON> -m pip install -r requirements.txt
+    - $<RUN_ENV> $<PYTHON> -m pip install -r requirements-dev.txt
 
 build:
   commands:
-    - echo nothing to do
+    - $<RUN_ENV> $<PYTHON> setup.py build
 
 test:
+  appveyor:
+    environment:
+      PATH: $<PYTHON_DIR>\\Scripts;$<PATH>
+
   commands:
+    - $<RUN_ENV> $<PYTHON> setup.py test
+
     # Check CMake version
     - cmake --version
     - python -c "import subprocess as sp; import sys; sys.exit(0 if '3.6.2' in str(sp.check_output(['cmake', '--version'])) else 1)"
@@ -54,3 +63,8 @@ test:
     osx:
       commands:
         - which cmake
+
+after_test:
+  commands:
+    - $<RUN_ENV> codecov -X gcov --required --file ./tests/coverage.xml
+    - $<RUN_ENV> $<PYTHON> setup.py bdist_wheel
