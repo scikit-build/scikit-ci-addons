@@ -51,7 +51,13 @@ def main():
         exit()
 
     if args.list:
-        ci_addons.list_addons()
+        previous_collection = ""
+        for addon in ci_addons.addons():
+            current_collection = addon.split(os.path.sep)[0]
+            if previous_collection != current_collection:
+                print("")
+            print(addon)
+            previous_collection = current_collection
         exit()
 
     if args.path is not None:

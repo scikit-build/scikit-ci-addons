@@ -20,10 +20,9 @@ def test_path(addon):
     assert ci_addons.path(addon) == expected_path
 
 
-def test_list(capsys):
-    ci_addons.list_addons()
-    output_lines, _ = captured_lines(capsys)
-    assert 'anyci' + os.path.sep + 'noop.py' in output_lines
+def test_addons():
+    addons = ci_addons.addons()
+    assert 'anyci' + os.path.sep + 'noop.py' in addons
 
 
 @pytest.mark.parametrize("addon", ['anyci/noop', 'anyci/noop.py'])

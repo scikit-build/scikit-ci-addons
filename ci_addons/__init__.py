@@ -15,8 +15,10 @@ __email__ = 'scikit-build@googlegroups.com'
 __version__ = '0.2.0'
 
 
-def list_addons():
-    """List all available addons."""
+def addons():
+    """Return all available addons."""
+
+    addons = []
 
     for dirname, dirnames, filenames in os.walk(home()):
 
@@ -27,12 +29,13 @@ def list_addons():
         if dirname == home():
             continue
 
-        print("")
-
         for filename in filenames:
             if filename in ['__init__.py']:
                 continue
-            print(os.path.relpath(os.path.join(dirname, filename), home()))
+            addon_path = os.path.join(dirname, filename)
+            addons.append(os.path.relpath(addon_path, home()))
+
+    return addons
 
 
 def home():
