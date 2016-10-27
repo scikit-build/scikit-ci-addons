@@ -2,8 +2,32 @@
 Add-ons
 =======
 
-Each directory contains scripts (or add-ons) designed to be executed on the CI
-worker named after the directory.
+Each category is named after a CI worker (e.g appveyor) and references add-ons
+designed to be used on the associated continuous integration service.
+
+An add-on is a file that could either directly be executed or used as a
+parameter for an other tool.
+
+
+Anyci
+-----
+
+This a special category containing scripts that could be executed on a broad
+range of CI services.
+
+
+``noop.py``
+^^^^^^^^^^^
+
+Display name of script and associated argument (basically the value of
+``sys.argv``).
+
+
+``run.sh``
+^^^^^^^^^^
+
+Wrapper script executing command and arguments passed as parameters.
+
 
 Appveyor
 --------

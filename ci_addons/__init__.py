@@ -6,6 +6,7 @@ prerequisites for building Python extension on CI services.
 """
 
 import os
+import shutil
 import sys
 
 from subprocess import check_call
@@ -15,8 +16,10 @@ __email__ = 'scikit-build@googlegroups.com'
 __version__ = '0.2.0'
 
 
-def list_addons():
-    """List all available addons."""
+def addons():
+    """Return all available addons."""
+
+    addons = []
 
     for dirname, dirnames, filenames in os.walk(home()):
 
@@ -27,12 +30,13 @@ def list_addons():
         if dirname == home():
             continue
 
-        print("")
-
         for filename in filenames:
             if filename in ['__init__.py']:
                 continue
-            print(os.path.relpath(os.path.join(dirname, filename), home()))
+            addon_path = os.path.join(dirname, filename)
+            addons.append(os.path.relpath(addon_path, home()))
+
+    return addons
 
 
 def home():
@@ -52,6 +56,35 @@ def path(addon_name):
     if not os.path.exists(tmp_addon_path):
         raise RuntimeError("Could not find addon: %s" % addon_path)
     return tmp_addon_path
+
+
+def install(dst_path, force=False):
+    """Copy addons into ``dst_path``.
+
+    By default, existing addons are *NOT* overwritten. Specifying ``force``
+    allow to overwrite them.
+    """
+    dst_path = os.path.normpath(os.path.abspath(dst_path))
+    if dst_path == os.path.normpath(home()):
+        print("skipping install: target directory already contains addons")
+        exit()
+    for addon in addons():
+        dst_addon_path = os.path.join(dst_path, addon)
+        dst_addon_dir = os.path.split(dst_addon_path)[0]
+        if not os.path.exists(dst_addon_dir):
+            os.makedirs(dst_addon_dir)
+        src_addon_path = os.path.join(home(), addon)
+        extra = ""
+        do_copy = True
+        if os.path.exists(dst_addon_path):
+            extra = " (skipped)"
+            do_copy = False
+            if force:
+                extra = " (overwritten)"
+                do_copy = True
+        if do_copy:
+            shutil.copy(src_addon_path, dst_addon_path)
+        print(dst_addon_path + extra)
 
 
 def execute(addon_name, arguments=[]):
