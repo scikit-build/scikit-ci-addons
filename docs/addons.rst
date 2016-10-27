@@ -160,6 +160,24 @@ Links:
 - http://www.cppblog.com/xcpp/archive/2009/09/09/vc2008express_64bit_win7sdk.html
 
 
+``rolling-build.ps1``
+^^^^^^^^^^^^^^^^^^^^^
+
+Cancel on-going build if there is a newer build queued for the same PR
+
+Usage::
+
+  rolling-build.ps1
+
+Notes::
+
+- If there is a newer build queued for the same PR, cancel this one.
+  The AppVeyor 'rollout builds' option is supposed to serve the same
+  purpose but it is problematic because it tends to cancel builds pushed
+  directly to master instead of just PR builds (or the converse).
+  credits: JuliaLang developers.
+
+
 ``tweak_environment.py``
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
