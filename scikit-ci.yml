@@ -6,8 +6,8 @@ before_install:
     PYTHON: python
     RUN_ENV: ../anyci/run.sh
 
-  command:
-    - python -m ci_addons -- --install ..
+  commands:
+    - python -m ci_addons --install ..
     - python ../anyci/noop.py foo bar
     - python -m ci_addons anyci/noop foo bar
 
