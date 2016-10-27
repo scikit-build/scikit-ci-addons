@@ -51,6 +51,12 @@ matrix:
         # Used for testing
         - EXPECTED_PYTHON_VERSION=2.7.12
 
+cache:
+  directories:
+    - $HOME/.pyenv/versions/3.4.5
+    - $HOME/.pyenv/versions/3.3.6
+    - $HOME/.pyenv/versions/2.7.12
+
 before_install:
   - pip install -U scikit-ci==0.5.0
 
