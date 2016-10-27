@@ -2,8 +2,8 @@
 Usage
 =====
 
-The scikit-ci-addons command line executable allows to execute any of the
-distributed :doc:`add-ons </addons>`.
+The scikit-ci-addons command line executable allows to discover, execute and
+get the path of any of the distributed :doc:`add-ons </addons>`.
 
 For example:
 
