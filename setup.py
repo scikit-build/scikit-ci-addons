@@ -38,7 +38,7 @@ setup(
                 'prerequisites for building Python extension on CI services.',
     long_description=readme + '\n\n' + history,
 
-    entry_points={'console_scripts': ['ci-addons=ci_addons.__main__:main']},
+    entry_points={'console_scripts': ['ci_addons=ci_addons.__main__:main']},
 
     packages=['anyci', 'appveyor', 'ci_addons', 'circle', 'travis'],
     package_data={'anyci': ['*.sh'], 'appveyor': ['*.cmd'], 'travis': ['*.sh']},
