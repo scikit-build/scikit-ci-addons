@@ -4,29 +4,31 @@ before_install:
 
   environment:
     PYTHON: python
-    RUN_ENV: ./anyci/run.sh
+    RUN_ENV: ../anyci/run.sh
 
   command:
-    - python anyci/noop.py foo bar
+    - python -m ci_addons -- --install ..
+    - python ../anyci/noop.py foo bar
+    - python -m ci_addons anyci/noop foo bar
 
   appveyor:
     environment:
       PYTHON: $<PYTHON_DIR>\\python.exe
-      RUN_ENV: .\\appveyor\\run-with-visual-studio.cmd
+      RUN_ENV: ..\\appveyor\\run-with-visual-studio.cmd
     commands:
-      - python appveyor/patch_vs2008.py
-      - python appveyor/tweak_environment.py
+      - python -m ci_addons appveyor/patch_vs2008
+      - python -m ci_addons appveyor/tweak_environment
 
   travis:
     osx:
       environment:
-        RUN_ENV: travis/run-with-pyenv.sh
+        RUN_ENV: ../travis/run-with-pyenv.sh
       commands:
-        - python travis/install_pyenv.py
+        - python -m ci_addons travis/install_pyenv
 
 install:
   commands:
-    - python ./$<CI_NAME>/install_cmake.py 3.6.2
+    - python -m ci_addons $<CI_NAME>/install_cmake 3.6.2
     - $<RUN_ENV> $<PYTHON> -m pip install --disable-pip-version-check --upgrade pip
     - $<RUN_ENV> $<PYTHON> -m pip install -r requirements.txt
     - $<RUN_ENV> $<PYTHON> -m pip install -r requirements-dev.txt
