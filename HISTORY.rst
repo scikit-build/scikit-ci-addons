@@ -15,10 +15,11 @@ was factored out by Jean-Christophe Fillion-Robin into a set of reusable scripts
 available in the scikit-ci project. By simply cloning the repository, it was
 possible to more easily enable CI for other projects.
 
-While this was an improvement, this prevented the creation of a simple pip-installable
-scikit-ci command line tool able to use the scripts distributed with it.
+While this was an improvement, this prevented the distribution of standalone
+and simple scikit-ci package. To better separate concerns and facilitate
+testing and maintenance, in late September 2016, the scripts were moved into
+their own project and scikit-ci-addons was born.
 
-In late September 2016, the script were moved into their own project and scikit-ci-addons
-was born. Then, in late October 2-16, Jean-Christophe came up with the concept of
-scikit-ci-addons command line tool allowing to execute the scripts (or addons)
+Finally, in late October 2016, Jean-Christophe came up with the concept of
+scikit-ci-addons command line tool allowing to execute the scripts (or add-ons)
 distributed within the scikit-ci-addons package.
