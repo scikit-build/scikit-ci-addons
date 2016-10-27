@@ -46,13 +46,6 @@ cache:
   - C:\\cmake-3.6.2
 
 init:
-  - ps: "\
-      iex (\
-        (New-Object Net.Webclient).DownloadString(\
-          'https://raw.githubusercontent.com/\
-            appveyor/ci/master/scripts/enable-rdp.ps1'\
-        )\
-      )"
 
   # If there is a newer build queued for the same PR, cancel this one.
   # The AppVeyor 'rollout builds' option is supposed to serve the same
@@ -94,16 +87,7 @@ after_test:
   - python -m ci after_test
 
 on_finish:
-  - ps: "\
-      if ($Env:BLOCK -ceq \"1\") {
-        $blockRdp = $true ; \
-        iex (\
-          (New-Object Net.Webclient).DownloadString(\
-            'https://raw.githubusercontent.com/\
-             appveyor/ci/master/scripts/enable-rdp.ps1'\
-          )\
-        )
-      }"
+  - ps: ../appveyor/enable-worker-remote-access.ps1 -check_for_block
 
 artifacts:
   - path: dist\*

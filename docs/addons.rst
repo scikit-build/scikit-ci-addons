@@ -35,6 +35,33 @@ Appveyor
 These scripts are designed to work on worker from http://appveyor.com/
 
 
+``enable-worker-remote-access.ps1``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Enable access to the build worker via Remote Desktop.
+
+Usage::
+
+  enable-worker-remote-access.ps1 [-force|-check_for_block]
+
+Example::
+
+  ps1: ../appveyor/enable-worker-remote-access.ps1 -block
+
+Notes::
+
+- Calling this script will enable and display the Remote Desktop
+  connection details. By default, the connection will be available
+  for the length of the build.
+
+- Specifying ``-block`` option will ensure the connection remains
+  open for at least 60 mins.
+
+- Specifying ```-check_for_block`` option will keep the connection
+  open only if the environment variable ``BLOCK`` has been set to ``1``.
+
+
+
 ``install_cmake.py``
 ^^^^^^^^^^^^^^^^^^^^
 
