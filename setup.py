@@ -27,7 +27,7 @@ setup_requires = pytest_runner
 setup(
     name='scikit-ci-addons',
 
-    version='0.3.0',
+    version='0.4.0',
 
     author='The scikit-build team',
     author_email='scikit-build@googlegroups.com',
