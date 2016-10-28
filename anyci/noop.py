@@ -13,7 +13,7 @@ import sys
 
 def _log(*args):
     script_name = os.path.basename(__file__)
-    print("[generic:%s] " % script_name + " ".join(args))
+    print("[anyci:%s] " % script_name + " ".join(args))
     sys.stdout.flush()
 
 
