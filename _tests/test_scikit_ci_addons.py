@@ -1,4 +1,5 @@
 
+import anyci.docker
 import ci_addons
 import os
 import pytest
@@ -65,3 +66,10 @@ def test_cli():
         stderr=subprocess.STDOUT,
         cwd=str(root)
     )
+
+
+@pytest.mark.parametrize("filename, expected", [
+    ("library/hello-world:latest", "library-hello-world-latest")
+])
+def test_addon_anyci_docker_get_valid_filename(filename, expected):
+    assert anyci.docker.get_valid_filename(filename) == expected
