@@ -16,6 +16,31 @@ This a special category containing scripts that could be executed on a broad
 range of CI services.
 
 
+``docker.py``
+^^^^^^^^^^^^^
+
+Add-on facilitating docker use on CI services.
+
+It allows to load an image from local cache, pull and save back using
+a convenience one-liner.
+
+Usage::
+
+  docker.py load-pull-save [-h] [--cache-dir CACHE_DIR]
+                                NAME[:TAG|@DIGEST]
+
+Example::
+
+  $ python anyci/docker.py load-pull-save hello-world:latest
+  [anyci:docker.py] Cached image filename: /home/jcfr/docker/hello-worldlatest.tar
+  [anyci:docker.py] Cached image not found
+  [anyci:docker.py] Pulling image: hello-world:latest
+  latest: Pulling from library/hello-world
+  Digest: sha256:0256e8a36e2070f7bf2d0b0763dbabdd67798512411de4cdcf9431a1feb60fd9
+  Status: Image is up to date for hello-world:latest
+  [anyci:docker.py] Caching image into: /home/jcfr/docker
+
+
 ``noop.py``
 ^^^^^^^^^^^
 
