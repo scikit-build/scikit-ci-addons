@@ -13,7 +13,7 @@ from subprocess import check_call
 
 __author__ = 'The scikit-build team'
 __email__ = 'scikit-build@googlegroups.com'
-__version__ = '0.2.0'
+__version__ = '0.3.0'
 
 
 def addons():
