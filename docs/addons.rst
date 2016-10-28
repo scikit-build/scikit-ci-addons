@@ -42,11 +42,11 @@ Enable access to the build worker via Remote Desktop.
 
 Usage::
 
-  enable-worker-remote-access.ps1 [-force|-check_for_block]
+  - ps: enable-worker-remote-access.ps1 [-force|-check_for_block]
 
 Example::
 
-  ps1: ../appveyor/enable-worker-remote-access.ps1 -block
+  - ps: ../addons/appveyor/enable-worker-remote-access.ps1 -block
 
 Notes::
 
@@ -167,7 +167,7 @@ Cancel on-going build if there is a newer build queued for the same PR
 
 Usage::
 
-  rolling-build.ps1
+  - ps: rolling-build.ps1
 
 Notes::
 
