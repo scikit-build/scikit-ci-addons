@@ -20,7 +20,7 @@ Example::
     Status: Image is up to date for hello-world:latest
     [anyci:docker.py] Caching image into: /home/jcfr/docker
 
-"""
+"""  # noqa: E501
 
 import argparse
 import os
