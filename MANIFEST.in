@@ -11,6 +11,10 @@ include requirements.txt
 include requirements-dev.txt
 include requirements-docs.txt
 
+recursive-include * *.cmd
+recursive-include * *.ps1
+recursive-include * *.sh
+
 recursive-include _tests *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]

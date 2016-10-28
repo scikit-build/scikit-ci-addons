@@ -42,7 +42,6 @@ setup(
     entry_points={'console_scripts': ['ci_addons=ci_addons.__main__:main']},
 
     packages=['anyci', 'appveyor', 'ci_addons', 'circle', 'travis'],
-    package_data={'anyci': ['*.sh'], 'appveyor': ['*.cmd'], 'travis': ['*.sh']},
     include_package_data=True,
     zip_safe=False,
 
