@@ -2,6 +2,7 @@ include .coveragerc
 include .flake8
 include AUTHORS.rst
 include CONTRIBUTING.rst
+include HISTORY.rst
 include LICENSE_Apache_20
 include MANIFEST.in
 include pytest.ini
