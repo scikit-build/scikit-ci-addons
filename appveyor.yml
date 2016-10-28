@@ -45,16 +45,12 @@ environment:
 cache:
   - C:\\cmake-3.6.2
 
-init:
-  - python -m pip install -U scikit-ci==0.5.0
-
 install:
   - ps: appveyor/rolling-build.ps1
-  - python -m ci before_install
+  - python -m pip install scikit-ci==0.7.0
   - python -m ci install
 
 build_script:
-  - python -m ci before_build
   - python -m ci build
 
 test_script:

@@ -57,16 +57,11 @@ cache:
     - $HOME/.pyenv/versions/3.3.6
     - $HOME/.pyenv/versions/2.7.12
 
-before_install:
-  - pip install -U scikit-ci==0.5.0
-
 install:
-  - ci before_install
+  - pip install scikit-ci==0.7.0
   - ci install
 
 script:
-  - ci before_build
-  - ci build
   - ci test
 
 after_success:
