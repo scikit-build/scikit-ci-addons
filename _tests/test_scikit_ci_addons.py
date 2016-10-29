@@ -35,8 +35,7 @@ def test_execute(addon, capfd):
 
 
 def test_install(tmpdir, capfd):
-    noop = tmpdir.mkdir('anyci').join('noop.py')
-    noop.write("")
+    noop = tmpdir.ensure('anyci/noop.py')
 
     ci_addons.install(str(tmpdir))
     output_lines, _ = captured_lines(capfd)
@@ -47,6 +46,9 @@ def test_install(tmpdir, capfd):
     assert str(noop) + ' (skipped)' in output_lines
     assert str(tmpdir.join('appveyor', 'patch_vs2008.py')) in output_lines
 
+    #
+    # Check specifying --force overwrite add-ons already installed
+    #
     ci_addons.install(str(tmpdir), force=True)
     output_lines, _ = captured_lines(capfd)
 
