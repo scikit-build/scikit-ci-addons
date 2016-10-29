@@ -77,13 +77,36 @@ def test_cli():
     environment = dict(os.environ)
     environment['PYTHONPATH'] = root
 
-    subprocess.check_call(
+    #
+    # Running without argument should NOT fail
+    #
+    output = subprocess.check_output(
         "python -m ci_addons",
         shell=True,
         env=environment,
         stderr=subprocess.STDOUT,
         cwd=str(root)
     )
+    assert "usage:" in output
+
+    #
+    # Check that --list works
+    #
+    output = subprocess.check_output(
+        "python -m ci_addons --list",
+        shell=True,
+        env=environment,
+        stderr=subprocess.STDOUT,
+        cwd=str(root)
+    )
+    # Check that at least one add-on of each service is reported
+    for addon in [
+        "anyci/run.sh",
+        "appveyor/rolling-build.ps1",
+        "circle/install_cmake.py",
+        "travis/run-with-pyenv.sh"
+    ]:
+        assert addon.replace('/', os.path.sep) in output
 
 
 @pytest.mark.parametrize("filename, expected", [
