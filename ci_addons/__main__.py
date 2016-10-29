@@ -50,7 +50,7 @@ def main():
     )
     args = parser.parse_args()
 
-    if args.home:
+    if args.home:  # pragma: no cover
         print(ci_addons.home())
         exit()
 
@@ -64,11 +64,11 @@ def main():
             previous_collection = current_collection
         exit()
 
-    if args.path is not None:
+    if args.path is not None:  # pragma: no cover
         print(ci_addons.path(args.path))
         exit()
 
-    if args.install is not None:
+    if args.install is not None:  # pragma: no cover
         ci_addons.install(args.install)
         exit()
 
@@ -80,5 +80,5 @@ def main():
     ci_addons.execute(args.addon, args.arguments)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()
