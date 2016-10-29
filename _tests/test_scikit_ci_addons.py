@@ -5,7 +5,7 @@ import os
 import pytest
 import subprocess
 
-from . import captured_lines
+from . import captured_lines, format_args_for_display
 
 
 def test_home():
@@ -73,3 +73,101 @@ def test_cli():
 ])
 def test_addon_anyci_docker_get_valid_filename(filename, expected):
     assert anyci.docker.get_valid_filename(filename) == expected
+
+
+def has_docker():
+    """Return True if docker executable is found."""
+    try:
+        subprocess.check_output(["docker", "--version"])
+        return True
+    except (OSError, subprocess.CalledProcessError):
+        return False
+
+
+def test_addon_anyci_docker(tmpdir):
+
+    test_image = "hello-world"
+    test_image_filename = test_image + ".tar"
+
+    is_circleci = "CIRCLECI" in os.environ
+    if is_circleci:
+        assert has_docker(), "docker is expected when running tests on CircleCI"
+
+    if not has_docker():
+        pytest.skip("docker executable not found")
+
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    environment = dict(os.environ)
+    environment['PYTHONPATH'] = root
+    environment['HOME'] = str(tmpdir)
+
+    def _display_cmd(cmd):
+        print("\nExecuting: {}".format(format_args_for_display(cmd)))
+
+    #
+    # Delete image if any (useful when testing locally)
+    #
+    try:
+        cmd = ["docker", "rmi", test_image]
+        _display_cmd(cmd)
+        subprocess.check_output(cmd)
+    except subprocess.CalledProcessError:
+        pass
+
+    #
+    # Check load-pull-save works with default cache directory
+    #
+    cmd = ["python", "-m",
+           "ci_addons", "anyci/docker", "--", "load-pull-save", test_image]
+    _display_cmd(cmd)
+    output = subprocess.check_output(
+        cmd,
+        env=environment,
+        stderr=subprocess.STDOUT,
+        cwd=str(root)
+    )
+    assert "Status: Downloaded newer image for %s:latest" % test_image in output
+    assert tmpdir.join("docker", test_image_filename).exists()
+
+    #
+    # Check load-pull-save works with custom cache directory
+    #
+    cache_dir = tmpdir.ensure("cache", dir=True)
+    cmd_with_cache = cmd + ["--cache-dir", str(cache_dir)]
+    _display_cmd(cmd_with_cache)
+    output = subprocess.check_output(
+        cmd_with_cache,
+        env=environment,
+        stderr=subprocess.STDOUT,
+        cwd=str(root)
+    )
+    assert "Status: Image is up to date for %s:latest" % test_image in output
+    assert tmpdir.join("cache", test_image_filename).exists()
+
+    #
+    # Delete the image
+    #
+
+    cmd = ["docker", "rmi", "-f", test_image]
+    _display_cmd(cmd)
+    if not is_circleci:
+        output = subprocess.check_output(cmd)
+        assert "Untagged: %s@sha256" % test_image in output
+        assert "Deleted: sha256:" in output
+    else:
+        print("  -> Skipping: "
+              "Not supported on CircleCI because containers can NOT be "
+              "removed in unprivileged LXC container")
+
+    #
+    # Check load-pull-save restores cached image
+    #
+    _display_cmd(cmd_with_cache)
+    output = subprocess.check_output(
+        cmd_with_cache,
+        env=environment,
+        stderr=subprocess.STDOUT,
+        cwd=str(root)
+    )
+    assert "Status: Image is up to date for %s:latest" % test_image in output
+    assert tmpdir.join("cache", test_image_filename).exists()

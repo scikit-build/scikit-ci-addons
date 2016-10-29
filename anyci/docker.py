@@ -100,7 +100,7 @@ def main():
 
         # Cache image
         _log("Caching image into:", cache_dir)
-        cmd = ["docker", "save", args.image, "-o", image_filename]
+        cmd = ["docker", "save", "-o", image_filename, args.image]
         subprocess.check_call(cmd)
 
 if __name__ == '__main__':
