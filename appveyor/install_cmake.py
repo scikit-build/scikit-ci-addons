@@ -44,41 +44,50 @@ def install(cmake_version=DEFAULT_CMAKE_VERSION):
     cmake_directory = "C:\\cmake-{}".format(cmake_version)
     cmake_package = "cmake-{}-win32-x86.zip".format(cmake_version)
 
+    _log("Looking for cmake", cmake_version, "in PATH")
     try:
         output = check_output(
             "cmake --version", shell=True, env=os.environ).decode("utf-8")
-        if cmake_version in output:
-            _log("Skipping download: Found cmake (v%s) in the PATH" % (
-                cmake_version))
+        current_cmake_version = output.splitlines()[0]
+        if cmake_version in current_cmake_version:
+            _log("  ->", "found %s:" % current_cmake_version,
+                 "skipping download: version matches expected one")
             return
+        else:
+            _log("  ->", "found %s:" % current_cmake_version,
+                 "not the expected version")
     except (OSError, CalledProcessError):
+        _log("  ->", "not found")
         pass
 
+    _log("Downloading", cmake_package)
     if not os.path.exists(cmake_directory):
-
-        _log("Downloading", cmake_package)
         remote_file = urlopen(
             "https://cmake.org/files/v{}.{}/{}".format(
                 cmake_version_major, cmake_version_minor, cmake_package))
 
         with open("C:\\%s" % cmake_package, "wb") as local_file:
             shutil.copyfileobj(remote_file, local_file)
+        _log("  ->", "done")
 
         _log("Making directory", cmake_directory)
         try:
             os.mkdir(cmake_directory)
         except OSError:
             pass
+        _log("  ->", "done")
 
         _log("Unpacking", cmake_package)
         with zipfile.ZipFile("C:\\%s" % cmake_package) as local_zip:
             local_zip.extractall(cmake_directory)
+        _log("  ->", "done")
 
     else:
-        _log("Skipping download: Directory %s exists" % cmake_package)
+        _log("  ->", "skipping download: directory %s exists" % cmake_package)
 
     _log("Updating PATH with", cmake_directory)
     _env_prepend("PATH", "%s\bin" % cmake_directory)
+    _log("  ->", "done")
 
 
 if __name__ == '__main__':
