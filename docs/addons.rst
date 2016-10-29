@@ -26,23 +26,22 @@ a convenience one-liner.
 
 Usage::
 
-  docker.py load-pull-save [-h] [--cache-dir CACHE_DIR]
+  docker.py load-pull-save [-h] [--cache-dir CACHE_DIR] [--verbose]
                                 NAME[:TAG|@DIGEST]
 
 Example::
 
   $ python anyci/docker.py load-pull-save hello-world:latest
-  [anyci:docker.py] Cached image filename: /home/jcfr/docker/hello-world-latest.tar
-  [anyci:docker.py] Cached image ID filename: /home/jcfr/docker/hello-world-latest.image_id
-  [anyci:docker.py] Cached image not found
+  [anyci:docker.py] Loading cached image from /home/jcfr/docker/hello-world-latest.tar
+  [anyci:docker.py]   -> cached image not found
   [anyci:docker.py] Pulling image: hello-world:latest
-  latest: Pulling from library/hello-world
-  Digest: sha256:0256e8a36e2070f7bf2d0b0763dbabdd67798512411de4cdcf9431a1feb60fd9
-  Status: Image is up to date for hello-world:latest
-  [anyci:docker.py] Current image ID: sha256:c54a2cc56cbb2f04003c1cd4507e118af7c0d340fe7e2720f70976c4b75237dc
-
-  [anyci:docker.py] Caching image into: /home/jcfr/docker
-  [anyci:docker.py] Saving image ID into: /home/jcfr/docker/hello-world-latest.image_id
+  [anyci:docker.py]   -> done
+  [anyci:docker.py] Reading image ID from current image
+  [anyci:docker.py]   -> image ID: sha256:c54a2cc56cbb2f04003c1cd4507e118af7c0d340fe7e2720f70976c4b75237dc
+  [anyci:docker.py] Caching image
+  [anyci:docker.py]   -> image cached: /home/jcfr/docker/hello-world-latest.tar
+  [anyci:docker.py] Saving image ID into /home/jcfr/docker/hello-world-latest.image_id
+  [anyci:docker.py]   -> done
 
 Notes:
 
