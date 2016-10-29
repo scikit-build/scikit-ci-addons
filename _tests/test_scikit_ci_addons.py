@@ -129,6 +129,7 @@ def test_addon_anyci_docker(tmpdir):
 
     test_image = "hello-world"
     test_image_filename = test_image + ".tar"
+    test_image_id_filename = test_image + ".image_id"
 
     is_circleci = "CIRCLECI" in os.environ
     if is_circleci:
@@ -168,7 +169,9 @@ def test_addon_anyci_docker(tmpdir):
         cwd=str(root)
     ).decode("utf-8")
     assert "Status: Downloaded newer image for %s:latest" % test_image in output
+    assert "Cached image ID:" not in output
     assert tmpdir.join("docker", test_image_filename).exists()
+    assert tmpdir.join("docker", test_image_id_filename).exists()
 
     #
     # Check load-pull-save works with custom cache directory
@@ -183,7 +186,9 @@ def test_addon_anyci_docker(tmpdir):
         cwd=str(root)
     ).decode("utf-8")
     assert "Status: Image is up to date for %s:latest" % test_image in output
+    assert "Cached image ID:" not in output
     assert tmpdir.join("cache", test_image_filename).exists()
+    assert tmpdir.join("cache", test_image_id_filename).exists()
 
     #
     # Delete the image
@@ -210,5 +215,7 @@ def test_addon_anyci_docker(tmpdir):
         stderr=subprocess.STDOUT,
         cwd=str(root)
     ).decode("utf-8")
+    assert "Cached image ID:" in output
     assert "Status: Image is up to date for %s:latest" % test_image in output
+    assert "Skip caching: pulled image identical" in output
     assert tmpdir.join("cache", test_image_filename).exists()
