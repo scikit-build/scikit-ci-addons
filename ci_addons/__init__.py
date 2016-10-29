@@ -76,7 +76,7 @@ def install(dst_path, force=False):
     dst_path = os.path.normpath(os.path.abspath(dst_path))
     if dst_path == os.path.normpath(home()):
         raise SKAddonsError(
-            "skipping install: target directory already contains addons")
+            "skipping install: target directory already contains add-ons")
     for addon in addons():
         dst_addon_path = os.path.join(dst_path, addon)
         dst_addon_dir = os.path.split(dst_addon_path)[0]

@@ -21,27 +21,27 @@ def main():
     parser = argparse.ArgumentParser(description=ci_addons.__doc__)
     parser.add_argument(
         'addon', metavar='ADDON', type=str, nargs='?',
-        help='name of addon to execute'
+        help='name of add-on to execute'
     )
     parser.add_argument(
         'arguments', metavar='ARG', type=str, nargs='*',
-        help='addon arguments'
+        help='add-on arguments'
     )
     parser.add_argument(
         "--home", action="store_true",
-        help="display directory where all addons can be found"
+        help="display directory where all add-ons can be found"
     )
     parser.add_argument(
         "--list", action="store_true",
-        help="list all available addons"
+        help="list all available add-ons"
     )
     parser.add_argument(
         "--path", type=str,
-        help="display addon path"
+        help="display add-on path"
     )
     parser.add_argument(
         "--install", type=str,
-        help="install addons in the selected directory"
+        help="install add-ons in the selected directory"
     )
     parser.add_argument(
         "--version", action="version",
