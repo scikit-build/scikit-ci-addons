@@ -73,7 +73,7 @@ def main():
 
     args = parser.parse_args()
 
-    if args.image:
+    if hasattr(args, 'image'):
 
         # If needed, create cache directory
         cache_dir = os.path.expanduser(args.cache_dir)
@@ -102,6 +102,8 @@ def main():
         _log("Caching image into:", cache_dir)
         cmd = ["docker", "save", "-o", image_filename, args.image]
         subprocess.check_call(cmd)
+    else:
+        parser.print_usage()
 
 if __name__ == '__main__':
     main()
