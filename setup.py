@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import versioneer
 import sys
 
 from setuptools import setup
@@ -27,7 +28,8 @@ setup_requires = pytest_runner
 setup(
     name='scikit-ci-addons',
 
-    version='0.6.0',
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
 
     author='The scikit-build team',
     author_email='scikit-build@googlegroups.com',
@@ -47,6 +49,7 @@ setup(
 
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
+        'Environment :: Console',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
