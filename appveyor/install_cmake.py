@@ -12,6 +12,8 @@ import shutil
 import sys
 import zipfile
 
+from subprocess import CalledProcessError, check_output
+
 try:
     from urllib.request import urlopen
 except ImportError:
@@ -41,6 +43,16 @@ def install(cmake_version=DEFAULT_CMAKE_VERSION):
     cmake_version_minor = cmake_version.split(".")[1]
     cmake_directory = "C:\\cmake-{}".format(cmake_version)
     cmake_package = "cmake-{}-win32-x86.zip".format(cmake_version)
+
+    try:
+        output = check_output(
+            "cmake --version", shell=True, env=os.environ).decode("utf-8")
+        if cmake_version in output:
+            _log("Skipping download: Found cmake (v%s) in the PATH" % (
+                cmake_version))
+            return
+    except (OSError, CalledProcessError):
+        pass
 
     if not os.path.exists(cmake_directory):
 

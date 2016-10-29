@@ -11,7 +11,7 @@ import os
 import platform
 import sys
 
-from subprocess import check_call
+from subprocess import CalledProcessError, check_call, check_output
 
 DEFAULT_CMAKE_VERSION = "3.5.0"
 
@@ -30,6 +30,16 @@ def install(cmake_version=DEFAULT_CMAKE_VERSION, is_darwin=False):
     cmake_package = ".".join((cmake_name, "tar", "gz"))
     cmake_version_major = cmake_version.split(".")[0]
     cmake_version_minor = cmake_version.split(".")[1]
+
+    try:
+        output = check_output(
+            "cmake --version", shell=True, env=os.environ).decode("utf-8")
+        if cmake_version in output:
+            _log("Skipping download: Found cmake (v%s) in the PATH" % (
+                cmake_version))
+            return
+    except (OSError, CalledProcessError):
+        pass
 
     download_dir = os.environ["HOME"] + "/downloads"
     downloaded_package = os.path.join(download_dir, cmake_package)

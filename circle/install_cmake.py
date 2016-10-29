@@ -10,7 +10,7 @@ Usage::
 import os
 import sys
 
-from subprocess import check_call, check_output
+from subprocess import CalledProcessError, check_call, check_output
 
 DEFAULT_CMAKE_VERSION = "3.5.0"
 
@@ -32,6 +32,16 @@ def install(cmake_version=DEFAULT_CMAKE_VERSION):
             and check_output([cmake_exe, '--version']) == cmake_version):
         _log("Skipping download: Found %s (v%s)" % (cmake_exe, cmake_version))
         return
+
+    try:
+        output = check_output(
+            "cmake --version", shell=True, env=os.environ).decode("utf-8")
+        if cmake_version in output:
+            _log("Skipping download: Found cmake (v%s) in the PATH" % (
+                cmake_version))
+            return
+    except (OSError, CalledProcessError):
+        pass
 
     name = "cmake-{}-Linux-x86_64".format(cmake_version)
 
