@@ -50,34 +50,39 @@ def main():
     )
     args = parser.parse_args()
 
-    if args.home:  # pragma: no cover
-        print(ci_addons.home())
-        exit()
+    try:
 
-    if args.list:
-        previous_collection = ""
-        for addon in ci_addons.addons():
-            current_collection = addon.split(os.path.sep)[0]
-            if previous_collection != current_collection:
-                print("")
-            print(addon)
-            previous_collection = current_collection
-        exit()
+        if args.home:  # pragma: no cover
+            print(ci_addons.home())
+            exit()
 
-    if args.path is not None:  # pragma: no cover
-        print(ci_addons.path(args.path))
-        exit()
+        if args.list:
+            previous_collection = ""
+            for addon in ci_addons.addons():
+                current_collection = addon.split(os.path.sep)[0]
+                if previous_collection != current_collection:
+                    print("")
+                print(addon)
+                previous_collection = current_collection
+            exit()
 
-    if args.install is not None:  # pragma: no cover
-        ci_addons.install(args.install)
-        exit()
+        if args.path is not None:  # pragma: no cover
+            print(ci_addons.path(args.path))
+            exit()
 
-    if all([not getattr(args, arg)
-            for arg in ['addon', 'home', 'install', 'list', 'path']]):
-        parser.print_usage()
-        exit()
+        if args.install is not None:  # pragma: no cover
+            ci_addons.install(args.install)
+            exit()
 
-    ci_addons.execute(args.addon, args.arguments)
+        if all([not getattr(args, arg)
+                for arg in ['addon', 'home', 'install', 'list', 'path']]):
+            parser.print_usage()
+            exit()
+
+        ci_addons.execute(args.addon, args.arguments)
+
+    except ci_addons.SKAddonsError as error:
+        exit(error)
 
 
 if __name__ == '__main__':  # pragma: no cover
