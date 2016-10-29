@@ -86,7 +86,7 @@ def test_cli():
         env=environment,
         stderr=subprocess.STDOUT,
         cwd=str(root)
-    )
+    ).decode("utf-8")
     assert "usage:" in output
 
     #
@@ -98,7 +98,7 @@ def test_cli():
         env=environment,
         stderr=subprocess.STDOUT,
         cwd=str(root)
-    )
+    ).decode("utf-8")
     # Check that at least one add-on of each service is reported
     for addon in [
         "anyci/run.sh",
@@ -166,7 +166,7 @@ def test_addon_anyci_docker(tmpdir):
         env=environment,
         stderr=subprocess.STDOUT,
         cwd=str(root)
-    )
+    ).decode("utf-8")
     assert "Status: Downloaded newer image for %s:latest" % test_image in output
     assert tmpdir.join("docker", test_image_filename).exists()
 
@@ -181,7 +181,7 @@ def test_addon_anyci_docker(tmpdir):
         env=environment,
         stderr=subprocess.STDOUT,
         cwd=str(root)
-    )
+    ).decode("utf-8")
     assert "Status: Image is up to date for %s:latest" % test_image in output
     assert tmpdir.join("cache", test_image_filename).exists()
 
@@ -192,7 +192,7 @@ def test_addon_anyci_docker(tmpdir):
     cmd = ["docker", "rmi", "-f", test_image]
     _display_cmd(cmd)
     if not is_circleci:
-        output = subprocess.check_output(cmd)
+        output = subprocess.check_output(cmd).decode("utf-8")
         assert "Untagged: %s@sha256" % test_image in output
         assert "Deleted: sha256:" in output
     else:
@@ -209,6 +209,6 @@ def test_addon_anyci_docker(tmpdir):
         env=environment,
         stderr=subprocess.STDOUT,
         cwd=str(root)
-    )
+    ).decode("utf-8")
     assert "Status: Image is up to date for %s:latest" % test_image in output
     assert tmpdir.join("cache", test_image_filename).exists()
