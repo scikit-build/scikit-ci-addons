@@ -35,7 +35,7 @@ def install(cmake_version=DEFAULT_CMAKE_VERSION, is_darwin=False):
     _log("Looking for cmake", cmake_version, "in PATH")
     try:
         output = check_output(
-            "cmake --version", shell=True, env=os.environ).decode("utf-8")
+            "cmake --version", shell=True).decode("utf-8")
         current_cmake_version = output.splitlines()[0]
         if cmake_version in current_cmake_version:
             _log("  ->", "found %s:" % current_cmake_version,
