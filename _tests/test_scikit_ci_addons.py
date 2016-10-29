@@ -149,12 +149,13 @@ def test_addon_anyci_docker(tmpdir):
     #
     # Delete image if any (useful when testing locally)
     #
-    try:
-        cmd = ["docker", "rmi", test_image]
-        _display_cmd(cmd)
-        subprocess.check_output(cmd)
-    except subprocess.CalledProcessError:
-        pass
+    if not is_circleci:
+        try:
+            cmd = ["docker", "rmi", test_image]
+            _display_cmd(cmd)
+            subprocess.check_output(cmd)
+        except subprocess.CalledProcessError:
+            pass
 
     #
     # Check load-pull-save works with default cache directory
