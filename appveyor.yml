@@ -60,7 +60,7 @@ after_test:
   - python -m ci after_test
 
 on_finish:
-  - ps: ../appveyor/enable-worker-remote-access.ps1 -check_for_block
+  - ps: appveyor/enable-worker-remote-access.ps1 -check_for_block
 
 artifacts:
   - path: dist\*
