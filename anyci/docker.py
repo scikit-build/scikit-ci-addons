@@ -35,19 +35,22 @@ def _log(*args):
     sys.stdout.flush()
 
 
-def _get_valid_filename(s):
+def get_valid_filename(s):
     """
     Returns the given string converted to a string that can be used for a clean
     filename. Specifically, leading and trailing spaces are removed; other
-    spaces are converted to underscores; and anything that is not a unicode
-    alphanumeric, dash, underscore, or dot, is removed.
+    spaces are converted to underscores; slashes and colons are converted to
+    dashes; and anything that is not a unicode alphanumeric, dash, underscore,
+    or dot, is removed.
     >>> get_valid_filename("john's portrait in 2004.jpg")
     'johns_portrait_in_2004.jpg'
+    >>> get_valid_filename("library/hello-world:latest")
+    'library-hello-world-latest'
 
     Copied from https://github.com/django/django/blob/20be1918e77414837178d6bf1657068c8306d50c/django/utils/encoding.py
     Distributed under BSD-3 License
     """  # noqa: E501
-    s = s.strip().replace(' ', '_')
+    s = s.strip().replace(' ', '_').replace('/', '-').replace(':', '-')
     return re.sub(r'(?u)[^-\w.]', '', s)
 
 
@@ -79,7 +82,7 @@ def main():
 
         # Convert image to valid filename
         image_filename = os.path.join(
-            cache_dir, _get_valid_filename(args.image) + '.tar')
+            cache_dir, get_valid_filename(args.image) + '.tar')
         _log("Cached image filename:", image_filename)
 
         # If it exists, load cache image
@@ -97,7 +100,7 @@ def main():
 
         # Cache image
         _log("Caching image into:", cache_dir)
-        cmd = ["docker", "save", args.image, "-o", image_filename]
+        cmd = ["docker", "save", "-o", image_filename, args.image]
         subprocess.check_call(cmd)
 
 if __name__ == '__main__':
