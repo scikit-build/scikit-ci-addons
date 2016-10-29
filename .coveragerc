@@ -1,6 +1,7 @@
 [run]
 branch = True
 include = ci_addons/*.py
+omit = ci_addons/_version.py
 
 [xml]
 output = _tests/coverage.xml

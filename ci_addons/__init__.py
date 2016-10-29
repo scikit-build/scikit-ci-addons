@@ -11,9 +11,12 @@ import sys
 
 from subprocess import check_call
 
+from ._version import get_versions
+
 __author__ = 'The scikit-build team'
 __email__ = 'scikit-build@googlegroups.com'
-__version__ = '0.6.0'
+__version__ = get_versions()['version']
+del get_versions
 
 
 def addons():
