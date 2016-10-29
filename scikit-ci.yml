@@ -45,25 +45,12 @@ test:
     - $<RUN_ENV> $<PYTHON> setup.py test
 
     # Check CMake version
-    - cmake --version
-    - python -c "import subprocess as sp; import sys; sys.exit(0 if '3.6.2' in str(sp.check_output(['cmake', '--version'])) else 1)"
+    - python _tests/cmake_check_version.py 3.6.2
 
     # Check python interpreter found using $<RUN_ENV> wrapper script
     # is the expected one
     - $<RUN_ENV> $<PYTHON> _tests/python_check_version.py
     - $<RUN_ENV> $<PYTHON> _tests/python_check_arch.py
-
-  circle:
-    commands:
-      - which cmake
-
-  travis:
-    linux:
-      commands:
-        - which cmake
-    osx:
-      commands:
-        - which cmake
 
 after_test:
   commands:
