@@ -80,5 +80,5 @@ def main():
     ci_addons.execute(args.addon, args.arguments)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()
