@@ -4,17 +4,12 @@ before_install:
 
   environment:
     PYTHON: python
-    RUN_ENV: ../anyci/run.sh
-
-  commands:
-    - python -m ci_addons --install ..
-    - python ../anyci/noop.py foo bar
-    - python -m ci_addons anyci/noop foo bar
+    RUN_ENV: anyci/run.sh
 
   appveyor:
     environment:
       PYTHON: $<PYTHON_DIR>\\python.exe
-      RUN_ENV: ..\\appveyor\\run-with-visual-studio.cmd
+      RUN_ENV: .\\appveyor\\run-with-visual-studio.cmd
     commands:
       - python -m ci_addons appveyor/patch_vs2008
       - python -m ci_addons appveyor/tweak_environment
@@ -22,7 +17,7 @@ before_install:
   travis:
     osx:
       environment:
-        RUN_ENV: ../travis/run-with-pyenv.sh
+        RUN_ENV: travis/run-with-pyenv.sh
       commands:
         - python -m ci_addons travis/install_pyenv
 

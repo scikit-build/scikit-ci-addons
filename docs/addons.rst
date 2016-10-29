@@ -32,14 +32,25 @@ Usage::
 Example::
 
   $ python anyci/docker.py load-pull-save hello-world:latest
-  [anyci:docker.py] Cached image filename: /home/jcfr/docker/hello-worldlatest.tar
+  [anyci:docker.py] Cached image filename: /home/jcfr/docker/hello-world-latest.tar
+  [anyci:docker.py] Cached image ID filename: /home/jcfr/docker/hello-world-latest.image_id
   [anyci:docker.py] Cached image not found
   [anyci:docker.py] Pulling image: hello-world:latest
   latest: Pulling from library/hello-world
   Digest: sha256:0256e8a36e2070f7bf2d0b0763dbabdd67798512411de4cdcf9431a1feb60fd9
   Status: Image is up to date for hello-world:latest
-  [anyci:docker.py] Caching image into: /home/jcfr/docker
+  [anyci:docker.py] Current image ID: sha256:c54a2cc56cbb2f04003c1cd4507e118af7c0d340fe7e2720f70976c4b75237dc
 
+  [anyci:docker.py] Caching image into: /home/jcfr/docker
+  [anyci:docker.py] Saving image ID into: /home/jcfr/docker/hello-world-latest.image_id
+
+Notes:
+
+- Image is saved into the cache only if needed. In addition to the image
+  archive (e.g `image-name.tar`), a file containing the image ID is also
+  saved into the cache directory (e.g `image-name.image_id`). This allows
+  to quickly read back the image ID of the cached image and determine if
+  the current image should be saved into the cache.
 
 ``noop.py``
 ^^^^^^^^^^^
