@@ -54,6 +54,12 @@ def test_install(tmpdir, capfd):
 
     assert str(noop) + ' (overwritten)' in output_lines
 
+    #
+    # Check that trying to overwrite original add-ons fails
+    #
+    with pytest.raises(RuntimeError):
+        ci_addons.install(ci_addons.home())
+
 
 def test_cli():
 

@@ -66,8 +66,8 @@ def install(dst_path, force=False):
     """
     dst_path = os.path.normpath(os.path.abspath(dst_path))
     if dst_path == os.path.normpath(home()):
-        print("skipping install: target directory already contains addons")
-        exit()
+        raise RuntimeError(
+            "skipping install: target directory already contains addons")
     for addon in addons():
         dst_addon_path = os.path.join(dst_path, addon)
         dst_addon_dir = os.path.split(dst_addon_path)[0]
