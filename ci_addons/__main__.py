@@ -21,27 +21,27 @@ def main():
     parser = argparse.ArgumentParser(description=ci_addons.__doc__)
     parser.add_argument(
         'addon', metavar='ADDON', type=str, nargs='?',
-        help='name of addon to execute'
+        help='name of add-on to execute'
     )
     parser.add_argument(
         'arguments', metavar='ARG', type=str, nargs='*',
-        help='addon arguments'
+        help='add-on arguments'
     )
     parser.add_argument(
         "--home", action="store_true",
-        help="display directory where all addons can be found"
+        help="display directory where all add-ons can be found"
     )
     parser.add_argument(
         "--list", action="store_true",
-        help="list all available addons"
+        help="list all available add-ons"
     )
     parser.add_argument(
         "--path", type=str,
-        help="display addon path"
+        help="display add-on path"
     )
     parser.add_argument(
         "--install", type=str,
-        help="install addons in the selected directory"
+        help="install add-ons in the selected directory"
     )
     parser.add_argument(
         "--version", action="version",
@@ -50,34 +50,39 @@ def main():
     )
     args = parser.parse_args()
 
-    if args.home:  # pragma: no cover
-        print(ci_addons.home())
-        exit()
+    try:
 
-    if args.list:
-        previous_collection = ""
-        for addon in ci_addons.addons():
-            current_collection = addon.split(os.path.sep)[0]
-            if previous_collection != current_collection:
-                print("")
-            print(addon)
-            previous_collection = current_collection
-        exit()
+        if args.home:  # pragma: no cover
+            print(ci_addons.home())
+            exit()
 
-    if args.path is not None:  # pragma: no cover
-        print(ci_addons.path(args.path))
-        exit()
+        if args.list:
+            previous_collection = ""
+            for addon in ci_addons.addons():
+                current_collection = addon.split(os.path.sep)[0]
+                if previous_collection != current_collection:
+                    print("")
+                print(addon)
+                previous_collection = current_collection
+            exit()
 
-    if args.install is not None:  # pragma: no cover
-        ci_addons.install(args.install)
-        exit()
+        if args.path is not None:  # pragma: no cover
+            print(ci_addons.path(args.path))
+            exit()
 
-    if all([not getattr(args, arg)
-            for arg in ['addon', 'home', 'install', 'list', 'path']]):
-        parser.print_usage()
-        exit()
+        if args.install is not None:  # pragma: no cover
+            ci_addons.install(args.install)
+            exit()
 
-    ci_addons.execute(args.addon, args.arguments)
+        if all([not getattr(args, arg)
+                for arg in ['addon', 'home', 'install', 'list', 'path']]):
+            parser.print_usage()
+            exit()
+
+        ci_addons.execute(args.addon, args.arguments)
+
+    except ci_addons.SKAddonsError as error:
+        exit(error)
 
 
 if __name__ == '__main__':  # pragma: no cover

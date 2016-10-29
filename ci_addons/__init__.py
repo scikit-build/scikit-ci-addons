@@ -19,6 +19,12 @@ __version__ = get_versions()['version']
 del get_versions
 
 
+class SKAddonsError(RuntimeError):
+    """Exception raised when a user error occurs.
+    """
+    pass
+
+
 def addons():
     """Return all available add-ons."""
 
@@ -57,7 +63,7 @@ def path(addon_name):
     if not os.path.exists(tmp_addon_path):
         tmp_addon_path += '.py'
     if not os.path.exists(tmp_addon_path):
-        raise RuntimeError("Could not find addon: %s" % addon_path)
+        raise SKAddonsError("Could not find addon: %s" % addon_path)
     return tmp_addon_path
 
 
@@ -69,8 +75,8 @@ def install(dst_path, force=False):
     """
     dst_path = os.path.normpath(os.path.abspath(dst_path))
     if dst_path == os.path.normpath(home()):
-        raise RuntimeError(
-            "skipping install: target directory already contains addons")
+        raise SKAddonsError(
+            "skipping install: target directory already contains add-ons")
     for addon in addons():
         dst_addon_path = os.path.join(dst_path, addon)
         dst_addon_dir = os.path.split(dst_addon_path)[0]
