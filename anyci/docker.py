@@ -6,23 +6,22 @@ a convenience one-liner.
 
 Usage::
 
-    docker.py load-pull-save [-h] [--cache-dir CACHE_DIR]
+    docker.py load-pull-save [-h] [--cache-dir CACHE_DIR] [--verbose]
                                   NAME[:TAG|@DIGEST]
 
 Example::
 
     $ python anyci/docker.py load-pull-save hello-world:latest
-    [anyci:docker.py] Cached image filename: /home/jcfr/docker/hello-world-latest.tar
-    [anyci:docker.py] Cached image ID filename: /home/jcfr/docker/hello-world-latest.image_id
-    [anyci:docker.py] Cached image not found
+    [anyci:docker.py] Loading cached image from /home/jcfr/docker/hello-world-latest.tar
+    [anyci:docker.py]   -> cached image not found
     [anyci:docker.py] Pulling image: hello-world:latest
-    latest: Pulling from library/hello-world
-    Digest: sha256:0256e8a36e2070f7bf2d0b0763dbabdd67798512411de4cdcf9431a1feb60fd9
-    Status: Image is up to date for hello-world:latest
-    [anyci:docker.py] Current image ID: sha256:c54a2cc56cbb2f04003c1cd4507e118af7c0d340fe7e2720f70976c4b75237dc
-
-    [anyci:docker.py] Caching image into: /home/jcfr/docker
-    [anyci:docker.py] Saving image ID into: /home/jcfr/docker/hello-world-latest.image_id
+    [anyci:docker.py]   -> done
+    [anyci:docker.py] Reading image ID from current image
+    [anyci:docker.py]   -> image ID: sha256:c54a2cc56cbb2f04003c1cd4507e118af7c0d340fe7e2720f70976c4b75237dc
+    [anyci:docker.py] Caching image
+    [anyci:docker.py]   -> image cached: /home/jcfr/docker/hello-world-latest.tar
+    [anyci:docker.py] Saving image ID into /home/jcfr/docker/hello-world-latest.image_id
+    [anyci:docker.py]   -> done
 
 Notes:
 
@@ -83,6 +82,11 @@ def main():
         help="Image cache directory (default: ~/docker)"
     )
 
+    parser_pull.add_argument(
+        "--verbose", action="store_true",
+        help="Display pulling progress"
+    )
+
     args = parser.parse_args()
 
     if hasattr(args, 'image'):
@@ -95,47 +99,54 @@ def main():
         # Convert image to valid filename
         filename = os.path.join(cache_dir, get_valid_filename(args.image))
         image_filename = filename + '.tar'
-        _log("Cached image filename:", image_filename)
         image_id_filename = filename + '.image_id'
-        _log("Cached image ID filename:", image_id_filename)
 
         # If it exists, load cache image
         cached_image_id = ""
+        _log("Loading cached image", "from", image_filename)
         if os.path.exists(image_filename):
             cmd = ["docker", "load", "-i", image_filename]
-            _log("Loading from cache")
-            subprocess.check_call(cmd)
+            output = subprocess.check_output(cmd).decode("utf-8")
+            _log("  ->", output.strip())
 
             # Read image id
             if os.path.exists(image_id_filename):
+                _log("Reading cached image ID", "from", image_id_filename)
                 with open(image_id_filename) as content:
                     cached_image_id = content.readline()
-                _log("Cached image ID:", cached_image_id)
+                _log("  ->", "cached image ID:", cached_image_id)
 
         else:
-            _log("Cached image not found")
+            _log("  ->", "cached image not found")
 
         # Pull latest image if any
         _log("Pulling image:", args.image)
         cmd = ["docker", "pull", args.image]
-        subprocess.check_call(cmd)
+        (subprocess.check_call
+         if args.verbose else subprocess.check_output)(cmd)
+        _log("  ->", "done")
 
         # Get ID of current image
+        _log("Reading image ID from current image")
         cmd = ["docker", "inspect", "--format='{{.Id}}'", args.image]
         output = subprocess.check_output(cmd).decode("utf-8")
-        current_image_id = output
-        _log("Current image ID:", current_image_id)
+        current_image_id = output.strip()
+        _log("  ->", "image ID:", current_image_id)
 
         # Cache image only if updated
         if cached_image_id != current_image_id:
-            _log("Caching image into:", cache_dir)
+            _log("Caching image")
             cmd = ["docker", "save", "-o", image_filename, args.image]
-            subprocess.check_call(cmd)
-            _log("Saving image ID into:", image_id_filename)
+            subprocess.check_output(cmd)
+            _log("  ->", "image cached:", image_filename)
+
+            _log("Saving image ID into", image_id_filename)
             with open(image_id_filename, "w") as content:
                 content.write(current_image_id)
+            _log("  ->", "done")
         else:
-            _log("Skip caching: pulled image identical")
+            _log("Caching image")
+            _log("  ->", "Skipped because pulled image did not change")
     else:
         parser.print_usage()
 

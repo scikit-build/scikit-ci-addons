@@ -151,7 +151,7 @@ def test_addon_anyci_docker(tmpdir):
     #
     if not is_circleci:
         try:
-            cmd = ["docker", "rmi", test_image]
+            cmd = ["docker", "rmi", "-f", test_image]
             _display_cmd(cmd)
             subprocess.check_output(cmd)
         except subprocess.CalledProcessError:
@@ -161,7 +161,8 @@ def test_addon_anyci_docker(tmpdir):
     # Check load-pull-save works with default cache directory
     #
     cmd = ["python", "-m",
-           "ci_addons", "anyci/docker", "--", "load-pull-save", test_image]
+           "ci_addons", "anyci/docker", "--",
+           "load-pull-save", test_image, "--verbose"]
     _display_cmd(cmd)
     output = subprocess.check_output(
         cmd,
@@ -170,7 +171,7 @@ def test_addon_anyci_docker(tmpdir):
         cwd=str(root)
     ).decode("utf-8")
     assert "Status: Downloaded newer image for %s:latest" % test_image in output
-    assert "Cached image ID:" not in output
+    assert "cached image ID:" not in output
     assert tmpdir.join("docker", test_image_filename).exists()
     assert tmpdir.join("docker", test_image_id_filename).exists()
 
@@ -187,7 +188,7 @@ def test_addon_anyci_docker(tmpdir):
         cwd=str(root)
     ).decode("utf-8")
     assert "Status: Image is up to date for %s:latest" % test_image in output
-    assert "Cached image ID:" not in output
+    assert "cached image ID:" not in output
     assert tmpdir.join("cache", test_image_filename).exists()
     assert tmpdir.join("cache", test_image_id_filename).exists()
 
@@ -216,7 +217,7 @@ def test_addon_anyci_docker(tmpdir):
         stderr=subprocess.STDOUT,
         cwd=str(root)
     ).decode("utf-8")
-    assert "Cached image ID:" in output
+    assert "cached image ID:" in output
     assert "Status: Image is up to date for %s:latest" % test_image in output
-    assert "Skip caching: pulled image identical" in output
+    assert "Skipped because pulled image did not change" in output
     assert tmpdir.join("cache", test_image_filename).exists()
