@@ -40,7 +40,7 @@ def addons():
             continue
 
         for filename in filenames:
-            if filename in ['__init__.py']:
+            if filename in ['__init__.py'] or filename.endswith(".pyc"):
                 continue
             addon_path = os.path.join(dirname, filename)
             addons.append(os.path.relpath(addon_path, home()))

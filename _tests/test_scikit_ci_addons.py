@@ -2,8 +2,10 @@
 import anyci.docker
 import ci_addons
 import os
+import py_compile
 import pytest
 import subprocess
+import sys
 
 from . import captured_lines, format_args_for_display
 
@@ -32,8 +34,18 @@ def test_path(addon, extension, exception):
 
 
 def test_addons():
-    addons = ci_addons.addons()
-    assert 'anyci' + os.path.sep + 'noop.py' in addons
+    noop_file_name = os.path.join("anyci", "noop") + ".py"
+    noop_file_name_pyc = os.path.join("anyci", "noop") + ".pyc"
+    noop_file_path = os.path.join(ci_addons.home(), noop_file_name)
+    noop_file_path_pyc = os.path.join(ci_addons.home(), noop_file_name_pyc)
+
+    py_compile.main([noop_file_path])
+
+    if sys.version_info < (3,):
+        assert os.path.exists(noop_file_path_pyc)
+
+    assert noop_file_name in ci_addons.addons()
+    assert noop_file_name_pyc not in ci_addons.addons()
 
 
 @pytest.mark.parametrize("addon", ['anyci/noop', 'anyci/noop.py'])
