@@ -106,8 +106,8 @@ def main():
         _log("Loading cached image", "from", image_filename)
         if os.path.exists(image_filename):
             cmd = ["docker", "load", "-i", image_filename]
-            output = subprocess.check_output(cmd).decode("utf-8")
-            _log("  ->", output.strip())
+            subprocess.check_output(cmd)
+            _log("  ->", "done")
 
             # Read image id
             if os.path.exists(image_id_filename):
