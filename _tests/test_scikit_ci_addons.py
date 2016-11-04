@@ -15,15 +15,19 @@ def test_home():
     assert ci_addons.home() == expected_home
 
 
-@pytest.mark.parametrize("addon, extension, exception", [
-    ('anyci/noop', '.py', None),
-    ('anyci/noop.py',  '.py', None),
-    ('appveyor/patch_vs2008',  '.py', None),
-    ('travis/run-with-pyenv.sh',  '.sh', None),
-    ('nonexistent',  '', RuntimeError),
+@pytest.mark.parametrize("addon, extension, exception, expected_prefix_path", [
+    ('anyci/noop', '.py', None, ""),
+    ('anyci/noop.py',  '.py', None, ""),
+    ('noop', '.py', None, "anyci"),
+    ('noop.py',  '.py', None, "anyci"),
+    ('appveyor/patch_vs2008',  '.py', None, ""),
+    (os.path.join(ci_addons.home(), 'appveyor/patch_vs2008'),  '.py', None, ""),
+    ('travis/run-with-pyenv.sh',  '.sh', None, ""),
+    ('install_cmake',  '.py', RuntimeError, ""),
+    ('nonexistent',  '', RuntimeError, ""),
 ])
-def test_path(addon, extension, exception):
-    expected_path = os.path.join(ci_addons.home(), addon)
+def test_path(addon, extension, exception, expected_prefix_path):
+    expected_path = os.path.join(ci_addons.home(), expected_prefix_path, addon)
     if not addon.endswith(extension):
         expected_path += extension
     if exception is None:
