@@ -40,7 +40,7 @@ def main():
         help="display add-on path"
     )
     parser.add_argument(
-        "--install", type=str,
+        "--install", type=str, metavar="DIR",
         help="install add-ons in the selected directory"
     )
     parser.add_argument(

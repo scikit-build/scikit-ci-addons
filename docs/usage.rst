@@ -119,7 +119,12 @@ where ``PATH`` can be any of these:
 
 - relative path with or without extension (e.g ``appveyor/patch_vs2008.py``
   or ``appveyor/patch_vs2008.py``)
+
 - full path (e.g ``/path/to/appveyor/patch_vs2008.py``)
+
+- script name with or without extension (e.g ``patch_vs2008.py``
+  or ``patch_vs2008``). If there are multiple add-ons with the same bame,
+  ``ci_addons`` reports an error message listing the add-ons to choose from.
 
 For example:
 
@@ -129,6 +134,7 @@ For example:
     /home/jcfr/.virtualenvs/test/local/lib/python2.7/site-packages/appveyor/patch_vs2008.py
 
 .. note::
+
     This function is particularly useful when the selected add-on is not a
     python script and is expected to be used as an input to an other tool.
 
