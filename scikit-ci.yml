@@ -48,6 +48,9 @@ test:
     - $<RUN_ENV> python --version
     - $<RUN_ENV> python _tests/python_check_version.py
     - $<RUN_ENV> python _tests/python_check_arch.py
+    - python: |
+              import sys
+              print(sys.version_info)
 
 after_test:
   commands:
