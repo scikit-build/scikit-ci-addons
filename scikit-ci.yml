@@ -51,6 +51,10 @@ test:
     - python: |
               import sys
               print(sys.version_info)
+              import os
+              from pprint import pprint as pp
+              pp(os.environ['PATH'].split(os.path.pathsep))
+
 
 after_test:
   commands:
