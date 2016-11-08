@@ -3,7 +3,6 @@ schema_version: "0.5.0"
 before_install:
 
   environment:
-    PYTHON: python
     RUN_ENV: anyci/run.sh
 
   appveyor:
