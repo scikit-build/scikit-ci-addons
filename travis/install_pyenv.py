@@ -71,6 +71,10 @@ def is_pyenv_installed(py_version):
     return _execute_script(script) == py_version
 
 
+def pyenv_executable_exists(py_version, executable="python"):
+    return os.path.exists(os.path.expanduser(
+        "~/.pyenv/versions/%s/bin/%s" % (py_version, executable)))
+
 
 def install(py_version):
     """Update and install ``pyenv``."""
@@ -86,7 +90,7 @@ def install(py_version):
     _log("  -> done")
 
     _log("Looking for pyenv", py_version)
-    if is_pyenv_installed(py_version):
+    if is_pyenv_installed(py_version) and pyenv_executable_exists(py_version):
         _log("  ->", "found")
         return
     else:
