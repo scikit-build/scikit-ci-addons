@@ -58,7 +58,7 @@ cache:
     - $HOME/.pyenv/versions/2.7.12
 
 install:
-  - pip install scikit-ci==0.7.0
+  - pip install scikit-ci==0.12.0
   - ci install
 
 script:

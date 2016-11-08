@@ -3,12 +3,11 @@ schema_version: "0.5.0"
 before_install:
 
   environment:
-    PYTHON: python
     RUN_ENV: anyci/run.sh
 
   appveyor:
     environment:
-      PYTHON: $<PYTHON_DIR>\\python.exe
+      PATH: $<PYTHON_DIR>;$<PYTHON_DIR>\\Scripts;$<PATH>
       RUN_ENV: .\\appveyor\\run-with-visual-studio.cmd
     commands:
       - python -m ci_addons appveyor/patch_vs2008
@@ -17,42 +16,55 @@ before_install:
   travis:
     osx:
       environment:
-        RUN_ENV: travis/run-with-pyenv.sh
+        PATH: $<HOME>/.pyenv/versions/$<PYTHONVERSION>/bin:$<PATH>
       commands:
         - python -m ci_addons travis/install_pyenv
 
 install:
   commands:
     - python -m ci_addons $<CI_NAME>/install_cmake 3.6.2
-    - $<RUN_ENV> $<PYTHON> -m pip install --disable-pip-version-check --upgrade pip
-    - $<RUN_ENV> $<PYTHON> -m pip install -r requirements.txt
-    - $<RUN_ENV> $<PYTHON> -m pip install -r requirements-dev.txt
+    - $<RUN_ENV> python -m pip install --disable-pip-version-check --upgrade pip
+    - $<RUN_ENV> pip install -r requirements.txt
+    - $<RUN_ENV> pip install -r requirements-dev.txt
 
 before_build:
   commands:
-    - $<RUN_ENV> $<PYTHON> -m flake8
+    - flake8
 
 build:
   commands:
-    - $<RUN_ENV> $<PYTHON> setup.py build
+    - $<RUN_ENV> python setup.py build
 
 test:
-  appveyor:
-    environment:
-      PATH: $<PYTHON_DIR>\\Scripts;$<PATH>
-
   commands:
-    - $<RUN_ENV> $<PYTHON> setup.py test
+    - $<RUN_ENV> python setup.py test
 
     # Check CMake version
     - python _tests/cmake_check_version.py 3.6.2
 
     # Check python interpreter found using $<RUN_ENV> wrapper script
     # is the expected one
-    - $<RUN_ENV> $<PYTHON> _tests/python_check_version.py
-    - $<RUN_ENV> $<PYTHON> _tests/python_check_arch.py
+    - $<RUN_ENV> python --version
+    - $<RUN_ENV> python _tests/python_check_version.py
+    - $<RUN_ENV> python _tests/python_check_arch.py
+    - python: |
+              import os
+              import sys
+
+              current_version = list(sys.version_info[:3])
+              print("current: %s" % str(current_version))
+
+              expected_version = list(
+                  map(int, os.environ["EXPECTED_PYTHON_VERSION"].split(".")))
+              print("expected: %s" % str(expected_version))
+
+              assert current_version == expected_version
+
+              from pprint import pprint as pp
+              pp(os.environ['PATH'].split(os.path.pathsep))
+
 
 after_test:
   commands:
-    - $<RUN_ENV> codecov -X gcov --required --file ./_tests/coverage.xml
-    - $<RUN_ENV> $<PYTHON> setup.py bdist_wheel
+    - codecov -X gcov --required --file ./_tests/coverage.xml
+    - $<RUN_ENV> python setup.py bdist_wheel
