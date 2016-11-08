@@ -44,6 +44,17 @@ def indent(text, prefix, predicate=None):
     return ''.join(prefixed_lines())
 
 
+def _execute_script(script):
+    def _write(output_stream, txt):
+        output_stream.write(bytearray("%s\n" % txt, "utf-8"))
+    with tempfile.NamedTemporaryFile(delete=True) as script_file:
+        _write(script_file, script)
+        script_file.file.flush()
+        # _log("Executing:", "bash", script_file.name)
+        return check_output(
+            ["bash", script_file.name]).decode("utf-8").strip()
+
+
 def is_pyenv_installed(py_version):
     """Return True if ``py_version`` pyenv is installed.
     """
@@ -57,15 +68,12 @@ def is_pyenv_installed(py_version):
         || echo ""
         """.format(py_version=py_version)
     )
+    return _execute_script(script) == py_version
 
-    def _write(output_stream, txt):
-        output_stream.write(bytearray("%s\n" % txt, "utf-8"))
-    with tempfile.NamedTemporaryFile(delete=True) as script_file:
-        _write(script_file, script)
-        script_file.file.flush()
-        # _log("Executing:", "bash", script_file.name)
-        return check_output(
-            ["bash", script_file.name]).decode("utf-8").strip() == py_version
+
+def pyenv_executable_exists(py_version, executable="python"):
+    return os.path.exists(os.path.expanduser(
+        "~/.pyenv/versions/%s/bin/%s" % (py_version, executable)))
 
 
 def install(py_version):
@@ -82,7 +90,7 @@ def install(py_version):
     _log("  -> done")
 
     _log("Looking for pyenv", py_version)
-    if is_pyenv_installed(py_version):
+    if is_pyenv_installed(py_version) and pyenv_executable_exists(py_version):
         _log("  ->", "found")
         return
     else:
