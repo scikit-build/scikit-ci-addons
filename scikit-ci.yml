@@ -16,7 +16,7 @@ before_install:
   travis:
     osx:
       environment:
-        RUN_ENV: travis/run-with-pyenv.sh
+        PATH: $<HOME>/.pyenv/versions/$<PYTHONVERSION>/bin:$<PATH>
       commands:
         - python -m ci_addons travis/install_pyenv
 
@@ -29,7 +29,7 @@ install:
 
 before_build:
   commands:
-    - $<RUN_ENV> flake8
+    - flake8
 
 build:
   commands:
@@ -66,5 +66,5 @@ test:
 
 after_test:
   commands:
-    - $<RUN_ENV> codecov -X gcov --required --file ./_tests/coverage.xml
+    - codecov -X gcov --required --file ./_tests/coverage.xml
     - $<RUN_ENV> python setup.py bdist_wheel

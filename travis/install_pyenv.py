@@ -57,8 +57,11 @@ def is_pyenv_installed(py_version):
         || echo ""
         """.format(py_version=py_version)
     )
+
+    def _write(output_stream, txt):
+        output_stream.write(bytearray("%s\n" % txt, "utf-8"))
     with tempfile.NamedTemporaryFile(delete=True) as script_file:
-        script_file.file.write(script + "\n")
+        _write(script_file, script)
         script_file.file.flush()
         # _log("Executing:", "bash", script_file.name)
         return check_output(
