@@ -49,9 +49,18 @@ test:
     - $<RUN_ENV> python _tests/python_check_version.py
     - $<RUN_ENV> python _tests/python_check_arch.py
     - python: |
-              import sys
-              print(sys.version_info)
               import os
+              import sys
+
+              current_version = list(sys.version_info[:3])
+              print("current: %s" % str(current_version))
+
+              expected_version = list(
+                  map(int, os.environ["EXPECTED_PYTHON_VERSION"].split(".")))
+              print("expected: %s" % str(expected_version))
+
+              assert current_version == expected_version
+
               from pprint import pprint as pp
               pp(os.environ['PATH'].split(os.path.pathsep))
 
