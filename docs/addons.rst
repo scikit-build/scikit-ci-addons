@@ -79,7 +79,7 @@ Enable access to the build worker via Remote Desktop.
 
 Usage::
 
-    - ps: enable-worker-remote-access.ps1 [-force|-check_for_block]
+    - ps: enable-worker-remote-access.ps1 [-block|-check_for_block]
 
 Example::
 
@@ -95,7 +95,7 @@ Example::
     - Specifying ``-block`` option will ensure the connection remains
       open for at least 60 mins.
 
-    - Specifying ```-check_for_block`` option will keep the connection
+    - Specifying ``-check_for_block`` option will keep the connection
       open only if the environment variable ``BLOCK`` has been set to ``1``.
 
 
