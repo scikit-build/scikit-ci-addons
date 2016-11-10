@@ -305,14 +305,14 @@ Example::
 
 Usage::
 
-  export PYTHONVERSION=X.Y.Z
+  export PYTHON_VERSION=X.Y.Z
   python install_pyenv.py
 
 .. note::
 
     - Update the version of ``pyenv`` using ``brew``.
 
-    - Install the version of python selected setting ``PYTHONVERSION``
+    - Install the version of python selected setting ``PYTHON_VERSION``
       environment variable.
 
 
@@ -320,9 +320,9 @@ Usage::
 ^^^^^^^^^^^^^^^^^^^^^
 
 This is a wrapper script setting the environment corresponding to the
-version selected setting ``PYTHONVERSION`` environment variable.
+version selected setting ``PYTHON_VERSION`` environment variable.
 
 Usage::
   
-    export PYTHONVERSION=X.Y.Z
+    export PYTHON_VERSION=X.Y.Z
     run-with-pyenv.sh python --version
