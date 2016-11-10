@@ -83,7 +83,7 @@ def pyenv_executable_exists(py_version, executable="python"):
 def install(py_version):
     """Update and install ``pyenv``."""
 
-    _log("Looking for %s", pyenv_executable_path(py_version))
+    _log("Looking for", pyenv_executable_path(py_version))
     python_found = pyenv_executable_exists(py_version)
     if python_found:
         _log("  ->", "found")
