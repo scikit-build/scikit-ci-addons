@@ -71,13 +71,25 @@ def is_pyenv_installed(py_version):
     return _execute_script(script) == py_version
 
 
+def pyenv_executable_path(py_version, executable="python"):
+    return os.path.expanduser(
+        "~/.pyenv/versions/%s/bin/%s" % (py_version, executable))
+
+
 def pyenv_executable_exists(py_version, executable="python"):
-    return os.path.exists(os.path.expanduser(
-        "~/.pyenv/versions/%s/bin/%s" % (py_version, executable)))
+    return os.path.exists(pyenv_executable_path(py_version, executable))
 
 
 def install(py_version):
     """Update and install ``pyenv``."""
+
+    _log("Looking for %s", pyenv_executable_path(py_version))
+    python_found = pyenv_executable_exists(py_version)
+    if python_found:
+        _log("  ->", "found")
+        return
+    else:
+        _log("  ->", "not found")
 
     cmd = "brew update"
     _log("Executing:", cmd)
