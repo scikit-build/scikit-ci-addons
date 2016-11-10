@@ -31,7 +31,7 @@ matrix:
       language: generic
       env:
         # Used by pyenv
-        - PYTHONVERSION=3.4.5
+        - PYTHON_VERSION=3.4.5
         # Used for testing
         - EXPECTED_PYTHON_VERSION=3.4.5
 
@@ -39,7 +39,7 @@ matrix:
       language: generic
       env:
         # Used by pyenv
-        - PYTHONVERSION=3.3.6
+        - PYTHON_VERSION=3.3.6
         # Used for testing
         - EXPECTED_PYTHON_VERSION=3.3.6
 
@@ -47,7 +47,7 @@ matrix:
       language: generic
       env:
         # Used by pyenv
-        - PYTHONVERSION=2.7.12
+        - PYTHON_VERSION=2.7.12
         # Used for testing
         - EXPECTED_PYTHON_VERSION=2.7.12
 

@@ -116,4 +116,4 @@ def install(py_version):
     _log("  ->", "found")
 
 if __name__ == '__main__':
-    install(os.environ['PYTHONVERSION'])
+    install(os.environ['PYTHON_VERSION'])
