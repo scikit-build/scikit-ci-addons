@@ -26,12 +26,12 @@ a convenience one-liner.
 
 Usage::
 
-    docker.py load-pull-save [-h] [--cache-dir CACHE_DIR] [--verbose]
-                                  NAME[:TAG|@DIGEST]
+    ci_addons docker load-pull-save [-h] [--cache-dir CACHE_DIR] [--verbose]
+                                         NAME[:TAG|@DIGEST]
 
 Example::
 
-    $ python anyci/docker.py load-pull-save hello-world:latest
+    $ ci_addons docker load-pull-save hello-world:latest
     [anyci:docker.py] Loading cached image from /home/jcfr/docker/hello-world-latest.tar
     [anyci:docker.py]   -> cached image not found
     [anyci:docker.py] Pulling image: hello-world:latest
@@ -79,10 +79,12 @@ Enable access to the build worker via Remote Desktop.
 
 Usage::
 
-    - ps: enable-worker-remote-access.ps1 [-block|-check_for_block]
+    - ci_addons --install ../
+    - ps: ../appveyor/enable-worker-remote-access.ps1 [-block|-check_for_block]
 
 Example::
 
+    - ci_addons --install ../
     - ps: ../addons/appveyor/enable-worker-remote-access.ps1 -block
 
 
@@ -107,11 +109,11 @@ Download and install in the PATH the specified version of CMake binaries.
 
 Usage::
 
-    python appveyor/install_cmake.py X.Y.Z
+    ci_addons appveyor/install_cmake.py X.Y.Z
 
 Example::
 
-    $ python appveyor/install_cmake.py 3.6.2
+    $ ci_addons appveyor/install_cmake.py 3.6.2
 
 .. note::
 
@@ -134,7 +136,8 @@ important when building Python C Extensions.
 
 Usage::
 
-    run-with-visual-studio.cmd \\path\\to\\command [arg1 [...]]
+    ci_addons --install ../
+    ../run-with-visual-studio.cmd \\path\\to\\command [arg1 [...]]
 
 Example::
 
@@ -142,7 +145,8 @@ Example::
     SET PYTHON_VERSION="3.5.x"
     SET PYTHON_ARCH="64"
     SET PATH=%PYTHON_DIR%;%PYTHON_DIR%\\Scripts;%PATH%
-    run-with-visual-studio.cmd python setup.by bdist_wheel
+    ci_addons --install ../
+    ../appveyor/run-with-visual-studio.cmd python setup.by bdist_wheel
 
 Author:
 
@@ -180,7 +184,7 @@ so that it can be used to build 64-bit projects.
 
 Usage::
 
-    python appveyor/patch_vs2008.py
+    ci_addons appveyor/patch_vs2008.py
 
 Credits:
 
@@ -221,7 +225,7 @@ Usage:
 
 Usage::
 
-  python tweak_environment.py
+  ci_addons tweak_environment.py
 
 .. note::
 
@@ -242,11 +246,11 @@ Download and install in the PATH the specified version of CMake binaries.
 
 Usage::
 
-    python appveyor/install_cmake.py X.Y.Z
+    ci_addons appveyor/install_cmake.py X.Y.Z
 
 Example::
 
-    $ python appveyor/install_cmake.py 3.6.2
+    $ ci_addons appveyor/install_cmake.py 3.6.2
 
 .. note::
 
@@ -266,11 +270,11 @@ Download and install in the PATH the specified version of CMake binaries.
 
 Usage::
 
-    python appveyor/install_cmake.py X.Y.Z
+    ci_addons appveyor/install_cmake.py X.Y.Z
 
 Example::
 
-    $ python appveyor/install_cmake.py 3.6.2
+    $ ci_addons appveyor/install_cmake.py 3.6.2
 
 
 .. note::
@@ -306,7 +310,7 @@ Example::
 Usage::
 
   export PYTHON_VERSION=X.Y.Z
-  python install_pyenv.py
+  ci_addons travis/install_pyenv.py
 
 .. note::
 
@@ -323,6 +327,7 @@ This is a wrapper script setting the environment corresponding to the
 version selected setting ``PYTHON_VERSION`` environment variable.
 
 Usage::
-  
+
     export PYTHON_VERSION=X.Y.Z
-    run-with-pyenv.sh python --version
+    ci_addons --install ../
+    ../travis/run-with-pyenv.sh python --version
