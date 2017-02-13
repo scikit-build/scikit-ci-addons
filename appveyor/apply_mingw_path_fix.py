@@ -39,5 +39,6 @@ def update_path():
             )
         )
 
+
 if __name__ == '__main__':
     update_path(sys.argv[0])

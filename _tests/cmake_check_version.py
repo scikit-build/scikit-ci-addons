@@ -9,6 +9,7 @@ def _log(*args):
     print("[%s] " % script_name + " ".join(args))
     sys.stdout.flush()
 
+
 expected = sys.argv[1]
 _log("expected:", expected)
 

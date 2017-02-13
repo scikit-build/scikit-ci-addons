@@ -23,5 +23,6 @@ def execute():
     _log("Display value of 'sys.argv'")
     print(" ".join(sys.argv))
 
+
 if __name__ == '__main__':
     execute()
