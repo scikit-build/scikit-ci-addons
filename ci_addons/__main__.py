@@ -7,6 +7,7 @@ Ci Addons command line tool
 import argparse
 import ci_addons
 import os
+import sys
 
 
 def main():
@@ -48,7 +49,22 @@ def main():
         version=version_str,
         help="display scikit-ci-addons version and import information"
     )
+
+    # If an add-on is selected, let's extract its arguments now. This will
+    # prevent ci_addons parser from complaining about unknown parameters.
+    addon_arguments = []
+    if len(sys.argv) > 1:
+        try:
+            ci_addons.path(sys.argv[1])
+            addon_arguments = sys.argv[2:]
+            if len(addon_arguments) > 0 and addon_arguments[0] == '--':
+                addon_arguments.pop(0)
+            sys.argv = sys.argv[:2]
+        except ci_addons.SKAddonsError:
+            pass
+
     args = parser.parse_args()
+    args.arguments = addon_arguments
 
     try:
 
