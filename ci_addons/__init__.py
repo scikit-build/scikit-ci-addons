@@ -9,7 +9,7 @@ import os
 import shutil
 import sys
 
-from subprocess import check_call
+from subprocess import CalledProcessError, check_call
 
 from ._version import get_versions
 
@@ -124,4 +124,7 @@ def execute(addon_name, arguments=[]):
     Executable add-ons are python script.
     """
     cmd = [sys.executable, path(addon_name)] + arguments
-    check_call(cmd)
+    try:
+        check_call(cmd)
+    except CalledProcessError as error:
+        sys.exit(error.returncode)
