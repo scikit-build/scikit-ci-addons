@@ -96,7 +96,9 @@ Usage
                                    [--prerelease-tag PRERELEASE_TAG]
                                    [--prerelease-name PRERELEASE_NAME]
                                    [--prerelease-sha PRERELEASE_SHA]
-                                   [--token GITHUB_TOKEN] [--dry-run]
+                                   [--token GITHUB_TOKEN]
+                                   [--display-python-wheel-platform]
+                                   [--dry-run]
                                    ORG/PROJECT
 
 
@@ -226,15 +228,21 @@ Use case: Automatic creation of both releases and prereleases
 This can be done by combining both options ``--release-packages``
 and ``--prerelease-packages``.
 
+Note also the use of ``--display-python-wheel-platform`` to automatically
+get the current python platform.
+
 For example::
 
   $ commit_date=$(git log -1 --format="%ad" --date=local | date +%Y%m%d)
 
+  $ platform=$(ci_addons publish_github_release ORG/PROJECT --display-python-wheel-platform)
+  $ echo $commit_date
+  manylinux1
+
   $ ci_addons publish_github_release ORG/PROJECT \
       --release-packages "dist/*" \
-      --prerelease-packages dist/*.dev${commit_date}*manylinux1*.whl \
-      --prerelease-packages-clear-pattern "*manylinux1*.whl" \
-
+      --prerelease-packages dist/*.dev${commit_date}*${platform}*.whl \
+      --prerelease-packages-clear-pattern "*${platform}*.whl" \
       --prerelease-packages-keep-pattern "*.dev${commit_date}*.whl"
 
 ``run.sh``

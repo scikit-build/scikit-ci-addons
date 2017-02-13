@@ -8,6 +8,7 @@ import argparse
 import datetime as dt
 import errno
 import os
+import platform
 import sys
 import subprocess
 import textwrap
@@ -81,6 +82,17 @@ def get_commit_date(ref="HEAD"):
 
 
 #
+# Python
+#
+
+def python_wheel_platform():
+    this_platform = platform.system().lower()
+    return {
+        "linux": "manylinux1", "darwin": "macosx", "windows": "win"
+    }.get(this_platform, this_platform)
+
+
+#
 # Entry point
 #
 
@@ -134,6 +146,11 @@ def main(argv=None):
         help="If not specified, expects GITHUB_TOKEN env. variable"
     )
     parser.add_argument(
+        "--display-python-wheel-platform", action="store_true",
+        help="Display current python platform (manylinux1, macosx, or win)"
+             " used for Python wheels."
+    )
+    parser.add_argument(
         "--dry-run", action="store_true",
         help="don't create release, upload or erase packages "
              "but act like it was done"
@@ -148,6 +165,10 @@ def main(argv=None):
     )
 
     args = parser.parse_args(argv[1:] if argv else None)
+
+    if args.display_python_wheel_platform:
+        print(python_wheel_platform())
+        exit(0)
 
     # Check required parameters
     upload_release = (len(args.release_packages) > 0
