@@ -600,6 +600,23 @@ def main():
     INTERACTIVE = not args.no_interactive
     REPO_NAME = args.repo_name
 
+    # Check that the project found in the current directory matches
+    # the selected project.
+    if not os.path.exists(".git"):
+        print("error: current directory is NOT a git project")
+        exit(1)
+    remote_url = run("git config --get remote.origin.url", limit=1)
+    if not remote_url:
+        print("error: failed to read 'remote.origin.url' git option")
+        exit(1)
+    remote_url = remote_url.replace(".git", "")
+    if not remote_url.endswith(REPO_NAME):
+        print("error: selected ORG/PROJECT is not associated with "
+              "git option 'remote.origin.url' read from current directory:")
+        print("  org/project      : %s" % REPO_NAME)
+        print("  remote.origin.url: %s" % remote_url)
+        exit(1)
+
     # Update sys.path
     sys.path.insert(0, args.module_path)
 
