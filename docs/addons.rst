@@ -64,11 +64,9 @@ Display name of script and associated argument (basically the value of
 
 Add-on automating the creation of GitHub releases.
 
-Based on the git branch found in the current directory, it allows to
+Based on the git branch found in the current working directory, it allows to
 automatically create a GitHub ``prerelease`` or ``release`` and upload
 associated packages.
-
-Packages to upload can be a list of paths or globbing patterns.
 
 Terminology
 """""""""""
@@ -88,18 +86,26 @@ Usage
 
 ::
 
-  ci_addons publish_github_release [-h]
-                                   [--release-packages [PATTERN [PATTERN ...]]]
-                                   [--prerelease-packages [PATTERN [PATTERN ...]]]
-                                   [--prerelease-packages-clear-pattern PATTERN]
-                                   [--prerelease-packages-keep-pattern PATTERN]
-                                   [--prerelease-tag PRERELEASE_TAG]
-                                   [--prerelease-name PRERELEASE_NAME]
-                                   [--prerelease-sha PRERELEASE_SHA]
-                                   [--token GITHUB_TOKEN]
-                                   [--display-python-wheel-platform]
-                                   [--dry-run]
-                                   ORG/PROJECT
+    ci_addons publish_github_release [-h]
+                                     [--release-packages [PATTERN [PATTERN ...]]]
+                                     [--prerelease-packages [PATTERN [PATTERN ...]]]
+                                     [--prerelease-packages-clear-pattern PATTERN]
+                                     [--prerelease-packages-keep-pattern PATTERN]
+                                     [--prerelease-tag PRERELEASE_TAG]
+                                     [--prerelease-name PRERELEASE_NAME]
+                                     [--prerelease-sha PRERELEASE_SHA]
+                                     [--token GITHUB_TOKEN]
+                                     [--display-python-wheel-platform]
+                                     [--dry-run]
+                                     ORG/PROJECT
+
+.. note::
+
+    - Packages to upload can be a list of paths or globbing patterns.
+
+    - Option ``--display-python-wheel-platform`` is useful to easily
+      get the name of the current platform as found in python wheel
+      package names (e.g manylinux1, macosx, or win).
 
 
 Use case: Automatic upload of release packages associated with a tag
@@ -112,31 +118,31 @@ only two packages.
 
 ::
 
-  $ cd PROJECT
+    $ cd PROJECT
 
-  $ git describe
-  1.0.0
+    $ git describe
+    1.0.0
 
-  $ ci_addons publish_github_release ORG/PROJECT \
-    --release-packages "dist/*"
-  Checking if HEAD is a release tag
-  Checking if HEAD is a release tag - yes (found 1.0.0: creating release)
+    $ ci_addons publish_github_release ORG/PROJECT \
+      --release-packages "dist/*"
+    Checking if HEAD is a release tag
+    Checking if HEAD is a release tag - yes (found 1.0.0: creating release)
 
-  created '1.0.0' release
-    Tag name      : 1.0.0
-    ID            : 5436107
-    Created       : 2017-02-13T06:36:29Z
-    URL           : https://github.com/ORG/PROJECT/releases/tag/1.0.0
-    Author        : USERNAME
-    Is published  : True
-    Is prerelease : False
+    created '1.0.0' release
+      Tag name      : 1.0.0
+      ID            : 5436107
+      Created       : 2017-02-13T06:36:29Z
+      URL           : https://github.com/ORG/PROJECT/releases/tag/1.0.0
+      Author        : USERNAME
+      Is published  : True
+      Is prerelease : False
 
-  uploading '1.0.0' release asset(s) (found 2):
-    uploading dist/sandbox-1.0.0-cp27-cp27m-manylinux1.whl
-    download_url: https://github.com/ORG/PROJECT/releases/download/1.0.0/sandbox-1.0.0-cp27-cp27m-manylinux1.whl
+    uploading '1.0.0' release asset(s) (found 2):
+      uploading dist/sandbox-1.0.0-cp27-cp27m-manylinux1.whl
+      download_url: https://github.com/ORG/PROJECT/releases/download/1.0.0/sandbox-1.0.0-cp27-cp27m-manylinux1.whl
 
-    uploading dist/sandbox-1.0.0-cp35-cp35m-manylinux1.whl
-    download_url: https://github.com/ORG/PROJECT/releases/download/1.0.0/sandbox-1.0.0-cp35-cp35m-manylinux1.whl
+      uploading dist/sandbox-1.0.0-cp35-cp35m-manylinux1.whl
+      download_url: https://github.com/ORG/PROJECT/releases/download/1.0.0/sandbox-1.0.0-cp35-cp35m-manylinux1.whl
 
 Use case: Automatic creation of "nightly" prerelease from different build machines
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -244,6 +250,39 @@ For example::
       --prerelease-packages dist/*.dev${commit_date}*${platform}*.whl \
       --prerelease-packages-clear-pattern "*${platform}*.whl" \
       --prerelease-packages-keep-pattern "*.dev${commit_date}*.whl"
+
+Testing
+"""""""
+
+Since the add-on tests interacts with GitHub API, there are no included in the
+regular scikit-ci-addons collection of tests executed using pytest. Instead,
+they needs to be manually executed following these steps:
+
+(1) Generate a `personal access token <https://github.com/settings/tokens/new>`_
+    with at least ``public_repo`` scope enabled.
+(2) Create a *test* project on GitHub with at least one commit.
+(3) Check out sources of your *test* project.
+(4) Create a virtual environment, download scikit-ci-addons source code, and install its requirements.
+(5) Execute the test script.
+
+For example::
+
+  export GITHUB_TOKEN=...   # Change this with the token generated above in step (1)
+  TEST_PROJECT=jcfr/sandbox # Change this with the project name created above in step (2)
+
+  cd /tmp
+  git clone https://github.com/scikit-build/scikit-ci-addons
+  cd scikit-ci-addons/
+  mkvirtualenv scikit-ci-addons-test
+  pip install -r requirements.txt
+  SRC_DIR=$(pwd)
+
+  cd /tmp
+  git clone https://github.com/$TEST_PROJECT test-project
+  cd test-project
+
+  python $SRC_DIR/anyci/tests/test_publish_github_release.py $TEST_PROJECT --no-interactive
+
 
 ``run.sh``
 ^^^^^^^^^^
