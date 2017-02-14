@@ -7,6 +7,7 @@ Usage::
 
 """
 
+import errno
 import os
 import shutil
 import sys
@@ -26,11 +27,6 @@ def _log(*args):
     script_name = os.path.basename(__file__)
     print("[appveyor:%s] " % script_name + " ".join(args))
     sys.stdout.flush()
-
-
-def _env_prepend(key, *values):
-    os.environ[key] = os.pathsep.join(
-        list(values) + os.environ.get(key, "").split(os.pathsep))
 
 
 def install(cmake_version=DEFAULT_CMAKE_VERSION):
@@ -70,24 +66,42 @@ def install(cmake_version=DEFAULT_CMAKE_VERSION):
             shutil.copyfileobj(remote_file, local_file)
         _log("  ->", "done")
 
-        _log("Making directory", cmake_directory)
-        try:
-            os.mkdir(cmake_directory)
-        except OSError:
-            pass
-        _log("  ->", "done")
-
-        _log("Unpacking", cmake_package)
+        _log("Unpacking", cmake_package, "into", cmake_directory)
         with zipfile.ZipFile("C:\\%s" % cmake_package) as local_zip:
             local_zip.extractall(cmake_directory)
         _log("  ->", "done")
 
+        cmake_system_install_dir = "C:\\Program Files (x86)\\CMake"
+        _log("Removing", cmake_system_install_dir)
+        shutil.rmtree(cmake_system_install_dir)
+        _log("  ->", "done")
+
+        # C:\\cmake-3.6.2\\cmake-3.6.2-win32-x86
+        cmake_package_no_ext = os.path.splitext(cmake_package)[0]
+        inner_directory = cmake_directory + "\\" + cmake_package_no_ext
+
+        _log("Moving", inner_directory, "to", cmake_system_install_dir)
+        shutil.move(inner_directory, cmake_system_install_dir)
+        shutil.rmtree(cmake_directory)
+        _log("  ->", "done")
+
+        # C:\\Program Files (x86)\\CMake\\bin\\cmake.exe
+        cmake_exe = "%s\\bin\\cmake.exe" % cmake_system_install_dir
+        _log("Checking if", cmake_exe, "exists")
+        if os.path.exists(cmake_exe):
+            _log("  ->", "found")
+        else:
+            # FileNotFoundError exception available only in python 3
+            raise OSError(errno.ENOENT, "File not found", cmake_exe)
+
     else:
         _log("  ->", "skipping download: directory %s exists" % cmake_package)
 
-    _log("Updating PATH with", cmake_directory)
-    _env_prepend("PATH", "%s\bin" % cmake_directory)
-    _log("  ->", "done")
+    _log("Looking for cmake %s in PATH" % cmake_version)
+    output = check_output(
+        "cmake --version", shell=True).decode("utf-8")
+    current_cmake_version = output.splitlines()[0]
+    _log("  ->", "found %s" % current_cmake_version)
 
 
 if __name__ == '__main__':

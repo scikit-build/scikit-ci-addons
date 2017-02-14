@@ -53,5 +53,6 @@ def apply_patch():
             ],
             cwd="C:\\vs2008_patch")
 
+
 if __name__ == '__main__':
     apply_patch()
