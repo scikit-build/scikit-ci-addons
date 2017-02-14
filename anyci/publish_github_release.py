@@ -96,8 +96,7 @@ def python_wheel_platform():
 # Entry point
 #
 
-def main(argv=None):
-    parser = argparse.ArgumentParser(description=__doc__)
+def configure_parser(parser):
     parser.add_argument(
         "repo_name", type=str, metavar="ORG/PROJECT",
         help="Name of the repository"
@@ -164,6 +163,72 @@ def main(argv=None):
         prerelease_tag="nightly"
     )
 
+
+def _upload_release(args):
+    release_tag = get_tag()
+    assert release_tag is not None
+    # Create release
+    gh_release_create(
+        args.repo_name,
+        release_tag,
+        publish=True, prerelease=False
+    )
+    # Upload packages
+    gh_asset_upload(
+        args.repo_name, release_tag, args.release_packages, args.dry_run)
+    return True
+
+
+def _upload_prerelease(args):
+    # Set default prerelease name
+    prerelease_name = args.prerelease_name
+    if prerelease_name is None:
+        prerelease_name = "%s (updated on %s)" % (
+            args.prerelease_tag.title(), get_commit_date()
+        )
+    # Create release
+    gh_release_create(
+        args.repo_name,
+        args.prerelease_tag,
+        name=prerelease_name,
+        publish=True, prerelease=True
+    )
+    # Upload packages
+    gh_asset_upload(
+        args.repo_name, args.prerelease_tag, args.prerelease_packages,
+        args.dry_run
+    )
+    # Remove obsolete assets
+    if args.prerelease_packages_clear_pattern is not None:
+        gh_asset_erase(
+            args.repo_name,
+            args.prerelease_tag,
+            args.prerelease_packages_clear_pattern,
+            keep_pattern=args.prerelease_packages_keep_pattern,
+            dry_run=args.dry_run
+        )
+    # if needed, update target commit and name associated with the release
+    sha = args.prerelease_sha
+    if sha is not None:
+        # If a branch name is specified, get associated commit
+        refs = get_refs(args.repo_name, pattern="refs/heads/%s" % sha)
+        if refs:
+            assert len(refs) == 1
+            branch = sha
+            sha = refs[0]["object"]["sha"]
+            print("resolved '%s' to '%s'" % (branch, sha))
+        gh_release_edit(
+            args.repo_name,
+            args.prerelease_tag,
+            target_commitish=sha,
+            name=prerelease_name
+        )
+    return True
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    configure_parser(parser)
     args = parser.parse_args(argv[1:] if argv else None)
 
     if args.display_python_wheel_platform:
@@ -199,88 +264,24 @@ def main(argv=None):
 
     msg = "Checking if HEAD is a release tag"
     print(msg)
-    is_release = get_tag() is not None
-
-    def _upload_release():
-        # Should abort ?
-        if not is_release:
-            if not dual:
-                print("%s - no (skipping release upload)" % msg)
-                print("")
-            return False
-        release_tag = get_tag()
-        print("%s - yes (found %s: creating release)\n" % (msg, release_tag))
-        # Create release
-        gh_release_create(
-            args.repo_name,
-            release_tag,
-            publish=True, prerelease=False
-        )
-        # Upload packages
-        gh_asset_upload(
-            args.repo_name, release_tag, args.release_packages, args.dry_run)
-        return True
-
-    def _upload_prerelease():
-        # Should abort ?
-        if is_release:
-            if not dual:
-                print("%s - yes (found %s: "
-                      "skipping prerelease upload)" % (msg, get_tag()))
-                print("")
-            return False
-        print("%s - no (creating prerelease)\n" % msg)
-        # Set default prerelease name
-        prerelease_name = args.prerelease_name
-        if prerelease_name is None:
-            prerelease_name = "%s (updated on %s)" % (
-                args.prerelease_tag.title(), get_commit_date()
-            )
-        # Create release
-        gh_release_create(
-            args.repo_name,
-            args.prerelease_tag,
-            name=prerelease_name,
-            publish=True, prerelease=True
-        )
-        # Upload packages
-        gh_asset_upload(
-            args.repo_name, args.prerelease_tag, args.prerelease_packages,
-            args.dry_run
-        )
-        # Remove obsolete assets
-        if args.prerelease_packages_clear_pattern is not None:
-            gh_asset_erase(
-                args.repo_name,
-                args.prerelease_tag,
-                args.prerelease_packages_clear_pattern,
-                keep_pattern=args.prerelease_packages_keep_pattern,
-                dry_run=args.dry_run
-            )
-        # if needed, update target commit and name associated with the release
-        sha = args.prerelease_sha
-        if sha is not None:
-            # If a branch name is specified, get associated commit
-            refs = get_refs(args.repo_name, pattern="refs/heads/%s" % sha)
-            if refs:
-                assert len(refs) == 1
-                branch = sha
-                sha = refs[0]["object"]["sha"]
-                print("resolved '%s' to '%s'" % (branch, sha))
-            gh_release_edit(
-                args.repo_name,
-                args.prerelease_tag,
-                target_commitish=sha,
-                name=prerelease_name
-            )
-        return True
 
     # Upload
     uploaded = False
-    if not uploaded and upload_release:
-        uploaded = _upload_release()
+    is_release = get_tag() is not None
+    if upload_release:
+        if is_release:
+            print("%s - yes (found %s: creating release)\n" % (msg, get_tag()))
+            uploaded = _upload_release(args)
+        elif not dual:
+            print("%s - no (skipping release upload)\n" % msg)
+
     if not uploaded and upload_prerelease:
-        _upload_prerelease()
+        if not is_release:
+            print("%s - no (creating prerelease)\n" % msg)
+            _upload_prerelease(args)
+        elif not dual:
+            print("%s - yes (found %s: "
+                  "skipping prerelease upload)\n" % (msg, get_tag()))
 
 
 if __name__ == "__main__":
