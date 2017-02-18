@@ -65,7 +65,7 @@ Display name of script and associated argument (basically the value of
 Add-on automating the creation of GitHub releases.
 
 Based on the git branch found in the current working directory, it allows to
-automatically create a GitHub ``prerelease`` or ``release`` and upload
+automatically create a GitHub ``prerelease`` and/or ``release`` and upload
 associated packages.
 
 Terminology
