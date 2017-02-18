@@ -37,8 +37,8 @@ setup(
     url='https://github.com/scikit-build/scikit-ci-addons',
 
     description='scikit-ci-addons is a command line tool and a set of scripts'
-                ' useful to install prerequisites for building Python extension'
-                ' on CI services.',
+                ' useful to help drive the CI of projects leveraging services'
+                ' like Appveyor, CircleCI, or TravisCI.',
     long_description=readme + '\n\n' + history,
 
     entry_points={'console_scripts': ['ci_addons=ci_addons.__main__:main']},

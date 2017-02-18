@@ -18,8 +18,11 @@ scikit-ci-addons
 .. image:: https://codecov.io/gh/scikit-build/scikit-ci-addons/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/scikit-build/scikit-ci-addons
 
-scikit-ci-addons is a command line tool and a set of scripts useful to install
-prerequisites for building Python extension on CI services.
+scikit-ci-addons is a command line tool and a set of scripts useful to help
+drive the CI of projects leveraging services like Appveyor, CircleCI, or TravisCI.
+
+Originally developed to help install prerequisites for building Python
+extension, it is now useful to support other type of projects.
 
 * Free software: Apache Software license
 * Documentation: http://scikit-ci-addons.readthedocs.org
