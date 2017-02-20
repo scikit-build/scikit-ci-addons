@@ -34,7 +34,11 @@ Dependencies
 Python Packages
 ^^^^^^^^^^^^^^^
 
-The project has a no runtime dependencies.
+The project has a few common Python package dependencies. The runtime
+dependencies are:
+
+.. include:: ../requirements.txt
+   :literal:
 
 The development dependencies (for testing and coverage) are:
 
