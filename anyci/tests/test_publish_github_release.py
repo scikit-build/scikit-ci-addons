@@ -17,6 +17,8 @@ import subprocess
 import sys
 import textwrap
 
+from functools import reduce
+
 from github_release import get_releases, gh_release_create, gh_asset_upload
 
 MODULE = "publish_github_release"
@@ -172,7 +174,7 @@ def pause(text):
         if sys.version_info[0] == 3 and sys.version_info[2] >= 3:
             input("Press Enter to continue...")
         else:
-            raw_input("Press Enter to continue...")
+            raw_input("Press Enter to continue...")  # noqa: F821
     print("")
 
 
