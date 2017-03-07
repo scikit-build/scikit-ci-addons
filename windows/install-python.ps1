@@ -1,3 +1,10 @@
+
+#
+# By default, Python 2.7.12, 3.5.3 and 3.6.0 are installed.
+#
+# Setting $pythonVersion to "2.7", "3.5" or "3.6" allows to install a specific version
+#
+
 if (![System.IO.Directory]::Exists(".\install-utils.ps1")) {
   Write-Host "Download install-utils.ps1"
   $url = "https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-utils.ps1"
@@ -56,23 +63,36 @@ param (
 
 $downloadDir = "C:/Downloads"
 
-Download-URL 'https://www.python.org/ftp/python/2.7.12/python-2.7.12.amd64.msi' $downloadDir
-Download-URL 'https://www.python.org/ftp/python/2.7.12/python-2.7.12.msi' $downloadDir
+if ($pythonVersion) {
+  $pythonVersion = [string]::Join("", $pythonVersion.Split("."), 0, 2)
+  Write-Host "Installing Python version $pythonVersion"
+}
 
-Install-MSI 'python-2.7.12.amd64.msi' $downloadDir 'C:\\Python27-x64'
-Install-MSI 'python-2.7.12.msi' $downloadDir 'C:\\Python27-x86'
+if(!$pythonVersion -Or $pythonVersion.CompareTo("2.7") -eq 0){
+  Download-URL 'https://www.python.org/ftp/python/2.7.12/python-2.7.12.amd64.msi' $downloadDir
+  Download-URL 'https://www.python.org/ftp/python/2.7.12/python-2.7.12.msi' $downloadDir
 
-Install-Pip 'C:\\Python27-x86' $downloadDir
-Install-Pip 'C:\\Python27-x64' $downloadDir
+  Install-MSI 'python-2.7.12.amd64.msi' $downloadDir 'C:\\Python27-x64'
+  Install-MSI 'python-2.7.12.msi' $downloadDir 'C:\\Python27-x86'
 
-Pip-Install 'C:\\Python27-x86' 'virtualenv'
-Pip-Install 'C:\\Python27-x64' 'virtualenv'
+  Install-Pip 'C:\\Python27-x86' $downloadDir
+  Install-Pip 'C:\\Python27-x64' $downloadDir
 
+  Pip-Install 'C:\\Python27-x86' 'virtualenv'
+  Pip-Install 'C:\\Python27-x64' 'virtualenv'
+}
 
 $exeVersions = @("3.5.3", "3.6.0")
 foreach ($version in $exeVersions) {
+
   $split = $version.Split(".")
   $majorMinor = [string]::Join("", $split, 0, 2)
+
+  if($pythonVersion -And ! $pythonVersion.CompareTo($majorMinor) -eq 0) {
+    Write-Host "Skipping $majorMinor"
+    continue
+  }
+
   Download-URL "https://www.python.org/ftp/python/$($version)/python-$($version)-amd64.exe" $downloadDir
   Download-URL "https://www.python.org/ftp/python/$($version)/python-$($version).exe" $downloadDir
 

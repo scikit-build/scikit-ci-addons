@@ -570,9 +570,12 @@ For example, on a new system without python or git installed, the following can 
 
     Set-ExecutionPolicy Unrestricted
 
-3. Install python and git: ::
+3. Install python 3.6 and git: ::
 
-    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
+    # Python
+    $pythonVersion="3.6"; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
+
+    # Git
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-git.ps1'))
 
 
@@ -635,6 +638,8 @@ Install Python 2.7.12, 3.5.3 and 3.6.0 along with pip and virtualenv in the foll
 .. note::
 
     - python interpreter is **NOT** added to the ``PATH``
+    - setting ``$pythonVersion`` to either "2.7", "3.5" or "3.6" before executing the script allows
+      to install a specific version.
 
 
 ``install-utils.ps1``
