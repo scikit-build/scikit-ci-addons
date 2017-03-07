@@ -570,10 +570,10 @@ For example, on a new system without python or git installed, the following can 
 
     Set-ExecutionPolicy Unrestricted
 
-3. Install python 3.6 and git: ::
+3. Install python 3.6 64-bit and git: ::
 
     # Python
-    $pythonVersion="3.6"; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
+    $pythonVersion="3.6"; $pythonArch="64"; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
 
     # Git
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-git.ps1'))
@@ -623,7 +623,8 @@ Install NSIS 3.01 on the system.
 ``install-python.ps1``
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Install Python 2.7.12, 3.5.3 and 3.6.0 along with pip and virtualenv in the following directories: ::
+Install Python 2.7.12, 3.5.3 and 3.6.0 (32 and 64-bit) along with pip and virtualenv
+in the following directories: ::
 
     C:\Python27-x64
     C:\Python27-x86
@@ -639,7 +640,9 @@ Install Python 2.7.12, 3.5.3 and 3.6.0 along with pip and virtualenv in the foll
 
     - python interpreter is **NOT** added to the ``PATH``
     - setting ``$pythonVersion`` to either "2.7", "3.5" or "3.6" before executing the script allows
-      to install a specific version.
+      to install a specific version. By default, all are installed.
+    - setting ``$pythonArch`` to either "86" or "64" before executing the script allows
+      to install python for specific architecture. By default, both are installed.
 
 
 ``install-utils.ps1``

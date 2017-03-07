@@ -4,6 +4,8 @@
 #
 # Setting $pythonVersion to "2.7", "3.5" or "3.6" allows to install a specific version
 #
+# Setting $pythonArch to either "64" or "86" allows to install python for specific architecture.
+#
 
 if (![System.IO.Directory]::Exists(".\install-utils.ps1")) {
   Write-Host "Download install-utils.ps1"
@@ -68,18 +70,28 @@ if ($pythonVersion) {
   Write-Host "Installing Python version $pythonVersion"
 }
 
+if ($pythonArch) {
+  if(!($pythonArch -match "^(64|86)$")){
+    throw "'pythonArch' variable incorrectly set to [$pythonArch]. Hint: '64' or '86' value is expected."
+  }
+  Write-Host "Installing Python for architecture x$pythonArch"
+}
+
 if(!$pythonVersion -Or $pythonVersion.CompareTo("2.7") -eq 0){
-  Download-URL 'https://www.python.org/ftp/python/2.7.12/python-2.7.12.amd64.msi' $downloadDir
-  Download-URL 'https://www.python.org/ftp/python/2.7.12/python-2.7.12.msi' $downloadDir
 
-  Install-MSI 'python-2.7.12.amd64.msi' $downloadDir 'C:\\Python27-x64'
-  Install-MSI 'python-2.7.12.msi' $downloadDir 'C:\\Python27-x86'
+  if (!$pythonArch -Or $pythonArch.CompareTo("64") -eq 0) {
+    Download-URL 'https://www.python.org/ftp/python/2.7.12/python-2.7.12.amd64.msi' $downloadDir
+    Install-MSI 'python-2.7.12.amd64.msi' $downloadDir 'C:\\Python27-x64'
+    Install-Pip 'C:\\Python27-x64' $downloadDir
+    Pip-Install 'C:\\Python27-x64' 'virtualenv'
+  }
 
-  Install-Pip 'C:\\Python27-x86' $downloadDir
-  Install-Pip 'C:\\Python27-x64' $downloadDir
-
-  Pip-Install 'C:\\Python27-x86' 'virtualenv'
-  Pip-Install 'C:\\Python27-x64' 'virtualenv'
+  if (!$pythonArch -Or $pythonArch.CompareTo("86") -eq 0) {
+    Download-URL 'https://www.python.org/ftp/python/2.7.12/python-2.7.12.msi' $downloadDir
+    Install-MSI 'python-2.7.12.msi' $downloadDir 'C:\\Python27-x86'
+    Install-Pip 'C:\\Python27-x86' $downloadDir
+    Pip-Install 'C:\\Python27-x86' 'virtualenv'
+  }
 }
 
 $exeVersions = @("3.5.3", "3.6.0")
@@ -93,16 +105,19 @@ foreach ($version in $exeVersions) {
     continue
   }
 
-  Download-URL "https://www.python.org/ftp/python/$($version)/python-$($version)-amd64.exe" $downloadDir
-  Download-URL "https://www.python.org/ftp/python/$($version)/python-$($version).exe" $downloadDir
+  if (!$pythonArch -Or $pythonArch.CompareTo("64") -eq 0) {
+    Download-URL "https://www.python.org/ftp/python/$($version)/python-$($version)-amd64.exe" $downloadDir
+    Install-Python "python-$($version)-amd64.exe" $downloadDir "C:\\Python$($majorMinor)-x64"
+    Install-Pip "C:\\Python$($majorMinor)-x64" $downloadDir
+    Pip-Install "C:\\Python$($majorMinor)-x64" 'virtualenv'
+  }
 
-  Install-Python "python-$($version)-amd64.exe" $downloadDir "C:\\Python$($majorMinor)-x64"
-  Install-Python "python-$($version).exe" $downloadDir "C:\\Python$($majorMinor)-x86"
+  if (!$pythonArch -Or $pythonArch.CompareTo("86") -eq 0) {
+    Download-URL "https://www.python.org/ftp/python/$($version)/python-$($version).exe" $downloadDir
+    Install-Python "python-$($version).exe" $downloadDir "C:\\Python$($majorMinor)-x86"
+    Install-Pip "C:\\Python$($majorMinor)-x86" $downloadDir
+    Pip-Install "C:\\Python$($majorMinor)-x86" 'virtualenv'
+  }
 
-  Install-Pip "C:\\Python$($majorMinor)-x86" $downloadDir
-  Install-Pip "C:\\Python$($majorMinor)-x64" $downloadDir
-
-  Pip-Install "C:\\Python$($majorMinor)-x86" 'virtualenv'
-  Pip-Install "C:\\Python$($majorMinor)-x64" 'virtualenv'
 }
 
