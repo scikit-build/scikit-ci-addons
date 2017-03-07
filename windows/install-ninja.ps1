@@ -4,7 +4,7 @@ if (![System.IO.Directory]::Exists(".\install-utils.ps1")) {
   $cwd = (Get-Item -Path ".\" -Verbose).FullName
   (new-object net.webclient).DownloadFile($url, "$cwd\install-utils.ps1")
 }
-Import-Module .\install-utils.ps1
+Import-Module .\install-utils.ps1 -Force
 
 $downloadDir = "C:/Downloads"
 $version = "1.7.2"
