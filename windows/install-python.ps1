@@ -62,6 +62,22 @@ param (
   Start-Process $installerPath -ArgumentList "TargetDir=$targetDir DefaultAllUsersTargetDir=$targetDir InstallAllUsers=1 Include_launcher=0 PrependPath=$pythonPrependPath Shortcuts=0 /passive" -NoNewWindow -Wait
 }
 
+function Install-Python-27 {
+param (
+  [string]$targetDir,
+  [string]$installerName,
+  [string]$downloadURL
+  )
+  Download-URL $downloadURL $downloadDir
+  Install-MSI $installerName $downloadDir $targetDir
+  Install-Pip $targetDir $downloadDir
+  Pip-Install $targetDir 'virtualenv'
+  if ($pythonPrependPath -eq 1) {
+    Write-Host "Pre-pending '$targetDir;$targetDir\Scripts\' to PATH"
+    [Environment]::SetEnvironmentVariable("Path", "$targetDir;$targetDir\Scripts\;$env:Path", "Machine")
+  }
+}
+
 # See https://pip.pypa.io/en/stable/installing/
 function Install-Pip {
 param (
@@ -123,25 +139,17 @@ if(!($pythonPrependPath -match "^(0|1)$")){
 if(!$pythonVersion -Or $pythonVersion.CompareTo("27") -eq 0){
 
   if (!$pythonArch -Or $pythonArch.CompareTo("64") -eq 0) {
-    Download-URL 'https://www.python.org/ftp/python/2.7.12/python-2.7.12.amd64.msi' $downloadDir
-    Install-MSI 'python-2.7.12.amd64.msi' $downloadDir 'C:\\Python27-x64'
-    Install-Pip 'C:\\Python27-x64' $downloadDir
-    Pip-Install 'C:\\Python27-x64' 'virtualenv'
-    if ($pythonPrependPath -eq 1) {
-      Write-Host "Pre-pending 'C:\Python27-x64\;C:\Python27-x64\Scripts\' to PATH"
-      [Environment]::SetEnvironmentVariable("Path", "C:\Python27-x64\;C:\Python27-x64\Scripts\;$env:Path", "Machine")
-    }
+    $targetDir = 'C:\Python27-x64'
+    $installerName = 'python-2.7.12.amd64.msi'
+    $downloadURL = "https://www.python.org/ftp/python/2.7.12/$installerName"
+    Install-Python-27 $targetDir $installerName $downloadURL
   }
 
   if (!$pythonArch -Or $pythonArch.CompareTo("86") -eq 0) {
-    Download-URL 'https://www.python.org/ftp/python/2.7.12/python-2.7.12.msi' $downloadDir
-    Install-MSI 'python-2.7.12.msi' $downloadDir 'C:\\Python27-x86'
-    Install-Pip 'C:\\Python27-x86' $downloadDir
-    Pip-Install 'C:\\Python27-x86' 'virtualenv'
-    if ($pythonPrependPath -eq 1) {
-      Write-Host "Pre-pending 'C:\Python27-x86\;C:\Python27-x86\Scripts\' to PATH"
-      [Environment]::SetEnvironmentVariable("Path", "C:\Python27-x86\;C:\Python27-x86\Scripts\;$env:Path", "Machine")
-    }
+    $targetDir = 'C:\Python27-x86'
+    $installerName = 'python-2.7.12.msi'
+    $downloadURL = "https://www.python.org/ftp/python/2.7.12/$installerName"
+    Install-Python-27 $targetDir $installerName $downloadURL
   }
 }
 
@@ -201,4 +209,3 @@ foreach ($version in $exeVersions) {
   }
 
 }
-
