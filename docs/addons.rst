@@ -555,3 +555,146 @@ Usage::
     export PYTHON_VERSION=X.Y.Z
     ci_addons --install ../
     ../travis/run-with-pyenv.sh python --version
+
+
+Windows
+-------
+
+These scripts are designed to work on any windows workstation running Windows 7 and above and can
+be directly used from powershell using a simple one-liner.
+
+For example, on a new system without python or git installed, the following can be done:
+
+1. Open powershell as administrator
+2. Allow script to executed setting the `execution policy <https://technet.microsoft.com/en-us/library/ee176961.aspx>`_: ::
+
+    Set-ExecutionPolicy Unrestricted
+
+3. Install both python 3.6 64-bit in the PATH and git: ::
+
+    # Python
+    $pythonVersion='3.6'; $pythonArch='64'; $pythonPrependPath='1'; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
+
+    # Git
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-git.ps1'))
+
+
+
+``install-cmake.ps1``
+^^^^^^^^^^^^^^^^^^^^^
+
+Install CMake 3.7.1 in directory ``C:\cmake-3.7.1``
+
+.. note::
+
+    - CMake is **NOT** added to the ``PATH``
+
+
+``install-git.ps1``
+^^^^^^^^^^^^^^^^^^^
+
+Install Git 2.11.0 (including Git Bash) on the system.
+
+.. note::
+
+    - Git executables are added to the ``PATH``
+
+
+``install-ninja.ps1``
+^^^^^^^^^^^^^^^^^^^^^
+
+Install ninja executable v1.7.2 into ``C:\ninja-1.7.2``.
+
+.. note::
+
+    - ninja executable is **NOT** added to the ``PATH``
+
+
+``install-nsis.ps1``
+^^^^^^^^^^^^^^^^^^^^
+
+Install NSIS 3.01 on the system.
+
+.. note::
+
+    - nsis executable is added to the ``PATH``
+
+
+``install-python.ps1``
+^^^^^^^^^^^^^^^^^^^^^^
+
+Install Python 2.7.12, 3.5.3 and 3.6.0 (32 and 64-bit) along with pip and virtualenv
+in the following directories: ::
+
+    C:\Python27-x64
+    C:\Python27-x86
+
+    C:\Python35-x64
+    C:\Python35-x86
+
+    C:\Python36-x64
+    C:\Python36-x86
+
+
+.. note::
+
+    - python interpreter is **NOT** added to the ``PATH``
+    - setting ``$pythonVersion`` to either "2.7", "3.5" or "3.6" before executing the script allows
+      to install a specific version. By default, all are installed.
+    - setting ``$pythonArch`` to either "86" or "64" before executing the script allows
+      to install python for specific architecture. By default, both are installed.
+    - setting ``$pythonPrependPath`` to 1 will add install and Scripts directories the PATH and .PY to PATHEXT. This
+      variable should be set only if ``$pythonVersion`` and ``$pythonArch`` are set. By default, the value is 0.
+
+
+``install-utils.ps1``
+^^^^^^^^^^^^^^^^^^^^^
+
+This script is automatically included (and downloaded if needed) by the other addons, it
+provides convenience functions useful to download and install programs:
+
+
+  ``Always-Download-File($url, $file)``:
+
+    Systematically download `$url` into `$file`.
+
+
+  ``Download-File($url, $file)``:
+
+    If file is not found, download `$url` into `$file`.
+
+
+  ``Download-URL($url, $downloadDir)``:
+
+    Download `$url` into `$downloadDir`. The filename is extracted from `$url`.
+
+
+  ``Install-MSI($fileName, $downloadDir, $targetDir)``: 
+
+    Programatically install MSI installers `$downloadDir\$fileName`
+    into `$targetDir`. The package is installed for all users.
+
+
+  ``Which($progName)``
+
+    Search for `$progName` in the ``PATH`` and return its full path. 
+
+
+  ``Download-7zip($downloadDir)``:
+
+    If not found, download 7zip executable ``7za.exe`` into `$downloadDir`. The function
+    returns the full path to the executable.
+
+
+  ``Always-Extract-Zip($filePath, $destDir)``:
+
+    Systematically extract zip file `$filePath` into `$destDir` using
+    7zip. If 7zip executable ``7za.exe`` is not found in `$downloadDir`, it is downloaded
+    using function ``Download-7zip``.
+
+
+  ``Extract-Zip($filePath, $destDir)``:
+
+    Extract zip file into `$destDir` only if `$destDir` does not exist.
+
+

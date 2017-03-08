@@ -63,6 +63,29 @@ test:
               from pprint import pprint as pp
               pp(os.environ['PATH'].split(os.path.pathsep))
 
+  appveyor:
+    commands:
+      - python: |
+                import os
+                import subprocess as sp
+                import sys
+
+                if not os.environ.get("WINDOWS_ADDON_TESTS", False):
+                    print("Skip windows addon tests [WINDOWS_ADDON_TESTS: False]")
+                    sys.exit(0)
+
+                def exec_addon(addon):
+                    sp.check_call(
+                        ["powershell", "-ExecutionPolicy", "Unrestricted", addon],
+                        cwd=os.path.abspath("./windows")
+                    )
+
+                for addon in ["cmake", "git", "ninja", "nsis", "python", "svn"]:
+                    exec_addon(".\install-%s.ps1" % addon)
+
+                exec_addon("$pythonVersion='3.6';$pythonArch='64';.\install-%s.ps1" % addon)
+                exec_addon("$pythonVersion='3.6';.\install-%s.ps1" % addon)
+                exec_addon("$pythonArch='64';.\install-%s.ps1" % addon)
 
 after_test:
   commands:
