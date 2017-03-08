@@ -18,26 +18,48 @@ if (![System.IO.Directory]::Exists(".\install-utils.ps1")) {
 }
 Import-Module .\install-utils.ps1 -Force
 
+function Get-Python-InstallPath {
+param (
+  [string]$pythonVersion,
+  [string]$pythonArch
+  )
+  $suffix = '-32'
+  if ($pythonArch.CompareTo('64') -eq 0) {
+    $suffix = ''
+  }
+  $roots = @("HKCU", "HKLM")
+  foreach ($root in $roots) {
+    $path = "$($root):\Software\Python\PythonCore\$pythonVersion$suffix\InstallPath"
+    if (Test-Path -Path $path -PathType Container) {
+      $properties = Get-ItemProperty -Path $path
+      if ($properties -And (Get-Member -InputObject $properties -Name '(Default)')) {
+        $installPath = (Get-ItemProperty -Path $path -Name '(Default)').'(Default)'
+        return (Resolve-Path(Join-Path $installPath "\\")).Path
+      }
+    }
+  }
+  return ""
+}
+
 function Install-Python {
 param (
-  [string]$fileName,
-  [string]$downloadDir,
+  [string]$installerPath,
   [string]$targetDir
   )
 
-  Write-Host "Installing $fileName into $targetDir"
-  if ([System.IO.Directory]::Exists($targetDir)) {
-    Write-Host "-> skipping: existing target directory"
-	return
+  Write-Host "Installing $installerPath into $targetDir"
+  $interpreter = Join-Path $targetDir "python.exe"
+  if ([System.IO.Directory]::Exists($interpreter)) {
+    Write-Host "-> skipping: found $interpreter"
+  return
   }
   if (![System.IO.Directory]::Exists($targetDir)) {
     [System.IO.Directory]::CreateDirectory($targetDir)
   }
-  $filePath = Join-Path $downloadDir $fileName
   #
   # See https://docs.python.org/3.6/using/windows.html#installing-without-ui
   #
-  Start-Process $filePath -ArgumentList "TargetDir=$targetDir InstallAllUsers=1 Include_launcher=0 PrependPath=$pythonPrependPath Shortcuts=0 /passive" -NoNewWindow -Wait
+  Start-Process $installerPath -ArgumentList "TargetDir=$targetDir DefaultAllUsersTargetDir=$targetDir InstallAllUsers=1 Include_launcher=0 PrependPath=$pythonPrependPath Shortcuts=0 /passive" -NoNewWindow -Wait
 }
 
 # See https://pip.pypa.io/en/stable/installing/
@@ -116,6 +138,7 @@ foreach ($version in $exeVersions) {
 
   $split = $version.Split(".")
   $majorMinor = [string]::Join("", $split, 0, 2)
+  $majorMinorDot = [string]::Join(".", $split, 0, 2)
 
   if($pythonVersion -And ! $pythonVersion.CompareTo($majorMinor) -eq 0) {
     Write-Host "Skipping $majorMinor"
@@ -123,17 +146,46 @@ foreach ($version in $exeVersions) {
   }
 
   if (!$pythonArch -Or $pythonArch.CompareTo("64") -eq 0) {
+
     Download-URL "https://www.python.org/ftp/python/$($version)/python-$($version)-amd64.exe" $downloadDir
-    Install-Python "python-$($version)-amd64.exe" $downloadDir "C:\\Python$($majorMinor)-x64"
-    Install-Pip "C:\\Python$($majorMinor)-x64" $downloadDir
-    Pip-Install "C:\\Python$($majorMinor)-x64" 'virtualenv'
+
+    $pythonInstallPath = Get-Python-InstallPath $majorMinorDot "64"
+    $targetInstallPath = "C:\Python$($majorMinor)-x64\"
+    $installerPath = Join-Path $downloadDir "python-$($version)-amd64.exe"
+
+    if (!$pythonInstallPath.CompareTo($targetInstallPath) -eq 0) {
+      if ($pythonInstallPath) {
+        Write-Host "Found a python installation in a different directory [$pythonInstallPath] - Uninstalling"
+        Start-Process $installerPath -ArgumentList "/uninstall /passive" -NoNewWindow -Wait
+      }
+    } elseif ($pythonInstallPath) {
+      Write-Host "Updating existing installation [$pythonInstallPath]"
+    }
+
+    Install-Python $installerPath $targetInstallPath
+    Install-Pip $targetInstallPath $downloadDir
+    Pip-Install $targetInstallPath 'virtualenv'
   }
 
   if (!$pythonArch -Or $pythonArch.CompareTo("86") -eq 0) {
     Download-URL "https://www.python.org/ftp/python/$($version)/python-$($version).exe" $downloadDir
-    Install-Python "python-$($version).exe" $downloadDir "C:\\Python$($majorMinor)-x86"
-    Install-Pip "C:\\Python$($majorMinor)-x86" $downloadDir
-    Pip-Install "C:\\Python$($majorMinor)-x86" 'virtualenv'
+
+    $pythonInstallPath = Get-Python-InstallPath $majorMinorDot "86"
+    $targetInstallPath = "C:\Python$($majorMinor)-x86\"
+    $installerPath = Join-Path $downloadDir "python-$($version).exe"
+
+    if (!$pythonInstallPath.CompareTo($targetInstallPath) -eq 0) {
+      if ($pythonInstallPath) {
+        Write-Host "Found a python installation in a different directory [$pythonInstallPath] - Uninstalling"
+        Start-Process $installerPath -ArgumentList "/uninstall /passive" -NoNewWindow -Wait
+      }
+    } elseif ($pythonInstallPath) {
+      Write-Host "Updating existing installation [$pythonInstallPath]"
+    }
+
+    Install-Python  $installerPath $targetInstallPath
+    Install-Pip $targetInstallPath $downloadDir
+    Pip-Install $targetInstallPath 'virtualenv'
   }
 
 }
