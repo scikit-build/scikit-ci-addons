@@ -115,14 +115,22 @@ if (!$pythonPrependPath) {
   Write-Host "Defaulting 'pythonPrependPath' variable to 0."
 }
 
+if(!($pythonPrependPath -match "^(0|1)$")){
+  throw "'$pythonPrependPath' variable incorrectly set to [$pythonPrependPath]. Hint: '0' or '1' value is expected."
+}
 
-if(!$pythonVersion -Or $pythonVersion.CompareTo("2.7") -eq 0){
+
+if(!$pythonVersion -Or $pythonVersion.CompareTo("27") -eq 0){
 
   if (!$pythonArch -Or $pythonArch.CompareTo("64") -eq 0) {
     Download-URL 'https://www.python.org/ftp/python/2.7.12/python-2.7.12.amd64.msi' $downloadDir
     Install-MSI 'python-2.7.12.amd64.msi' $downloadDir 'C:\\Python27-x64'
     Install-Pip 'C:\\Python27-x64' $downloadDir
     Pip-Install 'C:\\Python27-x64' 'virtualenv'
+    if ($pythonPrependPath -eq 1) {
+      Write-Host "Pre-pending 'C:\Python27-x64\;C:\Python27-x64\Scripts\' to PATH"
+      [Environment]::SetEnvironmentVariable("Path", "C:\Python27-x64\;C:\Python27-x64\Scripts\;$env:Path", "Machine")
+    }
   }
 
   if (!$pythonArch -Or $pythonArch.CompareTo("86") -eq 0) {
@@ -130,6 +138,10 @@ if(!$pythonVersion -Or $pythonVersion.CompareTo("2.7") -eq 0){
     Install-MSI 'python-2.7.12.msi' $downloadDir 'C:\\Python27-x86'
     Install-Pip 'C:\\Python27-x86' $downloadDir
     Pip-Install 'C:\\Python27-x86' 'virtualenv'
+    if ($pythonPrependPath -eq 1) {
+      Write-Host "Pre-pending 'C:\Python27-x86\;C:\Python27-x86\Scripts\' to PATH"
+      [Environment]::SetEnvironmentVariable("Path", "C:\Python27-x86\;C:\Python27-x86\Scripts\;$env:Path", "Machine")
+    }
   }
 }
 
