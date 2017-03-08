@@ -573,7 +573,7 @@ For example, on a new system without python or git installed, the following can 
 3. Install python 3.6 64-bit and git: ::
 
     # Python
-    $pythonVersion="3.6"; $pythonArch="64"; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
+    $pythonVersion='3.6'; $pythonArch='64'; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
 
     # Git
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-git.ps1'))
