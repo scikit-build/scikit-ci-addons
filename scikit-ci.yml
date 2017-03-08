@@ -63,6 +63,18 @@ test:
               from pprint import pprint as pp
               pp(os.environ['PATH'].split(os.path.pathsep))
 
+  appveyor:
+    commands:
+      - powershell -ExecutionPolicy Unrestricted "cd windows; .\install-cmake.ps1"
+      - powershell -ExecutionPolicy Unrestricted "cd windows; .\install-git.ps1"
+      - powershell -ExecutionPolicy Unrestricted "cd windows; .\install-ninja.ps1"
+      - powershell -ExecutionPolicy Unrestricted "cd windows; .\install-nsis.ps1"
+      - powershell -ExecutionPolicy Unrestricted "cd windows; .\install-python.ps1"
+      - powershell -ExecutionPolicy Unrestricted "cd windows; $pythonVersion='3.6';$pythonArch='64';.\install-python.ps1"
+      - powershell -ExecutionPolicy Unrestricted "cd windows; $pythonVersion='3.6';.\install-python.ps1"
+      - powershell -ExecutionPolicy Unrestricted "cd windows; $pythonArch='64';.\install-python.ps1"
+      - powershell -ExecutionPolicy Unrestricted "cd windows; .\install-svn.ps1"
+
 
 after_test:
   commands:

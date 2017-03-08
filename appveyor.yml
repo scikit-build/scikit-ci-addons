@@ -44,6 +44,7 @@ environment:
 
 cache:
   - C:\\cmake-3.6.2
+  - C:\\Downloads
 
 install:
   - ps: appveyor/rolling-build.ps1
