@@ -17,6 +17,8 @@ environment:
       # Used for testing
       EXPECTED_PYTHON_VERSION: 2.7.13
       EXPECTED_PYTHON_ARCH: 32
+      # Test "windows/install-*.ps1" scripts only once
+      WINDOWS_ADDON_TESTS: 1
 
     - PYTHON_DIR: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.x"
