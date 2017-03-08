@@ -561,23 +561,30 @@ Windows
 -------
 
 These scripts are designed to work on any windows workstation running Windows 7 and above and can
-be directly used from powershell using a simple one-liner.
+be directly used from either command line terminal or a powershell terminal using a simple one-liner.
 
-For example, on a new system without python or git installed, the following can be done:
+Content of the scripts can easily be inspected in the `associated source repository <https://github.com/scikit-build/scikit-ci-addons/tree/master/windows>`_.
 
-1. Open powershell as administrator
-2. Allow script to executed setting the `execution policy <https://technet.microsoft.com/en-us/library/ee176961.aspx>`_: ::
+For example, on a new system without python or git installed, the following can be done to
+install them:
+
+* from a windows command terminal open as administrator ::
+
+    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-36-x64.ps1'))"
+    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-git.ps1'))"
+
+
+* or from a powershell terminal open as administrator: ::
 
     Set-ExecutionPolicy Unrestricted
-
-3. Install both python 3.6 64-bit in the PATH and git: ::
-
-    # Python
-    $pythonVersion='3.6'; $pythonArch='64'; $pythonPrependPath='1'; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
-
-    # Git
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-36-x64.ps1'))
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-git.ps1'))
 
+
+Read `here <https://technet.microsoft.com/en-us/library/ee176961.aspx>`_ to learn about the
+powershell execution policy.
+
+Details for each ``install-*.ps1`` scripts are reported below.
 
 
 ``install-cmake.ps1``
@@ -645,6 +652,42 @@ in the following directories: ::
       to install python for specific architecture. By default, both are installed.
     - setting ``$pythonPrependPath`` to 1 will add install and Scripts directories the PATH and .PY to PATHEXT. This
       variable should be set only if ``$pythonVersion`` and ``$pythonArch`` are set. By default, the value is 0.
+
+
+``install-python-27-x64.ps1``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Install Python 3.6 64-bit and update the PATH.
+
+This is equivalent to: ::
+
+
+    $pythonVersion = "3.6"
+    $pythonArch = "64"
+    $pythonPrependPath = "1"
+    .\install-python.ps1
+
+.. note::
+
+    - ``C:\Python27-x64`` and ``C:\Python27-x64\Scripts`` are prepended to the ``PATH``
+
+
+``install-python-36-x64.ps1``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Install Python 2.7 64-bit and update the PATH.
+
+This is equivalent to: ::
+
+
+    $pythonVersion = "2.7"
+    $pythonArch = "64"
+    $pythonPrependPath = "1"
+    .\install-python.ps1
+
+.. note::
+
+    - ``C:\Python36-x64`` and ``C:\Python36-x64\Scripts`` are prepended to the ``PATH``
 
 
 ``install-utils.ps1``
