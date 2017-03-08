@@ -6,6 +6,9 @@
 #
 # Setting $pythonArch to either "64" or "86" allows to install python for specific architecture.
 #
+# Setting $pythonPrependPath to 1 will add install and Scripts directories the PATH and .PY to PATHEXT. The variable
+# should be set only if $pythonVersion and $pythonArch are set. By default, the value is 0.
+#
 
 if (![System.IO.Directory]::Exists(".\install-utils.ps1")) {
   Write-Host "Download install-utils.ps1"
@@ -31,7 +34,10 @@ param (
     [System.IO.Directory]::CreateDirectory($targetDir)
   }
   $filePath = Join-Path $downloadDir $fileName
-  Start-Process $filePath -ArgumentList "TargetDir=$targetDir InstallAllUsers=1 Include_launcher=0 PrependPath=0 Shortcuts=0 /passive" -NoNewWindow -Wait
+  #
+  # See https://docs.python.org/3.6/using/windows.html#installing-without-ui
+  #
+  Start-Process $filePath -ArgumentList "TargetDir=$targetDir InstallAllUsers=1 Include_launcher=0 PrependPath=$pythonPrependPath Shortcuts=0 /passive" -NoNewWindow -Wait
 }
 
 # See https://pip.pypa.io/en/stable/installing/
@@ -76,6 +82,17 @@ if ($pythonArch) {
   }
   Write-Host "Installing Python for architecture x$pythonArch"
 }
+
+if (!$pythonVersion -Or !$pythonArch) {
+  if ($pythonPrependPath) {
+    throw "'pythonPrependPath' variable should explicitly be set when both 'pythonVersion' and 'pythonArch' are set"
+  }
+}
+if (!$pythonPrependPath) {
+  $pythonPrependPath = 0
+  Write-Host "Defaulting 'pythonPrependPath' variable to 0."
+}
+
 
 if(!$pythonVersion -Or $pythonVersion.CompareTo("2.7") -eq 0){
 

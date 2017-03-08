@@ -570,10 +570,10 @@ For example, on a new system without python or git installed, the following can 
 
     Set-ExecutionPolicy Unrestricted
 
-3. Install python 3.6 64-bit and git: ::
+3. Install both python 3.6 64-bit in the PATH and git: ::
 
     # Python
-    $pythonVersion='3.6'; $pythonArch='64'; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
+    $pythonVersion='3.6'; $pythonArch='64'; $pythonPrependPath='1'; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
 
     # Git
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-git.ps1'))
@@ -643,6 +643,8 @@ in the following directories: ::
       to install a specific version. By default, all are installed.
     - setting ``$pythonArch`` to either "86" or "64" before executing the script allows
       to install python for specific architecture. By default, both are installed.
+    - setting ``$pythonPrependPath`` to 1 will add install and Scripts directories the PATH and .PY to PATHEXT. This
+      variable should be set only if ``$pythonVersion`` and ``$pythonArch`` are set. By default, the value is 0.
 
 
 ``install-utils.ps1``
