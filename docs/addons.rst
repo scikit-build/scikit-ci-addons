@@ -590,11 +590,12 @@ Details for each ``install-*.ps1`` scripts are reported below.
 ``install-cmake.ps1``
 ^^^^^^^^^^^^^^^^^^^^^
 
-Install CMake 3.7.1 in directory ``C:\cmake-3.7.1``
+By default, install CMake 3.7.1 in directory ``C:\cmake-3.7.1``
 
 .. note::
 
     - CMake is **NOT** added to the ``PATH``
+    - setting ``$cmakeVersion`` to "X.Y.Z" before executing the script allows to select a specific CMake version.
 
 
 ``install-git.ps1``
