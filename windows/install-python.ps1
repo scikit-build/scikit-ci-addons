@@ -1,3 +1,4 @@
+trap { Write-Error $_; Exit 1 }
 
 #
 # By default, Python 2.7.12, 3.5.3 and 3.6.0 are installed.

@@ -1,3 +1,5 @@
+trap { Write-Error $_; Exit 1 }
+
 if (![System.IO.File]::Exists(".\install-utils.ps1")) {
   Write-Host "Download install-utils.ps1"
   $url = "https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-utils.ps1"
