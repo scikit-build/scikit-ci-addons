@@ -10,13 +10,24 @@ Import-Module .\install-utils.ps1 -Force
 
 $downloadDir = "C:/Downloads"
 
-#$version = "3.5.2"
-#$arch = "win32-x86"
-$version = "3.7.1"
+if (!$cmakeVersion) {
+  $cmakeVersion = "3.7.1"
+}
+
+$version = $cmakeVersion
+
+$major = $version.Split(".")[0]
+$minor = $version.Split(".")[1]
+
 $arch = "win64-x64"
 
+# win64-x64 archives were introduced with CMake 3.6
+if ($major -le 3 -And $minor -lt 6) {
+  $arch = "win32-x86"
+}
+
 $installDir = "C:/cmake-$version"
-$major_minor = $version.Split(".")[0..1] -join "."
+$major_minor = "$major.$minor"
 
 $archiveName = "cmake-$version-$arch"
 
@@ -32,4 +43,6 @@ if (![System.IO.Directory]::Exists($installDir)) {
 
   Write-Host "Removing $installDir-tmp"
   Remove-Item "$installDir-tmp"
+} else {
+  Write-Host "Skipping installation: Directory [$installDir] already exists"
 }
