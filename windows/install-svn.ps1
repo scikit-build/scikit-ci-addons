@@ -29,3 +29,6 @@ Move-Item "$from" "$targetDir"
 
 Write-Host "Removing $targetDir-tmp"
 Remove-Item "$targetDir-tmp" -Recurse
+
+Write-Host "Pre-pending '$targetDir\bin\' to PATH"
+[Environment]::SetEnvironmentVariable("Path", "$targetDir\bin\;$env:Path", "Machine")

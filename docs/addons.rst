@@ -690,6 +690,18 @@ This is equivalent to: ::
     - ``C:\Python36-x64`` and ``C:\Python36-x64\Scripts`` are prepended to the ``PATH``
 
 
+``install-svn.ps1``
+^^^^^^^^^^^^^^^^^^^^
+
+Install `Slik SVN <https://sliksvn.com/download/>`_ 1.9.5 in the following directory: ::
+
+    C:\SlikSvn
+
+.. note::
+
+    - svn executable is added to the ``PATH``
+
+
 ``install-utils.ps1``
 ^^^^^^^^^^^^^^^^^^^^^
 
