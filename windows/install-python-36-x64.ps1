@@ -1,3 +1,5 @@
+trap { Write-Error $_; Exit 1 }
+
 $scriptName = "install-python.ps1"
 if (![System.IO.File]::Exists(".\$scriptName")) {
   Write-Host "Download $scriptName"
