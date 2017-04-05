@@ -242,7 +242,7 @@ For example::
   $ commit_date=$(git log -1 --format="%ad" --date=local | date +%Y%m%d)
 
   $ platform=$(ci_addons publish_github_release ORG/PROJECT --display-python-wheel-platform)
-  $ echo $commit_date
+  $ echo $platform
   manylinux1
 
   $ ci_addons publish_github_release ORG/PROJECT \
