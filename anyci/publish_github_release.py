@@ -14,7 +14,7 @@ import subprocess
 import textwrap
 
 from github_release import (
-    gh_asset_erase,
+    gh_asset_delete,
     gh_asset_upload,
     get_refs,
     gh_release_create,
@@ -200,7 +200,7 @@ def _upload_prerelease(args):
     )
     # Remove obsolete assets
     if args.prerelease_packages_clear_pattern is not None:
-        gh_asset_erase(
+        gh_asset_delete(
             args.repo_name,
             args.prerelease_tag,
             args.prerelease_packages_clear_pattern,
