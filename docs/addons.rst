@@ -112,9 +112,8 @@ Use case: Automatic upload of release packages associated with a tag
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 In this example, the script automatically detects that the current branch
-HEAD is associated with the tag **1.0.0** and it automatically uploads all
-packages found the ``dist`` directory. In that particular example, there are
-only two packages.
+HEAD is associated with the tag **1.0.0** and automatically uploads all
+packages found in the ``dist`` directory.
 
 ::
 
@@ -170,7 +169,7 @@ development package names contain the date of the commit they are built from,
 specifying a globbing pattern with the date allows to delete older packages while
 keeping only the new ones built from that commit.
 
-In the following example, we assume a prerelease done on 20170212 with
+In the following example, we assume a prerelease done on 2017-02-12 with
 16 packages (4 linux, 4 macosx, and 8 windows) already exists. The command
 reported below corresponds to the execution of the script on a linux machine,
 after one additional commit has been done the next day.
@@ -231,7 +230,7 @@ after one additional commit has been done the next day.
 Use case: Automatic creation of both releases and prereleases
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-This can be done by combining both options ``--release-packages``
+This can be done by combining the options ``--release-packages``
 and ``--prerelease-packages``.
 
 Note also the use of ``--display-python-wheel-platform`` to automatically
