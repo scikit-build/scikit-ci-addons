@@ -87,4 +87,7 @@ test:
 after_test:
   commands:
     - codecov -X gcov --required --file ./_tests/coverage.xml
-    - $<RUN_ENV> python setup.py bdist_wheel
+    - $<RUN_ENV> python setup.py sdist bdist_wheel
+    # Install scikit-ci-addons and check that prerelease uploads succeed
+    - python -m pip install .
+    - python -m ci_addons publish_github_release scikit-build/scikit-ci-addons --prerelease-packages "dist/*"
