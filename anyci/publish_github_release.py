@@ -13,7 +13,6 @@ import platform
 import sys
 import subprocess
 import textwrap
-import time
 
 from github_release import (
     gh_asset_delete,
@@ -79,9 +78,8 @@ def get_tag(ref="HEAD"):
 
 
 def get_current_date():
-    timezone = time.tzname[time.daylight]
-    now = dt.datetime.now()
-    return now.strftime("%Y-%m-%d %H:%m") + " " + timezone
+    now = dt.datetime.utcnow()
+    return now.strftime("%Y-%m-%d %H:%m UTC")
 
 
 #
@@ -134,8 +132,8 @@ def configure_parser(parser):
     prerelease_group.add_argument(
         "--prerelease-name", type=str,
         help="Name of the pre-release "
-             "(default: 'TagName (updated on YYYY-MM-DD HH:MM TZ)'. "
-             "Example: 'Latest (updated on 2017-02-12 14:42 EDT)')"
+             "(default: 'TagName (updated on YYYY-MM-DD HH:MM UTC)'. "
+             "Example: 'Latest (updated on 2017-02-12 14:42 UTC)')"
     )
     prerelease_group.add_argument(
         "--prerelease-sha", type=str,
