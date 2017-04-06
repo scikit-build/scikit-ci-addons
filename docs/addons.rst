@@ -68,6 +68,27 @@ Based on the git branch found in the current working directory, it allows to
 automatically create a GitHub ``prerelease`` and/or ``release`` and upload
 associated packages.
 
+Getting Started
+"""""""""""""""
+
+To create a pre-release named ``latest``::
+
+    ci_addons publish_github_release --prerelease-packages "dist/*"
+
+To create a release named after the current tag::
+
+    ci_addons publish_github_release --release-packages "dist/*"
+
+
+In both case, packages found in *dist* directory are uploaded.
+
+
+.. note::
+
+    Pre-releases are created only if the current commit is *NOT* a tag. Similarly, releases
+    are created *ONLY* if current commit is a tag.
+
+
 Terminology
 """""""""""
 
