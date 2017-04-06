@@ -208,7 +208,7 @@ def _upload_prerelease(args):
             keep_pattern=args.prerelease_packages_keep_pattern,
             dry_run=args.dry_run
         )
-    # if needed, update target commit and name associated with the release
+    # If needed, update target commit
     sha = args.prerelease_sha
     if sha is not None:
         # If a branch name is specified, get associated commit
@@ -221,9 +221,14 @@ def _upload_prerelease(args):
         gh_release_edit(
             args.repo_name,
             args.prerelease_tag,
-            target_commitish=sha,
-            name=prerelease_name
+            target_commitish=sha
         )
+    # If needed, update name associated with the release
+    gh_release_edit(
+        args.repo_name,
+        args.prerelease_tag,
+        name=prerelease_name
+    )
     return True
 
 
