@@ -12,6 +12,7 @@ import platform
 import sys
 import subprocess
 import textwrap
+import time
 
 from github_release import (
     gh_asset_delete,
@@ -75,10 +76,10 @@ def get_tag(ref="HEAD"):
     return output
 
 
-def get_commit_date(ref="HEAD"):
-    output, _ = run_command(
-        GITS, ["log", "-1", "--format=%ad", "--date=local", str(ref)])
-    return dt.datetime.strptime(output, "%c").strftime("%Y%m%d")
+def get_current_date():
+    timezone = time.tzname[time.daylight]
+    now = dt.datetime.now()
+    return now.strftime("%Y-%m-%d %H:%m") + " " + timezone
 
 
 #
@@ -126,13 +127,13 @@ def configure_parser(parser):
     prerelease_group.add_argument(
         "--prerelease-tag", type=str,
         help="Name of the tag to associate with the pre-release. "
-             "If needed, tag is created or updated (default: nightly)"
+             "If needed, tag is created or updated (default: latest)"
     )
     prerelease_group.add_argument(
         "--prerelease-name", type=str,
         help="Name of the pre-release "
-             "(default: 'TagName (updated on YYYYMMDD)'. "
-             "Example: 'Nightly (updated on 20170212)')"
+             "(default: 'TagName (updated on YYYY-MM-DD HH:MM TZ)'. "
+             "Example: 'Latest (updated on 2017-02-12 14:42 EDT)')"
     )
     prerelease_group.add_argument(
         "--prerelease-sha", type=str,
@@ -160,7 +161,7 @@ def configure_parser(parser):
         prerelease_packages_keep_pattern=None,
         prerelease_name=None,
         prerelease_sha="master",
-        prerelease_tag="nightly"
+        prerelease_tag="latest"
     )
 
 
@@ -184,7 +185,7 @@ def _upload_prerelease(args):
     prerelease_name = args.prerelease_name
     if prerelease_name is None:
         prerelease_name = "%s (updated on %s)" % (
-            args.prerelease_tag.title(), get_commit_date()
+            args.prerelease_tag.title(), get_current_date()
         )
     # Create release
     gh_release_create(
