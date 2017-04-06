@@ -38,3 +38,7 @@ A core developer should use the following steps to create a release of
     mkvirtualenv test-pip-install
     pip install scikit-ci-addons
     rmvirtualenv test-pip-install
+
+9. Push local changes::
+
+    git push upstream X.Y.Z
