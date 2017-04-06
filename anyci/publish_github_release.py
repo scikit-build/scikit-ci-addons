@@ -7,6 +7,7 @@ a "prerelease" sub-command.
 import argparse
 import datetime as dt
 import errno
+import glob
 import os
 import platform
 import sys
@@ -18,6 +19,7 @@ from github_release import (
     gh_asset_delete,
     gh_asset_upload,
     get_refs,
+    get_release_info,
     gh_release_create,
     gh_release_edit
 )
@@ -194,6 +196,18 @@ def _upload_prerelease(args):
         name=prerelease_name,
         publish=True, prerelease=True
     )
+    # Remove existing assets matching selected ones
+    release = get_release_info(args.repo_name, args.prerelease_tag)
+    asset_names = [asset['name'] for asset in release['assets']]
+    for package in args.prerelease_packages:
+        for path in glob.glob(package):
+            local_asset_name = os.path.basename(path)
+            # XXX Asset uploaded on GitHub always have "plus" sign found
+            # in their name replaced by "dot".
+            local_asset_name = local_asset_name.replace("+", ".")
+            if local_asset_name in asset_names:
+                gh_asset_delete(
+                    args.repo_name, args.prerelease_tag, local_asset_name)
     # Upload packages
     gh_asset_upload(
         args.repo_name, args.prerelease_tag, args.prerelease_packages,
