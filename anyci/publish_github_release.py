@@ -70,11 +70,32 @@ def run_command(commands, args, cwd=None, verbose=False, hide_stderr=False,
     return stdout, p.returncode
 
 
-def get_tag(ref="HEAD"):
+def get_tags(ref="HEAD"):
+    """If any, return all tags associated with `ref`.
+
+    Note that since git (<=2.5.0) does *NOT* provide a direct way to get
+    these, we first get the sha of the HEAD tag (if any), then group the
+    the tag by SHA and return the corresponding list.
+    """
     output, _ = run_command(
         GITS, ["describe", "--tags", "--exact-match", str(ref)],
         hide_stderr=True)
-    return output
+    if output is None:
+        return []
+    # Get tag's commit
+    tag_sha, _ = run_command(GITS, ["rev-list", "-n",  "1", output])
+    # List all tags and associated SHAs
+    tags, _ = run_command(GITS, ["tag", "--list"])
+    # map of sha -> tags
+    all_tags = {}
+    for tag in tags.splitlines():
+        sha, _ = run_command(
+            GITS, ["rev-list", "-n",  "1", "refs/tags/%s" % tag])
+        if sha not in all_tags:
+            all_tags[sha] = [tag]
+        else:
+            all_tags[sha].append(tag)
+    return all_tags[tag_sha]
 
 
 def get_current_date():
@@ -165,8 +186,7 @@ def configure_parser(parser):
     )
 
 
-def _upload_release(args):
-    release_tag = get_tag()
+def _upload_release(release_tag, args):
     assert release_tag is not None
     # Create release
     gh_release_create(
@@ -283,13 +303,25 @@ def main(argv=None):
     msg = "Checking if HEAD is a release tag"
     print(msg)
 
+    head_tags = get_tags()
+    head_tags = list(filter(lambda tag: tag != args.prerelease_tag, head_tags))
+
+    is_release = False
+    release_tag = None
+
+    if len(head_tags) > 0:
+        is_release = True
+        # If there are more than one tag (different from args.prerelease_tag)
+        # associated with the HEAD, we use the first one.
+        release_tag = head_tags[0]
+
     # Upload
     uploaded = False
-    is_release = get_tag() is not None
     if upload_release:
         if is_release:
-            print("%s - yes (found %s: creating release)\n" % (msg, get_tag()))
-            uploaded = _upload_release(args)
+            print("%s - yes "
+                  "(found %s: creating release)\n" % (msg, release_tag))
+            uploaded = _upload_release(release_tag, args)
         elif not dual:
             print("%s - no (skipping release upload)\n" % msg)
 
@@ -299,7 +331,7 @@ def main(argv=None):
             _upload_prerelease(args)
         elif not dual:
             print("%s - yes (found %s: "
-                  "skipping prerelease upload)\n" % (msg, get_tag()))
+                  "skipping prerelease upload)\n" % (msg, release_tag))
 
 
 if __name__ == "__main__":

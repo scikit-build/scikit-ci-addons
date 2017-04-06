@@ -308,7 +308,7 @@ def publish_github_release(mode, system=None):
     pause("We will generate packages like it would on [%s] system(s)" % system)
     generate_packages(get_full_version(), system)
 
-    tag_name = PRERELEASE_TAG if get_tag() is None else get_tag()
+    tag_name = PRERELEASE_TAG if "prerelease" in mode else get_tag()
     commit_date = get_commit_date()
 
     # Summary
@@ -321,7 +321,8 @@ def publish_github_release(mode, system=None):
         *   (1) creation of [{tag_name}] release
         *   (2) upload of associated packages
         """.format(
-            module=MODULE, mode=mode, system=system, tag_name=tag_name)
+            module=MODULE,
+            mode=",".join(mode), system=system, tag_name=tag_name)
     ))
 
     # Common arguments
@@ -346,19 +347,14 @@ def publish_github_release(mode, system=None):
         ]:
             args.append(arg)
 
-    # Delete local tag
-    msg = "Removing local [%s] tag" % PRERELEASE_TAG
-    print(msg)
-    run("git tag --delete %s" % PRERELEASE_TAG, ignore_errors=True)
-    print("%s - done\n" % msg)
-
     # Publish release
     __import__(MODULE).main(args)
 
     # Fetch changes
-    msg = "fetching change from remote"
+    remote = "origin"
+    msg = "fetching changes from remote '%s'" % remote
     print(msg)
-    run("git fetch origin")
+    run("git fetch --tags %s" % remote)
     print("%s - done\n" % msg)
 
 
@@ -624,7 +620,8 @@ def main():
 
     def test_prerelease_mode():
         """In ``prerelease`` mode, the script is expected to create a
-        prerelease only if HEAD is not associated with a tag."""
+        prerelease only if HEAD is not associated with a tag different
+        from the prerelease tag"""
 
         global TEST_CASE
         TEST_CASE = "test_prerelease_mode"
