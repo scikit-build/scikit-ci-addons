@@ -1,1 +1,1 @@
-githubrelease>=1.5.2
+githubrelease>=1.5.3
