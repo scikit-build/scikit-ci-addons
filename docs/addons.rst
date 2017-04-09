@@ -678,7 +678,7 @@ Install NSIS 3.01 on the system.
 ``install-python.ps1``
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Install Python 2.7.12, 3.5.3 and 3.6.0 (32 and 64-bit) along with pip and virtualenv
+Install Python 2.7.12, 3.5.3 and 3.6.1 (32 and 64-bit) along with pip and virtualenv
 in the following directories: ::
 
     C:\Python27-x64
