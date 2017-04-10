@@ -85,22 +85,24 @@ In both case, packages found in *dist* directory are uploaded.
 
 .. note::
 
-    Pre-releases are created only if the current commit is *NOT* a tag. Similarly, releases
-    are created *ONLY* if current commit is a tag.
+    Pre-releases are created only if the current commit is *NOT* a tag (``latest`` tag is automatically
+    ignored). Similarly, releases are created *ONLY* if current commit is a tag (different from ``latest``).
 
 
 Terminology
 """""""""""
 
-**Prerelease**: Usually associated with a ``nightly`` tag and named ``Nightly (updated
-on YYYYMMDD)``, this corresponds to a GitHub release updated on ``YYYYMMDD`` with
-*draft* option set to False and *prerelease* option set to True. For a given project,
-each time a prerelease is uploaded, it is expected to (1) be associated with an up-to-date
-*nightly* tag and (2) contain only the most recent development packages.
+**Prerelease**: By default, this corresponds to a GitHub prerelease associated with a tag named
+``latest`` and named ``Latest (updated on YYYY-MM-DD HH:MM UTC)``. The prerelease is automatically
+updated each time the ``publish_github_release`` script is executed. Updating the ``latest``
+prerelease means that (1) the latest tag is updated to point to the current HEAD, (2) the name is
+updated and (3) latest packages are uploaded to replace the previous ones. GitHub prerelease are
+basically release with *draft* option set to False and *prerelease* option set to True.
 
-**Release**: Associated with a tag explicitly created, this corresponds to a GitHub
-release with both *draft* and *prerelease* options set to False. Once packages
-have been associated with such a release, they are not expected to be removed.
+**Release**: This corresponds to a GitHub release automatically created by ``publish_github_release``
+script only if it found that HEAD was associated with a tag different from ``latest``. It has both
+*draft* and *prerelease* options set to False. Once packages have been associated with such a release,
+they are not expected to be removed.
 
 Usage
 """""
@@ -122,7 +124,7 @@ Usage
 
 .. note::
 
-    - Packages to upload can be a list of paths or globbing patterns.
+    - Packages to upload can be a list of paths or a list of globbing patterns.
 
     - Option ``--display-python-wheel-platform`` is useful to easily
       get the name of the current platform as found in python wheel
@@ -248,8 +250,8 @@ after one additional commit has been done the next day.
   updating 'nightly' release: 
     target_commitish: '62fe605938ff252e4ddee05b5209299a1aa9a39e' -> '9d40177e6d3a69890de8ea359de2d02a943d2e10'
 
-Use case: Automatic creation of both releases and prereleases
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+Use case: Automatic creation of GitHub releases and prereleases
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 This can be done by combining the options ``--release-packages``
 and ``--prerelease-packages``.
@@ -274,7 +276,7 @@ For example::
 Testing
 """""""
 
-Since the add-on tests interacts with GitHub API, there are no included in the
+Since the add-on tests interact with GitHub API, there are not included in the
 regular scikit-ci-addons collection of tests executed using pytest. Instead,
 they needs to be manually executed following these steps:
 
