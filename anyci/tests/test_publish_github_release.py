@@ -312,7 +312,7 @@ def publish_github_release(mode, system=None):
     author_date = generate_author_date()
 
     # Summary
-    pause(textwrap.dedent(
+    textwrap.dedent(
         r"""
         * We will now run [{module}.py] in [{mode}] mode(s)
         * like it would run on [{system}] system(s)
@@ -323,10 +323,11 @@ def publish_github_release(mode, system=None):
         """.format(
             module=MODULE,
             mode=",".join(mode), system=system, tag_name=tag_name)
-    ))
+    )
 
     # Common arguments
-    args = [MODULE + ".py", REPO_NAME]
+    common_args = [MODULE + ".py", REPO_NAME]
+    args = []
     # Release arguments
     if "release" in mode:
         for arg in [
@@ -347,8 +348,22 @@ def publish_github_release(mode, system=None):
         ]:
             args.append(arg)
 
+    # Format command arguments to display them nicely across multiple lines
+    args_as_str = ""
+    for index in range(0, len(args), 2):
+        line_continuation = "\\" if index < len(args) - 2 else ""
+        args_as_str += "  %s %s %s\n" % (
+            args[index], args[index+1], line_continuation)
+
+    pause(textwrap.dedent(
+        r"""
+        *
+        * The following command will be executed:
+
+        """) + "%s \\\n%s" % (" ".join(common_args), args_as_str))
+
     # Publish release
-    __import__(MODULE).main(args)
+    __import__(MODULE).main(common_args + args)
 
     # Fetch changes
     remote = "origin"
