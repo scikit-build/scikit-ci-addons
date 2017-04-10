@@ -42,14 +42,14 @@ PLATFORMS = {
 # Git
 #
 
-def generate_commit_date():
+def generate_author_date():
     start_date = dt.datetime.strptime(
         "2017-01-01 12:00:00", "%Y-%m-%d %H:%M:%S")
     days = int(run("git rev-list --count HEAD", limit=1))
     return start_date + dt.timedelta(days=days)
 
 
-def get_commit_date(ref="HEAD"):
+def get_author_date(ref="HEAD"):
     return dt.datetime.strptime(
         run(
             "git log -1 --format=\"%%ad\" --date=local %s" % str(ref), limit=1),
@@ -64,10 +64,10 @@ def get_tag(ref="HEAD"):
 
 def do_commit(version=None, release_tag=None, push=False):
     # Compose commit message
-    commit_date = generate_commit_date()
+    author_date = generate_author_date()
     if version is None:
         version = read_version_file()
-    msg = "Update to %s.dev%s" % (version, commit_date.strftime("%Y%m%d"))
+    msg = "Update to %s.dev%s" % (version, author_date.strftime("%Y%m%d"))
     if release_tag is not None:
         msg = "%s %s" % (PROJECT_NAME, release_tag)
         version = release_tag
@@ -81,7 +81,7 @@ def do_commit(version=None, release_tag=None, push=False):
     run("git add README.md")
     run("git add VERSION")
     run("git commit -m \"%s\" --date=%s" % (commit_msg,
-                                            commit_date.isoformat()))
+                                            author_date.isoformat()))
     # Push
     if push:
         run("git push origin master")
@@ -108,7 +108,7 @@ def get_full_version():
     dev_str = ""
     if version is None or version == PRERELEASE_TAG:
         version = read_version_file()
-        dev_str = ".dev%s" % get_commit_date()
+        dev_str = ".dev%s" % get_author_date()
     return version + dev_str
 
 
@@ -309,7 +309,7 @@ def publish_github_release(mode, system=None):
     generate_packages(get_full_version(), system)
 
     tag_name = PRERELEASE_TAG if "prerelease" in mode else get_tag()
-    commit_date = get_commit_date()
+    author_date = generate_author_date()
 
     # Summary
     pause(textwrap.dedent(
@@ -339,11 +339,11 @@ def publish_github_release(mode, system=None):
         for arg in [
             "--prerelease-tag", tag_name,
             "--prerelease-packages",
-                PACKAGE_DIR + "/*.dev%s*%s*.whl" % (commit_date, system),
+                PACKAGE_DIR + "/*.dev%s*%s*.whl" % (author_date, system),
             "--prerelease-packages-clear-pattern",
                 "*%s*.whl" % system,
             "--prerelease-packages-keep-pattern",
-                "*.dev%s*.whl" % commit_date
+                "*.dev%s*.whl" % author_date
         ]:
             args.append(arg)
 
@@ -504,7 +504,7 @@ def check_releases(expected, releases=None):  # noqa: C901
             return False
     if "tag_date" in expected:
         expected_tag_date = expected["tag_date"]
-        release_tag_date = get_commit_date(release["tag_name"])
+        release_tag_date = get_author_date(release["tag_name"])
         if expected_tag_date != release_tag_date:
             display_error()
             print("Release [%s]: tag dates do not match" % expected["tag_name"])
