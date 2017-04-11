@@ -152,7 +152,7 @@ def _update_package_list(input_packages, what):
         return input_packages
     packages = []
     if isinstance(input_packages, str):
-        input_packages = [input_packages]
+        return _substitute_package_selection_strings(input_packages, what)
     for package in input_packages:
         packages.append(
             _substitute_package_selection_strings(package, what))
@@ -216,6 +216,10 @@ def configure_parser(parser):
         help="Gracefully exit if no GITHUB_TOKEN env. variable is found"
     )
     parser.add_argument(
+        "--re-upload", action="store_true",
+        help="If packages with same exist, delete and re-upload them"
+    )
+    parser.add_argument(
         "--display-python-wheel-platform", action="store_true",
         help="Display current python platform (manylinux1, macosx, or win)"
              " used for Python wheels."
@@ -235,6 +239,19 @@ def configure_parser(parser):
     )
 
 
+def _delete_matching_packages(repo_name, tag, packages):
+    release = get_release_info(repo_name, tag)
+    asset_names = [asset['name'] for asset in release['assets']]
+    for package in packages:
+        for path in glob.glob(package):
+            local_asset_name = os.path.basename(path)
+            # XXX Asset uploaded on GitHub always have "plus" sign found
+            # in their name replaced by "dot".
+            local_asset_name = local_asset_name.replace("+", ".")
+            if local_asset_name in asset_names:
+                gh_asset_delete(repo_name, tag, local_asset_name)
+
+
 def _upload_release(release_tag, args):
     assert release_tag is not None
     # Create release
@@ -243,6 +260,10 @@ def _upload_release(release_tag, args):
         release_tag,
         publish=True, prerelease=False
     )
+    # Remove existing assets matching selected ones
+    if args.re_upload:
+        _delete_matching_packages(
+            args.repo_name, release_tag, args.release_packages)
     # Upload packages
     gh_asset_upload(
         args.repo_name, release_tag, args.release_packages, args.dry_run)
@@ -264,17 +285,9 @@ def _upload_prerelease(args):
         publish=True, prerelease=True
     )
     # Remove existing assets matching selected ones
-    release = get_release_info(args.repo_name, args.prerelease_tag)
-    asset_names = [asset['name'] for asset in release['assets']]
-    for package in args.prerelease_packages:
-        for path in glob.glob(package):
-            local_asset_name = os.path.basename(path)
-            # XXX Asset uploaded on GitHub always have "plus" sign found
-            # in their name replaced by "dot".
-            local_asset_name = local_asset_name.replace("+", ".")
-            if local_asset_name in asset_names:
-                gh_asset_delete(
-                    args.repo_name, args.prerelease_tag, local_asset_name)
+    if args.re_upload:
+        _delete_matching_packages(
+            args.repo_name, args.prerelease_tag, args.prerelease_packages)
     # Upload packages
     gh_asset_upload(
         args.repo_name, args.prerelease_tag, args.prerelease_packages,

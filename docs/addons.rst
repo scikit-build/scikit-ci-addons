@@ -119,6 +119,7 @@ Usage
                                      [--prerelease-sha PRERELEASE_SHA]
                                      [--token GITHUB_TOKEN]
                                      [--exit-success-if-missing-token]
+                                     [--re-upload]
                                      [--display-python-wheel-platform]
                                      [--dry-run]
                                      ORG/PROJECT

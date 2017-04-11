@@ -53,7 +53,7 @@ def get_author_date(ref="HEAD"):
     return dt.datetime.strptime(
         run(
             "git log -1 --format=\"%%ad\" --date=local %s" % str(ref), limit=1),
-        "%c").strftime("%Y%m%d")
+        "%a %b %d %H:%M:%S %Y").strftime("%Y%m%d")
 
 
 def get_tag(ref="HEAD"):
@@ -294,13 +294,13 @@ def do_release(release_tag):
     gh_asset_upload(REPO_NAME, release_tag, PACKAGE_DIR + "/*")
 
 
-def publish_github_release(mode, system=None):
+def publish_github_release(mode, system=None, re_upload=False):
     if system is None:
         system = PLATFORMS.keys()
 
     if type(system) is list:
         for _system in system:
-            publish_github_release(mode, _system)
+            publish_github_release(mode, _system, re_upload)
         return
     if type(mode) is not list:
         mode = [mode]
@@ -309,10 +309,10 @@ def publish_github_release(mode, system=None):
     generate_packages(get_full_version(), system)
 
     tag_name = PRERELEASE_TAG if "prerelease" in mode else get_tag()
-    author_date = generate_author_date()
+    author_date = get_author_date()
 
     # Summary
-    textwrap.dedent(
+    print(textwrap.dedent(
         r"""
         * We will now run [{module}.py] in [{mode}] mode(s)
         * like it would run on [{system}] system(s)
@@ -320,13 +320,20 @@ def publish_github_release(mode, system=None):
         * If it applies, the following will happen:
         *   (1) creation of [{tag_name}] release
         *   (2) upload of associated packages
+        *
+        * Re-upload of packages if name matches: {re_upload}
+        *
         """.format(
             module=MODULE,
-            mode=",".join(mode), system=system, tag_name=tag_name)
-    )
+            mode=",".join(mode), system=system, tag_name=tag_name,
+            re_upload=re_upload)
+    ))
 
     # Common arguments
     common_args = [MODULE + ".py", REPO_NAME]
+    single_args = []
+    if re_upload:
+        single_args.append("--re-upload")
     args = []
     # Release arguments
     if "release" in mode:
@@ -350,6 +357,9 @@ def publish_github_release(mode, system=None):
 
     # Format command arguments to display them nicely across multiple lines
     args_as_str = ""
+    for index in range(len(single_args)):
+        line_continuation = "\\" if index < len(single_args) - 1 else ""
+        args_as_str += "  %s %s\n" % (single_args[index], line_continuation)
     for index in range(0, len(args), 2):
         line_continuation = "\\" if index < len(args) - 2 else ""
         args_as_str += "  %s %s %s\n" % (
@@ -363,7 +373,7 @@ def publish_github_release(mode, system=None):
         """) + "%s \\\n%s" % (" ".join(common_args), args_as_str))
 
     # Publish release
-    __import__(MODULE).main(common_args + args)
+    __import__(MODULE).main(common_args + single_args + args)
 
     # Fetch changes
     remote = "origin"
@@ -668,6 +678,7 @@ def main():
         #
 
         publish_github_release(mode, system="manylinux1")
+        publish_github_release(mode, system="manylinux1", re_upload=True)
         assert (check_releases([
             # Release 1.0.0
             {"tag_name": "1.0.0", "tag_date": "20170103",
@@ -785,6 +796,7 @@ def main():
         # Check that an other release can be created
         #
         publish_github_release(mode, system="manylinux1")
+        publish_github_release(mode, system="manylinux1", re_upload=True)
         assert (check_releases([
             # Release 1.0.0
             {"tag_name": "1.0.0", "tag_date": "20170103",
