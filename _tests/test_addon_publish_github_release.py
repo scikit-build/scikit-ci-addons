@@ -162,3 +162,41 @@ def test_packages_selection_minilanguage(
             args = upload_release.call_args[0][1]
             assert args.release_packages == [
                 "dist/release*%s-%s*.txt" % expected_str]
+
+
+def test_missing_token(src_dir, mocker, capsys, monkeypatch):
+    monkeypatch.delenv("GITHUB_TOKEN")
+
+    pgr = __import__('publish_github_release')
+
+    upload_prerelease = mocker.patch(
+        'publish_github_release._upload_prerelease')
+    upload_release = mocker.patch(
+        'publish_github_release._upload_release')
+
+    with push_dir(src_dir):
+        _do_commit()
+        with pytest.raises(SystemExit) as excinfo:
+            pgr.main([
+                "ci_addons", "anyci/publish_github_release",
+                "--prerelease-packages", "dist/*"
+            ])
+            assert upload_prerelease.call_count == 0
+            assert upload_release.call_count == 0
+            assert excinfo.value.code == 1
+
+        out, _ = capsys.readouterr()
+        assert "error: A token is expected." in out
+
+        with pytest.raises(SystemExit) as excinfo:
+            pgr.main([
+                "ci_addons", "anyci/publish_github_release",
+                "--exit-success-if-missing-token",
+                "--prerelease-packages", "dist/*"
+            ])
+            assert upload_prerelease.call_count == 0
+            assert upload_release.call_count == 0
+            assert excinfo.value.code == 0
+
+        out, _ = capsys.readouterr()
+        assert "skipping: A token is expected." in out

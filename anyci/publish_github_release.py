@@ -212,6 +212,10 @@ def configure_parser(parser):
         help="If not specified, expects GITHUB_TOKEN env. variable"
     )
     parser.add_argument(
+        "--exit-success-if-missing-token", action="store_true",
+        help="Gracefully exit if no GITHUB_TOKEN env. variable is found"
+    )
+    parser.add_argument(
         "--display-python-wheel-platform", action="store_true",
         help="Display current python platform (manylinux1, macosx, or win)"
              " used for Python wheels."
@@ -334,15 +338,15 @@ def main(argv=None):
         print("-" * 80)
         print(textwrap.dedent(
             r"""
-            error: A token is expected.
+            %s: A token is expected.
 
             Specify the --token parameter or set GITHUB_TOKEN environment variable.
             See https://help.github.com/articles/creating-an-access-token-for-command-line-use/
-            """  # noqa: E501
+            """ % ("skipping" if args.exit_success_if_missing_token else "error")  # noqa: E501
         ).lstrip())
         print("-" * 80)
         parser.print_usage()
-        exit(1)
+        exit(0 if args.exit_success_if_missing_token else 1)
     os.environ["GITHUB_TOKEN"] = args.token
 
     # Update package arguments

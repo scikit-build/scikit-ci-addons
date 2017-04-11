@@ -118,6 +118,7 @@ Usage
                                      [--prerelease-name PRERELEASE_NAME]
                                      [--prerelease-sha PRERELEASE_SHA]
                                      [--token GITHUB_TOKEN]
+                                     [--exit-success-if-missing-token]
                                      [--display-python-wheel-platform]
                                      [--dry-run]
                                      ORG/PROJECT
