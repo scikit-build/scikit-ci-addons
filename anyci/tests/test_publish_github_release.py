@@ -53,7 +53,7 @@ def get_author_date(ref="HEAD"):
     return dt.datetime.strptime(
         run(
             "git log -1 --format=\"%%ad\" --date=local %s" % str(ref), limit=1),
-        "%c").strftime("%Y%m%d")
+        "%a %b %d %H:%M:%S %Y").strftime("%Y%m%d")
 
 
 def get_tag(ref="HEAD"):
@@ -309,7 +309,7 @@ def publish_github_release(mode, system=None, re_upload=False):
     generate_packages(get_full_version(), system)
 
     tag_name = PRERELEASE_TAG if "prerelease" in mode else get_tag()
-    author_date = generate_author_date()
+    author_date = get_author_date()
 
     # Summary
     print(textwrap.dedent(
