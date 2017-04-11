@@ -87,4 +87,11 @@ test:
 after_test:
   commands:
     - codecov -X gcov --required --file ./_tests/coverage.xml
-    - $<RUN_ENV> python setup.py bdist_wheel
+    # XXX Remove pre-release tag to ensure generated packages have expected names
+    #     We could teach python-versioneer to ignore "latest" tag
+    - git tag --delete latest
+    # Generate packages
+    - $<RUN_ENV> python setup.py sdist bdist_wheel
+    # Install scikit-ci-addons and check that prerelease uploads succeed
+    - python -m pip install .
+    - python -m ci_addons publish_github_release scikit-build/scikit-ci-addons --exit-success-if-missing-token --prerelease-packages "dist/*"

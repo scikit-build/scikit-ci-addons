@@ -42,14 +42,14 @@ PLATFORMS = {
 # Git
 #
 
-def generate_commit_date():
+def generate_author_date():
     start_date = dt.datetime.strptime(
         "2017-01-01 12:00:00", "%Y-%m-%d %H:%M:%S")
     days = int(run("git rev-list --count HEAD", limit=1))
     return start_date + dt.timedelta(days=days)
 
 
-def get_commit_date(ref="HEAD"):
+def get_author_date(ref="HEAD"):
     return dt.datetime.strptime(
         run(
             "git log -1 --format=\"%%ad\" --date=local %s" % str(ref), limit=1),
@@ -64,10 +64,10 @@ def get_tag(ref="HEAD"):
 
 def do_commit(version=None, release_tag=None, push=False):
     # Compose commit message
-    commit_date = generate_commit_date()
+    author_date = generate_author_date()
     if version is None:
         version = read_version_file()
-    msg = "Update to %s.dev%s" % (version, commit_date.strftime("%Y%m%d"))
+    msg = "Update to %s.dev%s" % (version, author_date.strftime("%Y%m%d"))
     if release_tag is not None:
         msg = "%s %s" % (PROJECT_NAME, release_tag)
         version = release_tag
@@ -81,7 +81,7 @@ def do_commit(version=None, release_tag=None, push=False):
     run("git add README.md")
     run("git add VERSION")
     run("git commit -m \"%s\" --date=%s" % (commit_msg,
-                                            commit_date.isoformat()))
+                                            author_date.isoformat()))
     # Push
     if push:
         run("git push origin master")
@@ -108,7 +108,7 @@ def get_full_version():
     dev_str = ""
     if version is None or version == PRERELEASE_TAG:
         version = read_version_file()
-        dev_str = ".dev%s" % get_commit_date()
+        dev_str = ".dev%s" % get_author_date()
     return version + dev_str
 
 
@@ -308,11 +308,11 @@ def publish_github_release(mode, system=None):
     pause("We will generate packages like it would on [%s] system(s)" % system)
     generate_packages(get_full_version(), system)
 
-    tag_name = PRERELEASE_TAG if get_tag() is None else get_tag()
-    commit_date = get_commit_date()
+    tag_name = PRERELEASE_TAG if "prerelease" in mode else get_tag()
+    author_date = generate_author_date()
 
     # Summary
-    pause(textwrap.dedent(
+    textwrap.dedent(
         r"""
         * We will now run [{module}.py] in [{mode}] mode(s)
         * like it would run on [{system}] system(s)
@@ -321,11 +321,13 @@ def publish_github_release(mode, system=None):
         *   (1) creation of [{tag_name}] release
         *   (2) upload of associated packages
         """.format(
-            module=MODULE, mode=mode, system=system, tag_name=tag_name)
-    ))
+            module=MODULE,
+            mode=",".join(mode), system=system, tag_name=tag_name)
+    )
 
     # Common arguments
-    args = [MODULE + ".py", REPO_NAME]
+    common_args = [MODULE + ".py", REPO_NAME]
+    args = []
     # Release arguments
     if "release" in mode:
         for arg in [
@@ -338,27 +340,36 @@ def publish_github_release(mode, system=None):
         for arg in [
             "--prerelease-tag", tag_name,
             "--prerelease-packages",
-                PACKAGE_DIR + "/*.dev%s*%s*.whl" % (commit_date, system),
+                PACKAGE_DIR + "/*.dev%s*%s*.whl" % (author_date, system),
             "--prerelease-packages-clear-pattern",
                 "*%s*.whl" % system,
             "--prerelease-packages-keep-pattern",
-                "*.dev%s*.whl" % commit_date
+                "*.dev%s*.whl" % author_date
         ]:
             args.append(arg)
 
-    # Delete local tag
-    msg = "Removing local [%s] tag" % PRERELEASE_TAG
-    print(msg)
-    run("git tag --delete %s" % PRERELEASE_TAG, ignore_errors=True)
-    print("%s - done\n" % msg)
+    # Format command arguments to display them nicely across multiple lines
+    args_as_str = ""
+    for index in range(0, len(args), 2):
+        line_continuation = "\\" if index < len(args) - 2 else ""
+        args_as_str += "  %s %s %s\n" % (
+            args[index], args[index+1], line_continuation)
+
+    pause(textwrap.dedent(
+        r"""
+        *
+        * The following command will be executed:
+
+        """) + "%s \\\n%s" % (" ".join(common_args), args_as_str))
 
     # Publish release
-    __import__(MODULE).main(args)
+    __import__(MODULE).main(common_args + args)
 
     # Fetch changes
-    msg = "fetching change from remote"
+    remote = "origin"
+    msg = "fetching changes from remote '%s'" % remote
     print(msg)
-    run("git fetch origin")
+    run("git fetch --tags %s" % remote)
     print("%s - done\n" % msg)
 
 
@@ -508,7 +519,7 @@ def check_releases(expected, releases=None):  # noqa: C901
             return False
     if "tag_date" in expected:
         expected_tag_date = expected["tag_date"]
-        release_tag_date = get_commit_date(release["tag_name"])
+        release_tag_date = get_author_date(release["tag_name"])
         if expected_tag_date != release_tag_date:
             display_error()
             print("Release [%s]: tag dates do not match" % expected["tag_name"])
@@ -624,7 +635,8 @@ def main():
 
     def test_prerelease_mode():
         """In ``prerelease`` mode, the script is expected to create a
-        prerelease only if HEAD is not associated with a tag."""
+        prerelease only if HEAD is not associated with a tag different
+        from the prerelease tag"""
 
         global TEST_CASE
         TEST_CASE = "test_prerelease_mode"

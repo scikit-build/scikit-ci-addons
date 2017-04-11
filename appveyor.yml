@@ -7,6 +7,9 @@ branches:
 version: "0.0.1.{build}"
 
 environment:
+  GITHUB_TOKEN:
+    secure: MeZRb+x5xfxO5jH93yXs5Tl9MDmH48nmpMF/i5ouAV/frSSonzqDUZmYg8oMMMI8
+
   matrix:
 
     # Visual Studio (Python 2 & 3, 32 & 64 bit)
@@ -50,7 +53,7 @@ cache:
 
 install:
   - ps: appveyor/rolling-build.ps1
-  - python -m pip install scikit-ci==0.12.0
+  - python -m pip install scikit-ci==0.13.0
   - python -m ci install
 
 build_script:
