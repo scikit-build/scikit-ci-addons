@@ -151,10 +151,10 @@ def test_packages_selection_minilanguage(
             args = upload_prerelease.call_args[0][0]
             assert args.prerelease_packages == [
                 "dist/prerelease*%s-%s*.txt" % expected_str]
-            assert args.prerelease_packages_clear_pattern == [
-                "dist/clear*%s-%s*.txt" % expected_str]
-            assert args.prerelease_packages_keep_pattern == [
-                "dist/keep*%s-%s*.txt" % expected_str]
+            assert args.prerelease_packages_clear_pattern == \
+                "dist/clear*%s-%s*.txt" % expected_str
+            assert args.prerelease_packages_keep_pattern == \
+                "dist/keep*%s-%s*.txt" % expected_str
 
         if expected_release == 1:
             release_tag = upload_release.call_args[0][0]

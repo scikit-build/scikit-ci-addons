@@ -152,7 +152,7 @@ def _update_package_list(input_packages, what):
         return input_packages
     packages = []
     if isinstance(input_packages, str):
-        input_packages = [input_packages]
+        return _substitute_package_selection_strings(input_packages, what)
     for package in input_packages:
         packages.append(
             _substitute_package_selection_strings(package, what))
