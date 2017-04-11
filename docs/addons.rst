@@ -126,10 +126,24 @@ Usage
 
     - Packages to upload can be a list of paths or a list of globbing patterns.
 
-    - Option ``--display-python-wheel-platform`` is useful to easily
-      get the name of the current platform as found in python wheel
-      package names (e.g manylinux1, macosx, or win).
 
+Mini-language for packages selection
+""""""""""""""""""""""""""""""""""""
+
+To facilitate selection of specific packages, if any of the strings described below are
+found in arguments associated with with either ``--prerelease-packages``
+or ``--release-packages``, they will be replaced.
+
+**<PYTHON_WHEEL_PLATFORM>**: This string is replaced by the current
+platform as found in python wheel package names (e.g manylinux1, macosx, or win).
+Executing ``ci_addons publish_github_release --display-python-wheel-platform``
+returns the same string.
+
+**<COMMIT_DATE>**: This string is replaced by the YYYYMMDD date
+as returned by ``git show -s --format="%cd" --date=local``.
+
+**<COMMIT_SHORT_SHA>**: This string is replaced by the sha
+as returned by ``git rev-parse --short=7 HEAD``.
 
 Use case: Automatic upload of release packages associated with a tag
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -272,6 +286,15 @@ For example::
       --prerelease-packages dist/*.dev${commit_date}*${platform}*.whl \
       --prerelease-packages-clear-pattern "*${platform}*.whl" \
       --prerelease-packages-keep-pattern "*.dev${commit_date}*.whl"
+
+The same can also be achieved across platform using the convenient mini-language for package
+selection::
+
+  $ ci_addons publish_github_release ORG/PROJECT \
+      --release-packages "dist/*" \
+      --prerelease-packages "dist/*.dev<COMMIT_DATE>*<PYTHON_WHEEL_PLATFORM>*.whl" \
+      --prerelease-packages-clear-pattern "*<PYTHON_WHEEL_PLATFORM>*.whl" \
+      --prerelease-packages-keep-pattern "*.dev<COMMIT_DATE>*.whl"
 
 Testing
 """""""

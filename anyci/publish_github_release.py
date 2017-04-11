@@ -103,6 +103,19 @@ def get_current_date():
     return now.strftime("%Y-%m-%d %H:%m UTC")
 
 
+def get_commit_date(ref="HEAD"):
+    output, _ = run_command(
+        GITS, ["log", "-1", "--format=%cd", "--date=local", str(ref)])
+    return dt.datetime.strptime(
+        output, "%a %b %d %H:%M:%S %Y").strftime("%Y%m%d")
+
+
+def get_commit_short_sha(ref="HEAD"):
+    output, _ = run_command(
+        GITS, ["rev-parse", "--short=7", str(ref)])
+    return output
+
+
 #
 # Python
 #
@@ -112,6 +125,38 @@ def python_wheel_platform():
     return {
         "linux": "manylinux1", "darwin": "macosx", "windows": "win"
     }.get(this_platform, this_platform)
+
+
+#
+# Mini-language for package selection
+#
+
+def _substitute_package_selection_strings(package, what):
+    tokens = {
+        '<PYTHON_WHEEL_PLATFORM>': python_wheel_platform,
+        '<COMMIT_DATE>': get_commit_date,
+        '<COMMIT_SHORT_SHA>': get_commit_short_sha
+    }
+    if any([token in package for token in tokens]):
+        print("Updating %s [%s]" % (what, package))
+    for token, replace_func in tokens.items():
+        if token in package:
+            updated_value = replace_func()
+            print("  %s -> %s" % (token, updated_value))
+            package = package.replace(token, updated_value)
+    return package
+
+
+def _update_package_list(input_packages, what):
+    if input_packages is None:
+        return input_packages
+    packages = []
+    if isinstance(input_packages, str):
+        input_packages = [input_packages]
+    for package in input_packages:
+        packages.append(
+            _substitute_package_selection_strings(package, what))
+    return packages
 
 
 #
@@ -299,6 +344,18 @@ def main(argv=None):
         parser.print_usage()
         exit(1)
     os.environ["GITHUB_TOKEN"] = args.token
+
+    # Update package arguments
+    args.release_packages = _update_package_list(
+        args.release_packages, "release package")
+    args.prerelease_packages = _update_package_list(
+        args.prerelease_packages, "prerelease package")
+    args.prerelease_packages_clear_pattern = _update_package_list(
+        args.prerelease_packages_clear_pattern,
+        "prerelease package clear pattern")
+    args.prerelease_packages_keep_pattern = _update_package_list(
+        args.prerelease_packages_keep_pattern,
+        "prerelease package keep pattern")
 
     msg = "Checking if HEAD is a release tag"
     print(msg)
