@@ -10,7 +10,7 @@ machine:
 
 dependencies:
   override:
-    - pip install scikit-ci==0.13.0
+    - pip install scikit-ci==0.14.0
     - ci install
 
 test:
