@@ -356,7 +356,7 @@ Usage::
 Example::
 
     - ci_addons --install ../
-    - ps: ../addons/appveyor/enable-worker-remote-access.ps1 -block
+    - ps: ../appveyor/enable-worker-remote-access.ps1 -block
 
 
 .. note::
@@ -408,7 +408,7 @@ important when building Python C Extensions.
 Usage::
 
     ci_addons --install ../
-    ../run-with-visual-studio.cmd \\path\\to\\command [arg1 [...]]
+    ../appveyor/run-with-visual-studio.cmd \\path\\to\\command [arg1 [...]]
 
 Example::
 
