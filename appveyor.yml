@@ -3,6 +3,10 @@
 branches:
  only:
   - master
+ except:
+  # Exclude tags created by "ci_addons publish_github_release"
+  - latest
+  - latest-tmp
 
 version: "0.0.1.{build}"
 
