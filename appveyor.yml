@@ -13,6 +13,8 @@ version: "0.0.1.{build}"
 environment:
   GITHUB_TOKEN:
     secure: MeZRb+x5xfxO5jH93yXs5Tl9MDmH48nmpMF/i5ouAV/frSSonzqDUZmYg8oMMMI8
+  APPVEYOR_API_TOKEN:
+    secure: eXiEH+/7OgWrbLNGD3aeMGOCsUN5MqXxgRMYci+rCMw=
 
   matrix:
 
