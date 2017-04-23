@@ -1,7 +1,7 @@
 trap { Write-Error $_; Exit 1 }
 
 #
-# By default, Python 2.7.12, 3.5.3 and 3.6.0 are installed.
+# By default, Python 2.7.12, 3.5.3 and 3.6.1 are installed.
 #
 # Setting $pythonVersion to "2.7", "3.5" or "3.6" allows to install a specific version
 #
@@ -154,7 +154,7 @@ if(!$pythonVersion -Or $pythonVersion.CompareTo("27") -eq 0){
   }
 }
 
-$exeVersions = @("3.5.3", "3.6.0")
+$exeVersions = @("3.5.3", "3.6.1")
 foreach ($version in $exeVersions) {
 
   $split = $version.Split(".")
