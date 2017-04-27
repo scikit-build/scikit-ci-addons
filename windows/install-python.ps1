@@ -90,7 +90,7 @@ param (
   $get_pip_script = Join-Path $downloadDir "get-pip.py"
 
   $interpreter = Join-Path $pythonDir "python.exe"
-  Write-Host "Installing pip into $interpreter"
+  Write-Host "Installing pip using $interpreter"
 
   Start-Process $interpreter -ArgumentList "`"$get_pip_script`"" -NoNewWindow -Wait
 }

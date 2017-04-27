@@ -16,6 +16,29 @@ This a special category containing scripts that could be executed on a broad
 range of CI services.
 
 
+``ctest_junit_formatter``
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Add-on converting test results from CTest to JUnit format.
+
+The add-on get the name of the latest build tag by reading the
+first line of <BUILD_DIR>/Testing/TAG, and then convert the
+file <BUILD_DIR>/Testing/<LATEST_TAG>/Test.xml. The conversion
+results is outputted on stdout.
+
+Usage::
+
+    ci_addons ctest_junit_formatter BUILD_DIR > JUnit.xml
+
+Example of use from CircleCI::
+
+    $ mkdir ${CIRCLE_TEST_REPORTS}/CTest
+    $ ci_addons ctest_junit_formatter BUILD_DIR > ${CIRCLE_TEST_REPORTS}/CTest/JUnit-${CIRCLE_NODE_INDEX}.xml
+
+Example of CircleCI report with failing tests:
+
+.. image:: images/ctest_junit_formatter_circleci_example.png
+
 ``docker.py``
 ^^^^^^^^^^^^^
 

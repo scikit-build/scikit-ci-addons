@@ -4,8 +4,11 @@ import ci_addons
 import os
 import py_compile
 import pytest
+import shutil
 import subprocess
 import sys
+
+from lxml import etree
 
 from . import captured_lines, format_args_for_display
 
@@ -237,3 +240,85 @@ def test_addon_anyci_docker(tmpdir):
     assert "Status: Image is up to date for %s:latest" % test_image in output
     assert "Skipped because pulled image did not change" in output
     assert tmpdir.join("cache", test_image_filename).exists()
+
+
+def test_addon_anyci_ctest_junit_formatter(tmpdir):
+    testing_dir = tmpdir.mkdir("Testing")
+    tag = "20170426-0546"
+    testing_dir.ensure("TAG").write(tag)
+
+    # Input data and associated expected values were obtained by running Girder
+    # tests using "ctest -D ExperimentalTest" and by copying the "Test.xml"
+    # found in the Testing subdirectory.
+    #
+    # Note: If new data are generated, the expected values will have to be
+    #       tweaked. Additionally, the "base64" section should be replaced by
+    #       a shorter text.
+
+    test_data_dir = os.path.join(os.path.dirname(__file__), "data")
+    test_xml = os.path.join(test_data_dir, "ctest_junit_formatter_input.xml")
+    assert os.path.exists(test_xml)
+
+    shutil.copyfile(test_xml, str(testing_dir.mkdir(tag).join("Test.xml")))
+
+    cmd = ["python", "-m",
+           "ci_addons", "anyci/ctest_junit_formatter", str(tmpdir)]
+
+    root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    environment = dict(os.environ)
+    environment['PYTHONPATH'] = root
+    environment['HOME'] = str(tmpdir)
+
+    output = subprocess.check_output(
+        cmd,
+        env=environment,
+        stderr=subprocess.STDOUT,
+        cwd=root
+    ).decode("utf-8", "ignore")
+
+    expected_properties = {
+        "BuildName": "Linux-",
+        "BuildStamp": "20170426-0546-Experimental",
+        "Name": "CerroTorre",
+        "Generator": "ctest-3.4.2",
+        "CompilerName": "",
+        "OSName": "Linux",
+        "Hostname": "CerroTorre",
+        "OSRelease": "4.2.0-42-generic",
+        "OSVersion": "#49-Ubuntu SMP Tue Jun 28 21:26:26 UTC 2016",
+        "OSPlatform": "x86_64",
+        "Is64Bits": "1",
+        "VendorString": "GenuineIntel",
+        "VendorID": "Intel Corporation",
+        "FamilyID": "6",
+        "ModelID": "94",
+        "ProcessorCacheSize": "8192",
+        "NumberOfLogicalCPU": "8",
+        "NumberOfPhysicalCPU": "1",
+        "TotalVirtualMemory": "63336",
+        "TotalPhysicalMemory": "62267",
+        "LogicalProcessorsPerPhysical": "8",
+        "ProcessorClockFrequency": "3489.74"
+    }
+
+    output_doc = etree.XML(output)
+
+    assert output_doc.tag == "testsuite"
+
+    system_out = output_doc.findall("system-out")
+    assert len(system_out) == 1
+
+    properties = output_doc.findall("./properties/property")
+    assert len(properties) == len(expected_properties)
+    assert {elem.attrib["name"]: elem.attrib["value"]
+            for elem in properties} == expected_properties
+
+    testcases = output_doc.findall(
+        "./testcase[@name][@classname='TestSuite'][@time]")
+    assert len(testcases) == 193
+
+    errors = output_doc.findall("./testcase/error[@message]")
+    assert len(errors) == 37
+
+    assert "testGroupAccess (tests.cases.group_test.GroupTestCase) ... FAIL" \
+           in errors[0].text

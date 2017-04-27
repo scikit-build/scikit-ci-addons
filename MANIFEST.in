@@ -13,6 +13,8 @@ include requirements-docs.txt
 include versioneer.py
 include ci_addons/_version.py
 
+include anyci/ctest_junit_formatter.xsl
+
 recursive-include * *.cmd
 recursive-include * *.ps1
 recursive-include * *.sh
