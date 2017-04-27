@@ -9684,7 +9684,7 @@ Dumping ajax trace:
       "error": null,
       "path": "/folder/590035074154cd213d255bba/metadata?allowNull=true",
       "contentType": "application/json",
-      "data": "{\"unicode_key©𝌆\":\"unicode_value©𝌆\"}",
+      "data": "{\"unicode_key\":\"unicode_value\"}",
       "url": "http://localhost:30011/api/v1/folder/590035074154cd213d255bba/metadata?allowNull=true",
       "headers": {
         "Girder-Token": "4fsUidUrfvvTNVjSyfO18999xDLvRCz7mBBqg0mawS6CR9pj4a52lk37QCg41bm8"
