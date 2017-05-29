@@ -670,18 +670,41 @@ Details for each ``install-*.ps1`` scripts are reported below.
 ``install-cmake.ps1``
 ^^^^^^^^^^^^^^^^^^^^^
 
-By default, install CMake 3.7.1 in directory ``C:\cmake-3.7.1``
+Install selected CMake version in ``C:\cmake-X.Y.Z``.
+
+* from a windows command terminal open as administrator ::
+
+    @powershell -ExecutionPolicy Unrestricted "$cmakeVersion='3.8.1'; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-cmake.ps1'))"
+
+
+* from a powershell terminal open as administrator: ::
+
+    Set-ExecutionPolicy Unrestricted
+    $cmakeVersion="3.8.1"
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-cmake.ps1'))
 
 .. note::
 
     - CMake is **NOT** added to the ``PATH``
     - setting ``$cmakeVersion`` to "X.Y.Z" before executing the script allows to select a specific CMake version.
+    - By default, install CMake 3.7.1 in directory ``C:\cmake-3.7.1``
 
 
 ``install-git.ps1``
 ^^^^^^^^^^^^^^^^^^^
 
 Install Git 2.11.0 (including Git Bash) on the system.
+
+* from a windows command terminal open as administrator ::
+
+    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-git.ps1'))"
+
+
+* from a powershell terminal open as administrator: ::
+
+    Set-ExecutionPolicy Unrestricted
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-git.ps1'))
+
 
 .. note::
 
@@ -693,6 +716,17 @@ Install Git 2.11.0 (including Git Bash) on the system.
 
 Install ninja executable v1.7.2 into ``C:\ninja-1.7.2``.
 
+* from a windows command terminal open as administrator ::
+
+    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-ninja.ps1'))"
+
+
+* from a powershell terminal open as administrator: ::
+
+    Set-ExecutionPolicy Unrestricted
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-ninja.ps1'))
+
+
 .. note::
 
     - ninja executable is **NOT** added to the ``PATH``
@@ -702,6 +736,17 @@ Install ninja executable v1.7.2 into ``C:\ninja-1.7.2``.
 ^^^^^^^^^^^^^^^^^^^^
 
 Install NSIS 3.01 on the system.
+
+* from a windows command terminal open as administrator ::
+
+    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-nsis.ps1'))"
+
+
+* from a powershell terminal open as administrator: ::
+
+    Set-ExecutionPolicy Unrestricted
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-nsis.ps1'))
+
 
 .. note::
 
@@ -742,8 +787,7 @@ Install Python 3.6 64-bit and update the PATH.
 
 This is equivalent to: ::
 
-
-    $pythonVersion = "3.6"
+    $pythonVersion = "2.7"
     $pythonArch = "64"
     $pythonPrependPath = "1"
     .\install-python.ps1
@@ -756,12 +800,11 @@ This is equivalent to: ::
 ``install-python-36-x64.ps1``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Install Python 2.7 64-bit and update the PATH.
+Install Python 3.6 64-bit and update the PATH.
 
 This is equivalent to: ::
 
-
-    $pythonVersion = "2.7"
+    $pythonVersion = "3.6"
     $pythonArch = "64"
     $pythonPrependPath = "1"
     .\install-python.ps1
@@ -777,6 +820,18 @@ This is equivalent to: ::
 Install `Slik SVN <https://sliksvn.com/download/>`_ 1.9.5 in the following directory: ::
 
     C:\SlikSvn
+
+
+* from a windows command terminal open as administrator ::
+
+    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-svn.ps1'))"
+
+
+* from a powershell terminal open as administrator: ::
+
+    Set-ExecutionPolicy Unrestricted
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-svn.ps1'))
+
 
 .. note::
 
