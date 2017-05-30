@@ -756,11 +756,17 @@ Install NSIS 3.01 on the system.
 ``install-python.ps1``
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Install Python 2.7.12, 3.5.3 and 3.6.1 (32 and 64-bit) along with pip and virtualenv
+Install Python 2.7.12, 3.3.5, 3.4.4, 3.5.3 and 3.6.1 (32 and 64-bit) along with pip and virtualenv
 in the following directories: ::
 
     C:\Python27-x64
     C:\Python27-x86
+
+    C:\Python33-x64
+    C:\Python33-x86
+
+    C:\Python34-x64
+    C:\Python34-x86
 
     C:\Python35-x64
     C:\Python35-x86
@@ -770,27 +776,41 @@ in the following directories: ::
 
 
 .. note::
-
     - python interpreter is **NOT** added to the ``PATH``
-    - setting ``$pythonVersion`` to either "2.7", "3.5" or "3.6" before executing the script allows
+    - setting ``$pythonVersion`` to either "2.7", "3.3", "3.4", "3.5" or "3.6" before executing the script allows
       to install a specific version. By default, all are installed.
     - setting ``$pythonArch`` to either "86" or "64" before executing the script allows
       to install python for specific architecture. By default, both are installed.
     - setting ``$pythonPrependPath`` to 1 will add install and Scripts directories the PATH and .PY to PATHEXT. This
       variable should be set only if ``$pythonVersion`` and ``$pythonArch`` are set. By default, the value is 0.
 
+.. warning::
+    - The downloaded versions of python ``3.3`` and ``3.4`` are **NOT** the latest version including security patches.
+      If running in a production environment (e.g webserver), these versions should be built from source.
 
 ``install-python-27-x64.ps1``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Install Python 3.6 64-bit and update the PATH.
+Install Python 2.7 64-bit and update the PATH.
+
+* from a windows command terminal open as administrator ::
+
+    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-27-x64.ps1'))"
+
+
+* from a powershell terminal open as administrator: ::
+
+    Set-ExecutionPolicy Unrestricted
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-27-x64.ps1'))
+
 
 This is equivalent to: ::
 
+    Set-ExecutionPolicy Unrestricted
     $pythonVersion = "2.7"
     $pythonArch = "64"
     $pythonPrependPath = "1"
-    .\install-python.ps1
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
 
 .. note::
 
@@ -802,12 +822,24 @@ This is equivalent to: ::
 
 Install Python 3.6 64-bit and update the PATH.
 
+* from a windows command terminal open as administrator ::
+
+    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-36-x64.ps1'))"
+
+
+* from a powershell terminal open as administrator: ::
+
+    Set-ExecutionPolicy Unrestricted
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-36-x64.ps1'))
+
+
 This is equivalent to: ::
 
+    Set-ExecutionPolicy Unrestricted
     $pythonVersion = "3.6"
     $pythonArch = "64"
     $pythonPrependPath = "1"
-    .\install-python.ps1
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
 
 .. note::
 

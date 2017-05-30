@@ -3,7 +3,7 @@ trap { Write-Error $_; Exit 1 }
 #
 # By default, Python 2.7.12, 3.5.3 and 3.6.1 are installed.
 #
-# Setting $pythonVersion to "2.7", "3.5" or "3.6" allows to install a specific version
+# Setting $pythonVersion to "2.7", "3.4", "3.5" or "3.6" allows to install a specific version
 #
 # Setting $pythonArch to either "64" or "86" allows to install python for specific architecture.
 #
@@ -63,7 +63,7 @@ param (
   Start-Process $installerPath -ArgumentList "TargetDir=$targetDir DefaultAllUsersTargetDir=$targetDir InstallAllUsers=1 Include_launcher=0 PrependPath=$pythonPrependPath Shortcuts=0 /passive" -NoNewWindow -Wait
 }
 
-function Install-Python-27 {
+function Install-Python-27-33-34 {
 param (
   [string]$targetDir,
   [string]$installerName,
@@ -137,20 +137,30 @@ if(!($pythonPrependPath -match "^(0|1)$")){
 }
 
 
-if(!$pythonVersion -Or $pythonVersion.CompareTo("27") -eq 0){
+$exeVersions = @("2.7.12", "3.3.5", "3.4.4")
+foreach ($version in $exeVersions) {
+
+  $split = $version.Split(".")
+  $majorMinor = [string]::Join("", $split, 0, 2)
+  $majorMinorDot = [string]::Join(".", $split, 0, 2)
+
+  if($pythonVersion -And ! $pythonVersion.CompareTo($majorMinor) -eq 0) {
+    Write-Host "Skipping $majorMinor"
+    continue
+  }
 
   if (!$pythonArch -Or $pythonArch.CompareTo("64") -eq 0) {
-    $targetDir = 'C:\Python27-x64'
-    $installerName = 'python-2.7.12.amd64.msi'
-    $downloadURL = "https://www.python.org/ftp/python/2.7.12/$installerName"
-    Install-Python-27 $targetDir $installerName $downloadURL
+    $targetDir = "C:\Python$($majorMinor)-x64"
+    $installerName = "python-$($version).amd64.msi"
+    $downloadURL = "https://www.python.org/ftp/python/$($version)/$($installerName)"
+    Install-Python-27-33-34 $targetDir $installerName $downloadURL
   }
 
   if (!$pythonArch -Or $pythonArch.CompareTo("86") -eq 0) {
-    $targetDir = 'C:\Python27-x86'
-    $installerName = 'python-2.7.12.msi'
-    $downloadURL = "https://www.python.org/ftp/python/2.7.12/$installerName"
-    Install-Python-27 $targetDir $installerName $downloadURL
+    $targetDir = "C:\Python$($majorMinor)-x86"
+    $installerName = "python-$($version).msi"
+    $downloadURL = "https://www.python.org/ftp/python/$($version)/$($installerName)"
+    Install-Python-27-33-34 $targetDir $installerName $downloadURL
   }
 }
 
