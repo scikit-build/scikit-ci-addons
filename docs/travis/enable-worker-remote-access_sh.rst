@@ -24,12 +24,19 @@ Usage:
         - secure: "xyz...abc...dev="
         [...]
 
+        install:
+        - [...]
+        - wget https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/travis/enable-worker-remote-access.sh -O ../enable-worker-remote-access.sh
+        - chmod u+x ../enable-worker-remote-access.sh
+
         script:
-        - ...
-        - |
-         wget https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/travis/enable-worker-remote-access.sh -O ../enable-worker-remote-access.sh
-         chmod u+x ../enable-worker-remote-access.sh
-         ../enable-worker-remote-access.sh
+        - [...]
+
+        after_success:
+        - ../enable-worker-remote-access.sh
+
+        after_failure:
+        - ../enable-worker-remote-access.sh
 
     - next time travis build the project it will download ngrok and setup the tunnel. Output should
       be similar to this one::
