@@ -101,11 +101,10 @@ param (
   [string]$package
   )
 
-  $pip = Join-Path $pythonDir "Scripts\\pip.exe"
+  $interpreter = Join-Path $pythonDir "python.exe"
+  Write-Host "Installing $package using pip with $interpreter"
 
-  Write-Host "Installing $package using $pip"
-
-  Start-Process $pip -ArgumentList "install `"$package`"" -NoNewWindow -Wait
+  Start-Process $interpreter -ArgumentList "-m pip install `"$package`"" -NoNewWindow -Wait
 }
 
 $downloadDir = "C:/Downloads"
