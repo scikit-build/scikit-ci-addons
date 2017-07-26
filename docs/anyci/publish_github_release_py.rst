@@ -81,7 +81,7 @@ Executing ``ci_addons publish_github_release --display-python-wheel-platform``
 returns the same string.
 
 **<COMMIT_DATE>**: This string is replaced by the YYYYMMDD date
-as returned by ``git show -s --format="%cd" --date=local``.
+as returned by ``git show -s --format="%ci"``.
 
 **<COMMIT_SHORT_SHA>**: This string is replaced by the sha
 as returned by ``git rev-parse --short=7 HEAD``.

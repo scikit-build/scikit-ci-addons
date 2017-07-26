@@ -104,10 +104,14 @@ def get_current_date():
 
 
 def get_commit_date(ref="HEAD"):
+    # 2017-06-14 22:53:31 -0400
     output, _ = run_command(
-        GITS, ["log", "-1", "--format=%cd", "--date=local", str(ref)])
+        GITS, ["log", "-1", "--format=%ci", str(ref)])
+    # 2017-06-14 22:53:31
+    output = " ".join(output.split(" ")[:2])
+    # 20170614
     return dt.datetime.strptime(
-        output, "%a %b %d %H:%M:%S %Y").strftime("%Y%m%d")
+        output, "%Y-%m-%d %H:%M:%S").strftime("%Y%m%d")
 
 
 def get_commit_short_sha(ref="HEAD"):
