@@ -85,8 +85,11 @@ param (
   [string]$pythonDir,
   [string]$downloadDir
   )
-  Download-URL 'https://bootstrap.pypa.io/get-pip.py' $downloadDir
-
+  # Workaround https://github.com/scikit-build/scikit-ci-addons/issues/54
+  # Download-URL 'https://bootstrap.pypa.io/get-pip.py' $downloadDir
+  $url = 'https://gist.githubusercontent.com/jcfr/db7347e8708b9f32d45ab36125fad6d3/raw/0745d1152433573501909c16bcf78328a350f308/get-pip.py'
+  Download-URL $url $downloadDir
+  
   $get_pip_script = Join-Path $downloadDir "get-pip.py"
 
   $interpreter = Join-Path $pythonDir "python.exe"
