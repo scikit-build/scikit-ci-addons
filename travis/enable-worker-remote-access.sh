@@ -4,7 +4,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 case $TRAVIS_OS_NAME in
   linux)
-    curl -L https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip -O $SCRIPT_DIR/ngrok.zip
+    curl -L https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip -o $SCRIPT_DIR/ngrok.zip
   ;;
   osx)
     curl -f -L -C - -o $SCRIPT_DIR/ngrok.zip https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-darwin-amd64.zip
