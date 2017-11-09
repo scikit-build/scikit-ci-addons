@@ -121,10 +121,12 @@ def package_name(project_name, full_version, py_ver, platform):
         **locals())
 
 
-def package_names(full_version, systems=[]):
-    if type(systems) is not list:
+def package_names(full_version, systems=None):
+    if systems is None:
+        systems = []
+    if not isinstance(systems, list):
         systems = [systems]
-    systems = PLATFORMS.keys() if len(systems) == 0 else systems
+    systems = systems if systems else list(PLATFORMS.keys())
 
     # List of platform matching selected systems
     platforms = []
@@ -140,8 +142,11 @@ def package_names(full_version, systems=[]):
         ]
 
 
-def generate_packages(full_version, systems=[], clear=True):
-    print("generating %s packages" % (systems if systems else PLATFORMS.keys()))
+def generate_packages(full_version, systems=None, clear=True):
+    if systems is None:
+        systems = []
+    systems = systems if systems else list(PLATFORMS.keys())
+    print("generating %s packages" % systems)
     if clear:
         clear_package_directory()
     if not os.path.exists(PACKAGE_DIR):
@@ -171,7 +176,7 @@ def pause(text):
                  "*", "*" * 80, ""]:
         print(line)
     if INTERACTIVE:
-        if sys.version_info[0] == 3 and sys.version_info[2] >= 3:
+        if sys.version_info[0] == 3 and sys.version_info[1] >= 3:
             input("Press Enter to continue...")
         else:
             raw_input("Press Enter to continue...")  # noqa: F821
@@ -296,13 +301,16 @@ def do_release(release_tag):
 
 def publish_github_release(mode, system=None, re_upload=False):
     if system is None:
-        system = PLATFORMS.keys()
+        system = list(PLATFORMS.keys())
 
-    if type(system) is list:
+    if isinstance(system, list):
         for _system in system:
             publish_github_release(mode, _system, re_upload)
         return
-    if type(mode) is not list:
+
+    assert system in PLATFORMS.keys()
+
+    if not isinstance(mode, list):
         mode = [mode]
 
     pause("We will generate packages like it would on [%s] system(s)" % system)
@@ -426,7 +434,7 @@ def check_releases(expected, releases=None):  # noqa: C901
 
     if releases is None:
         releases = get_releases(REPO_NAME)
-    if type(expected) is list:
+    if isinstance(expected, list):
         # Check overall count
         if len(releases) != len(expected):
             display_error()
@@ -499,7 +507,7 @@ def check_releases(expected, releases=None):  # noqa: C901
             print("")
             return False
         patterns = expected["package_pattern"]
-        if type(patterns) is not list:
+        if not isinstance(patterns, list):
             patterns = [patterns]
         for expected_package_count, pattern in patterns:
             current_package_count = 0
