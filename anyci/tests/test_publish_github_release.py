@@ -299,13 +299,13 @@ def do_release(release_tag):
     gh_asset_upload(REPO_NAME, release_tag, PACKAGE_DIR + "/*")
 
 
-def publish_github_release(mode, system=None, re_upload=False):
+def publish_github_release(mode, system=None, re_upload=False, prerelease_sha=None):
     if system is None:
         system = list(PLATFORMS.keys())
 
     if isinstance(system, list):
         for _system in system:
-            publish_github_release(mode, _system, re_upload)
+            publish_github_release(mode, _system, re_upload, prerelease_sha)
         return
 
     assert system in PLATFORMS.keys()
@@ -362,6 +362,8 @@ def publish_github_release(mode, system=None, re_upload=False):
                 "*.dev%s*.whl" % author_date
         ]:
             args.append(arg)
+        if prerelease_sha is not None:
+            args.extend(["--prerelease-sha", prerelease_sha])
 
     # Format command arguments to display them nicely across multiple lines
     args_as_str = ""
@@ -756,6 +758,24 @@ def main():
              "package_pattern": (16, "*2.0.0.dev20170105*.whl")}
         ]))
 
+    def test_invalid_prerelease_sha_raise_exception():
+        """Check that an exception is raised if using an invalid ``--prerelease-sha``"""
+        global TEST_CASE
+        TEST_CASE = "test_invalid_prerelease_sha_raise_exception"
+        mode = "prerelease"
+        reset()
+        expected_msg = "Failed to get commit associated with --prerelease-sha: %s" % "invalid"
+        try:
+            msg = ""
+            publish_github_release(mode, system="manylinux1", prerelease_sha="invalid")
+        except ValueError as exc:
+            msg = exc.args[0]
+            print("Caught exception: %s" % exc)
+        if msg != expected_msg:
+            print("         msg [%s]\n"
+                  "expected_msg [%s]" % (msg, expected_msg))
+        assert msg == expected_msg
+
     def test_release_mode():
         """In ``release`` mode, the script is expected to upload a release
         only if HEAD is directly associated with to a tag.
@@ -891,6 +911,7 @@ def main():
         ]))
 
     test_prerelease_mode()
+    test_invalid_prerelease_sha_raise_exception()
     test_release_mode()
     test_dual_mode()
 

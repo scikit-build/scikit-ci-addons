@@ -17,6 +17,7 @@ import textwrap
 from github_release import (
     gh_asset_delete,
     gh_asset_upload,
+    gh_commit_get,
     get_refs,
     get_release_info,
     gh_release_create,
@@ -340,6 +341,10 @@ def _upload_prerelease(args):
             branch = sha
             sha = refs[0]["object"]["sha"]
             print("resolved '%s' to '%s'" % (branch, sha))
+        # Check that sha exists
+        if gh_commit_get(args.repo_name, sha) is None:
+            raise ValueError("Failed to get commit associated with --prerelease-sha: %s" % sha)
+
         gh_release_edit(
             args.repo_name,
             args.prerelease_tag,

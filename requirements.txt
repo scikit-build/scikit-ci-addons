@@ -1,2 +1,2 @@
-githubrelease>=1.5.6
+githubrelease>=1.5.7
 lxml
