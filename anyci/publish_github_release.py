@@ -3,6 +3,7 @@ This add-on allows to automatically create GitHub releases or prereleases
 and upload associated packages. It respectively provides a "release" and
 a "prerelease" sub-command.
 """
+from __future__ import print_function
 
 import argparse
 import datetime as dt

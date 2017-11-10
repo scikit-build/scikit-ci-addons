@@ -5,6 +5,7 @@
 Given a repository and a token, this script will go through few
 different scenarios while checking the state of the repository.
 """
+from __future__ import print_function
 
 import argparse
 import datetime as dt
@@ -17,7 +18,12 @@ import subprocess
 import sys
 import textwrap
 
-from functools import reduce
+from functools import reduce, wraps
+
+try:
+    import builtins as __builtin__  # Python 3
+except ImportError:
+    import __builtin__  # Python 2
 
 from github_release import get_releases, gh_release_create, gh_asset_upload
 
@@ -36,6 +42,59 @@ PLATFORMS = {
     'macosx': ['macosx_10_11_x86_64'],
     'win': ['win_amd64', 'win32']
 }
+
+
+#
+# Print
+#
+
+class ContextDecorator(object):
+    """A base class or mixin that enables context managers to work as
+    decorators."""
+
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+    def __enter__(self):
+        # Note: Returning self means that in "with ... as x", x will be self
+        return self
+
+    def __exit__(self, typ, val, traceback):
+        pass
+
+    def __call__(self, func):
+        @wraps(func)
+        def inner(*args, **kwds):  # pylint:disable=missing-docstring
+            with self:
+                return func(*args, **kwds)
+        return inner
+
+
+class PrefixedPrint(ContextDecorator):
+    """Context manager to replace print function with a version
+    displaying a prefix.
+    """
+
+    ORIGINAL_PRINT_FUNCTION = __builtin__.print
+
+    def __init__(self, prefix):
+        width = 25
+        self.prefix = "[%s]  " % prefix.ljust(width)[:width]
+        self.saved_print = None
+        super(PrefixedPrint, self).__init__()
+
+    def _custom_print(self, msg, *args, **kwargs):
+        lines = msg.split("\n")
+        prefixed_msg = "\n".join([self.prefix + "%s" % line for line in lines])
+        self.ORIGINAL_PRINT_FUNCTION(prefixed_msg, *args, **kwargs)
+
+    def __enter__(self):
+        self.saved_print = __builtin__.print
+        __builtin__.print = self._custom_print
+        return self
+
+    def __exit__(self, typ, val, traceback):
+        __builtin__.print = self.saved_print
 
 
 #
@@ -142,6 +201,7 @@ def package_names(full_version, systems=None):
         ]
 
 
+@PrefixedPrint("test:generate_packages")
 def generate_packages(full_version, systems=None, clear=True):
     if systems is None:
         systems = []
@@ -237,7 +297,8 @@ def run(*popenargs, **kwargs):
         if output:
             captured_lines.append(output.strip())
             if verbose:
-                print(output.rstrip())
+                with PrefixedPrint("test:" + popenargs[0][0]):
+                    print(output.rstrip())
             line_count += 1
         if limit is not None and line_count == limit:
             process.kill()
@@ -263,6 +324,7 @@ def run(*popenargs, **kwargs):
 # GitHub
 #
 
+@PrefixedPrint("test:github:reset")
 def reset():
     pause("We will now reset '%s'" % REPO_NAME)
 
@@ -284,6 +346,7 @@ def reset():
     assert len(get_releases(repo_name=REPO_NAME)) == 0
 
 
+@PrefixedPrint("test:do_release")
 def do_release(release_tag):
     expected_packages = package_names(release_tag)
 
@@ -383,7 +446,9 @@ def publish_github_release(mode, system=None, re_upload=False, prerelease_sha=No
         """) + "%s \\\n%s" % (" ".join(common_args), args_as_str))
 
     # Publish release
-    __import__(MODULE).main(common_args + single_args + args)
+    module = __import__(MODULE)
+    with PrefixedPrint(MODULE):
+        module.main(common_args + single_args + args)
 
     # Fetch changes
     remote = "origin"
@@ -571,6 +636,7 @@ def lookup_module_path():
     return module_path
 
 
+@PrefixedPrint("test")
 def main():
     global INTERACTIVE
     global REPO_NAME
@@ -653,6 +719,7 @@ def main():
     # Update sys.path
     sys.path.insert(0, args.module_path)
 
+    @PrefixedPrint("test:prerelease_mode")
     def test_prerelease_mode():
         """In ``prerelease`` mode, the script is expected to create a
         prerelease only if HEAD is not associated with a tag different
@@ -794,6 +861,7 @@ def main():
              "package_pattern": (16, "*2.0.0.dev20170105*.whl")}
         ]))
 
+    @PrefixedPrint("test:invalid_prerelease_sha_raise_exception")
     def test_invalid_prerelease_sha_raise_exception():
         """Check that an exception is raised if using an invalid ``--prerelease-sha``"""
         global TEST_CASE
@@ -812,6 +880,7 @@ def main():
                   "expected_msg [%s]" % (msg, expected_msg))
         assert msg == expected_msg
 
+    @PrefixedPrint("test:release_mode")
     def test_release_mode():
         """In ``release`` mode, the script is expected to upload a release
         only if HEAD is directly associated with to a tag.
@@ -885,6 +954,7 @@ def main():
              "package_pattern": (16, "*2.0.0-*.whl")},
         ]))
 
+    @PrefixedPrint("test:dual_mode")
     def test_dual_mode():
         """This test that the script works as expected when both
         release and prerelease arguments are given."""
