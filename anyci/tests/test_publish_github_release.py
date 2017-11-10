@@ -758,6 +758,23 @@ def main():
              "package_pattern": (16, "*2.0.0.dev20170105*.whl")}
         ]))
 
+        #
+        # Check that re-uploading the same packages does not raise an exception
+        #
+
+        publish_github_release(mode, system="manylinux1")
+        assert (check_releases([
+            # Release 1.0.0
+            {"tag_name": "1.0.0", "tag_date": "20170103",
+             "draft": False, "prerelease": False,
+             "package_pattern": (16, "*1.0.0-*.whl")},
+
+            # Prerelease
+            {"tag_name": PRERELEASE_TAG, "tag_date": "20170105",
+             "draft": False, "prerelease": True,
+             "package_pattern": (16, "*2.0.0.dev20170105*.whl")}
+        ]))
+
     def test_invalid_prerelease_sha_raise_exception():
         """Check that an exception is raised if using an invalid ``--prerelease-sha``"""
         global TEST_CASE

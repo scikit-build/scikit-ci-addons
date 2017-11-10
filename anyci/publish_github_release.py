@@ -244,17 +244,47 @@ def configure_parser(parser):
     )
 
 
-def _delete_matching_packages(repo_name, tag, packages):
+def _github_asset_name(asset_name):
+    """Asset uploaded on GitHub always have "plus" sign found
+    in their name replaced by a "dot".
+    """
+    return os.path.basename(asset_name.replace("+", "."))
+
+
+def _get_matching_packages(repo_name, tag, packages):
+    """Filter the list of ``packages`` removing the ones
+    already uploaded as assets for ``repo_name`` and ``tag``.
+
+    Packages can be a list of file paths or globbing expressions.
+    """
+    matching_packages = []
     release = get_release_info(repo_name, tag)
     asset_names = [asset['name'] for asset in release['assets']]
     for package in packages:
         for path in glob.glob(package):
-            local_asset_name = os.path.basename(path)
-            # XXX Asset uploaded on GitHub always have "plus" sign found
-            # in their name replaced by "dot".
-            local_asset_name = local_asset_name.replace("+", ".")
-            if local_asset_name in asset_names:
-                gh_asset_delete(repo_name, tag, local_asset_name)
+            if _github_asset_name(path) in asset_names:
+                matching_packages.append(path)
+    return matching_packages
+
+
+def _delete_matching_packages(repo_name, tag, packages):
+    """Delete all assets associated with ``repo_name`` and ``tag`` having
+    file names matching the one associated with given ``packages``.
+
+    Packages can be a list of file paths or globbing expressions.
+    """
+    for local_asset_name in _get_matching_packages(repo_name, tag, packages):
+        gh_asset_delete(repo_name, tag, _github_asset_name(local_asset_name))
+
+
+def _collect_packages(packages):
+    """Given a list of file paths or globbing expressions, returns all package
+    file paths found on the local filesystem.
+    """
+    file_paths = []
+    for package in packages:
+        file_paths.extend(glob.glob(package))
+    return file_paths
 
 
 def _upload_release(release_tag, args):
@@ -313,14 +343,28 @@ def _upload_prerelease(args):
         name=prerelease_name,
         publish=True, prerelease=True
     )
+
+    packages = _collect_packages(args.prerelease_packages)
+
     # Remove existing assets matching selected ones
     if args.re_upload:
         _delete_matching_packages(
-            args.repo_name, args.prerelease_tag, args.prerelease_packages)
+            args.repo_name, args.prerelease_tag, packages)
+    else:
+        # or skip upload of existing packages
+        matching_packages = _get_matching_packages(
+            args.repo_name, args.prerelease_tag, packages)
+        for matching_package in matching_packages:
+            if matching_package in packages:
+                print("skipping %s package "
+                      "(already uploaded)" % matching_package)
+                packages.remove(matching_package)
+        if matching_packages:
+            print("")
+
     # Upload packages
     gh_asset_upload(
-        args.repo_name, args.prerelease_tag, args.prerelease_packages,
-        args.dry_run
+        args.repo_name, args.prerelease_tag, packages, args.dry_run
     )
     # Remove obsolete assets
     if args.prerelease_packages_clear_pattern is not None:
