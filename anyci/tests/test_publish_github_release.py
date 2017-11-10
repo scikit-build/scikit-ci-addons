@@ -680,6 +680,13 @@ def main():
              "package_pattern": (16, "*2.0.0.dev*.whl")}
         ]))
 
+        # Get 'published_at' value
+        initial_published_at = [
+            release["published_at"]
+            for release in get_releases(REPO_NAME)
+            if release["tag_name"] == PRERELEASE_TAG
+            ][0]
+
         do_commit(push=True)  # 2017-01-05
 
         #
@@ -703,6 +710,18 @@ def main():
                  (4, "*2.0.0.dev20170105*.whl")
              ]}
         ]))
+
+        final_published_at = [
+            release["published_at"]
+            for release in get_releases(REPO_NAME)
+            if release["tag_name"] == PRERELEASE_TAG
+            ][0]
+
+        print("")
+        print("Check that 'published_at' was updated:")
+        print("  initial_published_at: %s" % initial_published_at)
+        print("    final_published_at: %s" % final_published_at)
+        assert initial_published_at != final_published_at
 
         publish_github_release(mode, system="macosx")
         assert (check_releases([

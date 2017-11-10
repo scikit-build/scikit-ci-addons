@@ -394,11 +394,21 @@ def _upload_prerelease(args):
             args.prerelease_tag,
             target_commitish=sha
         )
-    # If needed, update name associated with the release
+
+    # Set a draft first, and switch to prerelease afterward so that
+    # the release date is current.
     gh_release_edit(
         args.repo_name,
         args.prerelease_tag,
-        name=prerelease_name
+        draft=True,
+    )
+    # Update draft, prerelease and name properties.
+    gh_release_edit(
+        args.repo_name,
+        args.prerelease_tag,
+        name=prerelease_name,
+        draft=False,
+        prerelease=True
     )
 
     _cancel_additional_appveyor_builds(args.prerelease_tag)
