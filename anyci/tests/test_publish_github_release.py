@@ -18,6 +18,7 @@ import subprocess
 import sys
 import textwrap
 
+from collections import namedtuple
 from functools import reduce, wraps
 
 try:
@@ -139,8 +140,12 @@ def do_commit(version=None, release_tag=None, push=False):
     # Commit changes
     run("git add README.md")
     run("git add VERSION")
-    run("git commit -m \"%s\" --date=%s" % (commit_msg,
-                                            author_date.isoformat()))
+    commit_env = os.environ.copy()
+    commit_env.update({
+        "GIT_AUTHOR_DATE": author_date.isoformat(),
+        "GIT_COMMITTER_DATE": author_date.isoformat()
+    })
+    run("git commit -m \"%s\"" % commit_msg, env=commit_env)
     # Push
     if push:
         run("git push origin master")
