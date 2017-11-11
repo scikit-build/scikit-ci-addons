@@ -158,6 +158,10 @@ def do_commit(version=None, release_tag=None, push=False):
     print("")
 
 
+def get_commit_short_sha(ref="HEAD"):
+    return run("git rev-parse --short=7 %s" % ref)[0]
+
+
 #
 # Version
 #
@@ -641,7 +645,7 @@ def lookup_module_path():
     return module_path
 
 
-@PrefixedPrint("test")
+@PrefixedPrint("test")  # noqa: C901
 def main():
     global INTERACTIVE
     global REPO_NAME
@@ -1021,10 +1025,70 @@ def main():
              ]},
         ]))
 
+    @PrefixedPrint("test:minilanguage")
+    def test_substitute_package_selection_strings():
+        global TEST_CASE
+        TEST_CASE = "test_substitute_package_selection_strings"
+
+        module = __import__(MODULE)
+
+        script_args = namedtuple("script_args", ["prerelease_tag"])
+        script_args.prerelease_tag = "latest"
+
+        def _test_minilanguage(expected_short_sha=None, expected_date=None, expected_distance=None):
+            for package, expected_package in [
+                (
+                        "date-<COMMIT_DATE>.whl",
+                        "date-%s.whl" % expected_date
+                ),
+                (
+                        "shortsha-<COMMIT_SHORT_SHA>.whl",
+                        "shortsha-%s.whl" % expected_short_sha
+                ),
+                (
+                        "distance-<COMMIT_DISTANCE>.whl",
+                        "distance-%s.whl" % expected_distance
+                ),
+                (
+                        "distance-<COMMIT_DISTANCE>-shortsha-<COMMIT_SHORT_SHA>-date-<COMMIT_DATE>.whl",
+                        "distance-%s-shortsha-%s-date-%s.whl" % (expected_distance, expected_short_sha, expected_date)
+                ),
+            ]:
+                udpated_package = module._substitute_package_selection_strings(
+                    package, "minilanguage test input", script_args)
+
+                print("")
+                print("expected_package: %s" % expected_package)
+                print(" udpated_package: %s" % udpated_package)
+                assert expected_package == udpated_package
+
+        with PrefixedPrint(MODULE):
+
+            reset()  # 2017-01-01
+            do_commit(push=False)  # 2017-01-02
+
+            _test_minilanguage(
+                expected_short_sha=get_commit_short_sha(),
+                expected_date="20170102",
+                expected_distance="2"
+            )
+
+            do_commit(release_tag="latest", push=False)  # 2017-01-03
+            do_commit(push=False)  # 2017-01-04
+            do_commit(push=False)  # 2017-01-05
+            do_commit(push=False)  # 2017-01-06
+
+            _test_minilanguage(
+                expected_short_sha=get_commit_short_sha(),
+                expected_distance="3",
+                expected_date="20170106"
+            )
+
     test_prerelease_mode()
     test_invalid_prerelease_sha_raise_exception()
     test_release_mode()
     test_dual_mode()
+    test_substitute_package_selection_strings()
 
 
 if __name__ == "__main__":

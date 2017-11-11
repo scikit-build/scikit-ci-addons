@@ -11,6 +11,7 @@ import errno
 import glob
 import os
 import platform
+import re
 import sys
 import subprocess
 import textwrap
@@ -122,6 +123,39 @@ def get_commit_short_sha(ref="HEAD"):
     return output
 
 
+def get_commit_distance(tag):
+    """Return the distance to the given ``tag``. If ``tag`` is not found, it returns
+    the number of commits.
+    """
+    # Code adapted from python-versioneer/src/git/from_vcs.py
+    output, _ = run_command(
+        GITS, ["describe", "--tags", "--dirty", "--always", "--long", "--match", str(tag)])
+
+    # parse output. It will be like TAG-NUM-gHEX[-dirty] or HEX[-dirty]
+    # TAG might have hyphens.
+    git_describe = output
+
+    # look for -dirty suffix and remove it
+    if git_describe.endswith("-dirty"):
+        git_describe = git_describe[:git_describe.rindex("-dirty")]
+
+    # now we have TAG-NUM-gHEX or HEX
+    if "-" in git_describe:
+        # TAG-NUM-gHEX
+        mo = re.search(r'^.+-(\d+)-g[0-9a-f]+$', git_describe)
+
+        # distance: number of commits since tag
+        distance = int(mo.group(1))
+
+    else:
+        # HEX: no tags
+        output, _ = run_command(
+            GITS, ["rev-list", "HEAD", "--count"])
+        distance = int(output)  # total number of commits
+
+    return str(distance)
+
+
 #
 # Python
 #
@@ -137,31 +171,32 @@ def python_wheel_platform():
 # Mini-language for package selection
 #
 
-def _substitute_package_selection_strings(package, what):
+def _substitute_package_selection_strings(package, what, script_args):
     tokens = {
-        '<PYTHON_WHEEL_PLATFORM>': python_wheel_platform,
-        '<COMMIT_DATE>': get_commit_date,
-        '<COMMIT_SHORT_SHA>': get_commit_short_sha
+        '<PYTHON_WHEEL_PLATFORM>': (python_wheel_platform, [], {}),
+        '<COMMIT_DATE>': (get_commit_date, [], {}),
+        '<COMMIT_SHORT_SHA>': (get_commit_short_sha, [], {}),
+        '<COMMIT_DISTANCE>': (get_commit_distance, [script_args.prerelease_tag], {})
     }
     if any([token in package for token in tokens]):
         print("Updating %s [%s]" % (what, package))
-    for token, replace_func in tokens.items():
+    for token, (replace_func, func_args, func_kwargs) in tokens.items():
         if token in package:
-            updated_value = replace_func()
+            updated_value = replace_func(*func_args, **func_kwargs)
             print("  %s -> %s" % (token, updated_value))
             package = package.replace(token, updated_value)
     return package
 
 
-def _update_package_list(input_packages, what):
+def _update_package_list(input_packages, what, script_args):
     if input_packages is None:
         return input_packages
     packages = []
     if isinstance(input_packages, str):
-        return _substitute_package_selection_strings(input_packages, what)
+        return _substitute_package_selection_strings(input_packages, what, script_args)
     for package in input_packages:
         packages.append(
-            _substitute_package_selection_strings(package, what))
+            _substitute_package_selection_strings(package, what, script_args))
     return packages
 
 
@@ -455,15 +490,15 @@ def main(argv=None):
 
     # Update package arguments
     args.release_packages = _update_package_list(
-        args.release_packages, "release package")
+        args.release_packages, "release package", args)
     args.prerelease_packages = _update_package_list(
-        args.prerelease_packages, "prerelease package")
+        args.prerelease_packages, "prerelease package", args)
     args.prerelease_packages_clear_pattern = _update_package_list(
         args.prerelease_packages_clear_pattern,
-        "prerelease package clear pattern")
+        "prerelease package clear pattern", args)
     args.prerelease_packages_keep_pattern = _update_package_list(
         args.prerelease_packages_keep_pattern,
-        "prerelease package keep pattern")
+        "prerelease package keep pattern", args)
 
     msg = "Checking if HEAD is a release tag"
     print(msg)

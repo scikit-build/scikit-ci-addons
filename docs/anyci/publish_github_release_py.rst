@@ -86,6 +86,13 @@ as returned by ``git show -s --format="%ci"``.
 **<COMMIT_SHORT_SHA>**: This string is replaced by the sha
 as returned by ``git rev-parse --short=7 HEAD``.
 
+**<COMMIT_DISTANCE>**: This string is replaced by the distance
+to the tag specified using ``--prerelease-tag``. If the tag does not exist,
+it corresponds to the number of commits. This is particularly useful when
+selecting prerelease packages generated using `pep440-pre style <https://github.com/warner/python-versioneer/blob/master/details.md#how-do-i-select-a-version-style>`_
+implemented in `python-versioneer`.
+
+
 Use case: Automatic upload of release packages associated with a tag
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
