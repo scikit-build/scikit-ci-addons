@@ -5,6 +5,7 @@
 Given a repository and a token, this script will go through few
 different scenarios while checking the state of the repository.
 """
+from __future__ import print_function
 
 import argparse
 import datetime as dt
@@ -17,7 +18,13 @@ import subprocess
 import sys
 import textwrap
 
-from functools import reduce
+from collections import namedtuple
+from functools import reduce, wraps
+
+try:
+    import builtins as __builtin__  # Python 3
+except ImportError:
+    import __builtin__  # Python 2
 
 from github_release import get_releases, gh_release_create, gh_asset_upload
 
@@ -36,6 +43,59 @@ PLATFORMS = {
     'macosx': ['macosx_10_11_x86_64'],
     'win': ['win_amd64', 'win32']
 }
+
+
+#
+# Print
+#
+
+class ContextDecorator(object):
+    """A base class or mixin that enables context managers to work as
+    decorators."""
+
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+    def __enter__(self):
+        # Note: Returning self means that in "with ... as x", x will be self
+        return self
+
+    def __exit__(self, typ, val, traceback):
+        pass
+
+    def __call__(self, func):
+        @wraps(func)
+        def inner(*args, **kwds):  # pylint:disable=missing-docstring
+            with self:
+                return func(*args, **kwds)
+        return inner
+
+
+class PrefixedPrint(ContextDecorator):
+    """Context manager to replace print function with a version
+    displaying a prefix.
+    """
+
+    ORIGINAL_PRINT_FUNCTION = __builtin__.print
+
+    def __init__(self, prefix):
+        width = 25
+        self.prefix = "[%s]  " % prefix.ljust(width)[:width]
+        self.saved_print = None
+        super(PrefixedPrint, self).__init__()
+
+    def _custom_print(self, msg, *args, **kwargs):
+        lines = msg.split("\n")
+        prefixed_msg = "\n".join([self.prefix + "%s" % line for line in lines])
+        self.ORIGINAL_PRINT_FUNCTION(prefixed_msg, *args, **kwargs)
+
+    def __enter__(self):
+        self.saved_print = __builtin__.print
+        __builtin__.print = self._custom_print
+        return self
+
+    def __exit__(self, typ, val, traceback):
+        __builtin__.print = self.saved_print
 
 
 #
@@ -80,8 +140,12 @@ def do_commit(version=None, release_tag=None, push=False):
     # Commit changes
     run("git add README.md")
     run("git add VERSION")
-    run("git commit -m \"%s\" --date=%s" % (commit_msg,
-                                            author_date.isoformat()))
+    commit_env = os.environ.copy()
+    commit_env.update({
+        "GIT_AUTHOR_DATE": author_date.isoformat(),
+        "GIT_COMMITTER_DATE": author_date.isoformat()
+    })
+    run("git commit -m \"%s\"" % commit_msg, env=commit_env)
     # Push
     if push:
         run("git push origin master")
@@ -92,6 +156,10 @@ def do_commit(version=None, release_tag=None, push=False):
         if push:
             run("git push origin %s" % release_tag)
     print("")
+
+
+def get_commit_short_sha(ref="HEAD"):
+    return run("git rev-parse --short=7 %s" % ref)[0]
 
 
 #
@@ -121,10 +189,12 @@ def package_name(project_name, full_version, py_ver, platform):
         **locals())
 
 
-def package_names(full_version, systems=[]):
-    if type(systems) is not list:
+def package_names(full_version, systems=None):
+    if systems is None:
+        systems = []
+    if not isinstance(systems, list):
         systems = [systems]
-    systems = PLATFORMS.keys() if len(systems) == 0 else systems
+    systems = systems if systems else list(PLATFORMS.keys())
 
     # List of platform matching selected systems
     platforms = []
@@ -140,8 +210,12 @@ def package_names(full_version, systems=[]):
         ]
 
 
-def generate_packages(full_version, systems=[], clear=True):
-    print("generating %s packages" % (systems if systems else PLATFORMS.keys()))
+@PrefixedPrint("test:generate_packages")
+def generate_packages(full_version, systems=None, clear=True):
+    if systems is None:
+        systems = []
+    systems = systems if systems else list(PLATFORMS.keys())
+    print("generating %s packages" % systems)
     if clear:
         clear_package_directory()
     if not os.path.exists(PACKAGE_DIR):
@@ -171,7 +245,7 @@ def pause(text):
                  "*", "*" * 80, ""]:
         print(line)
     if INTERACTIVE:
-        if sys.version_info[0] == 3 and sys.version_info[2] >= 3:
+        if sys.version_info[0] == 3 and sys.version_info[1] >= 3:
             input("Press Enter to continue...")
         else:
             raw_input("Press Enter to continue...")  # noqa: F821
@@ -232,7 +306,8 @@ def run(*popenargs, **kwargs):
         if output:
             captured_lines.append(output.strip())
             if verbose:
-                print(output.rstrip())
+                with PrefixedPrint("test:" + popenargs[0][0]):
+                    print(output.rstrip())
             line_count += 1
         if limit is not None and line_count == limit:
             process.kill()
@@ -258,6 +333,7 @@ def run(*popenargs, **kwargs):
 # GitHub
 #
 
+@PrefixedPrint("test:github:reset")
 def reset():
     pause("We will now reset '%s'" % REPO_NAME)
 
@@ -279,6 +355,7 @@ def reset():
     assert len(get_releases(repo_name=REPO_NAME)) == 0
 
 
+@PrefixedPrint("test:do_release")
 def do_release(release_tag):
     expected_packages = package_names(release_tag)
 
@@ -294,15 +371,18 @@ def do_release(release_tag):
     gh_asset_upload(REPO_NAME, release_tag, PACKAGE_DIR + "/*")
 
 
-def publish_github_release(mode, system=None, re_upload=False):
+def publish_github_release(mode, system=None, re_upload=False, prerelease_sha=None):
     if system is None:
-        system = PLATFORMS.keys()
+        system = list(PLATFORMS.keys())
 
-    if type(system) is list:
+    if isinstance(system, list):
         for _system in system:
-            publish_github_release(mode, _system, re_upload)
+            publish_github_release(mode, _system, re_upload, prerelease_sha)
         return
-    if type(mode) is not list:
+
+    assert system in PLATFORMS.keys()
+
+    if not isinstance(mode, list):
         mode = [mode]
 
     pause("We will generate packages like it would on [%s] system(s)" % system)
@@ -354,6 +434,8 @@ def publish_github_release(mode, system=None, re_upload=False):
                 "*.dev%s*.whl" % author_date
         ]:
             args.append(arg)
+        if prerelease_sha is not None:
+            args.extend(["--prerelease-sha", prerelease_sha])
 
     # Format command arguments to display them nicely across multiple lines
     args_as_str = ""
@@ -373,7 +455,9 @@ def publish_github_release(mode, system=None, re_upload=False):
         """) + "%s \\\n%s" % (" ".join(common_args), args_as_str))
 
     # Publish release
-    __import__(MODULE).main(common_args + single_args + args)
+    module = __import__(MODULE)
+    with PrefixedPrint(MODULE):
+        module.main(common_args + single_args + args)
 
     # Fetch changes
     remote = "origin"
@@ -426,7 +510,7 @@ def check_releases(expected, releases=None):  # noqa: C901
 
     if releases is None:
         releases = get_releases(REPO_NAME)
-    if type(expected) is list:
+    if isinstance(expected, list):
         # Check overall count
         if len(releases) != len(expected):
             display_error()
@@ -499,7 +583,7 @@ def check_releases(expected, releases=None):  # noqa: C901
             print("")
             return False
         patterns = expected["package_pattern"]
-        if type(patterns) is not list:
+        if not isinstance(patterns, list):
             patterns = [patterns]
         for expected_package_count, pattern in patterns:
             current_package_count = 0
@@ -561,6 +645,7 @@ def lookup_module_path():
     return module_path
 
 
+@PrefixedPrint("test")  # noqa: C901
 def main():
     global INTERACTIVE
     global REPO_NAME
@@ -643,6 +728,7 @@ def main():
     # Update sys.path
     sys.path.insert(0, args.module_path)
 
+    @PrefixedPrint("test:prerelease_mode")
     def test_prerelease_mode():
         """In ``prerelease`` mode, the script is expected to create a
         prerelease only if HEAD is not associated with a tag different
@@ -670,6 +756,13 @@ def main():
              "package_pattern": (16, "*2.0.0.dev*.whl")}
         ]))
 
+        # Get 'published_at' value
+        initial_published_at = [
+            release["published_at"]
+            for release in get_releases(REPO_NAME)
+            if release["tag_name"] == PRERELEASE_TAG
+            ][0]
+
         do_commit(push=True)  # 2017-01-05
 
         #
@@ -693,6 +786,18 @@ def main():
                  (4, "*2.0.0.dev20170105*.whl")
              ]}
         ]))
+
+        final_published_at = [
+            release["published_at"]
+            for release in get_releases(REPO_NAME)
+            if release["tag_name"] == PRERELEASE_TAG
+            ][0]
+
+        print("")
+        print("Check that 'published_at' was updated:")
+        print("  initial_published_at: %s" % initial_published_at)
+        print("    final_published_at: %s" % final_published_at)
+        assert initial_published_at != final_published_at
 
         publish_github_release(mode, system="macosx")
         assert (check_releases([
@@ -748,6 +853,43 @@ def main():
              "package_pattern": (16, "*2.0.0.dev20170105*.whl")}
         ]))
 
+        #
+        # Check that re-uploading the same packages does not raise an exception
+        #
+
+        publish_github_release(mode, system="manylinux1")
+        assert (check_releases([
+            # Release 1.0.0
+            {"tag_name": "1.0.0", "tag_date": "20170103",
+             "draft": False, "prerelease": False,
+             "package_pattern": (16, "*1.0.0-*.whl")},
+
+            # Prerelease
+            {"tag_name": PRERELEASE_TAG, "tag_date": "20170105",
+             "draft": False, "prerelease": True,
+             "package_pattern": (16, "*2.0.0.dev20170105*.whl")}
+        ]))
+
+    @PrefixedPrint("test:invalid_prerelease_sha_raise_exception")
+    def test_invalid_prerelease_sha_raise_exception():
+        """Check that an exception is raised if using an invalid ``--prerelease-sha``"""
+        global TEST_CASE
+        TEST_CASE = "test_invalid_prerelease_sha_raise_exception"
+        mode = "prerelease"
+        reset()
+        expected_msg = "Failed to get commit associated with --prerelease-sha: %s" % "invalid"
+        try:
+            msg = ""
+            publish_github_release(mode, system="manylinux1", prerelease_sha="invalid")
+        except ValueError as exc:
+            msg = exc.args[0]
+            print("Caught exception: %s" % exc)
+        if msg != expected_msg:
+            print("         msg [%s]\n"
+                  "expected_msg [%s]" % (msg, expected_msg))
+        assert msg == expected_msg
+
+    @PrefixedPrint("test:release_mode")
     def test_release_mode():
         """In ``release`` mode, the script is expected to upload a release
         only if HEAD is directly associated with to a tag.
@@ -821,6 +963,7 @@ def main():
              "package_pattern": (16, "*2.0.0-*.whl")},
         ]))
 
+    @PrefixedPrint("test:dual_mode")
     def test_dual_mode():
         """This test that the script works as expected when both
         release and prerelease arguments are given."""
@@ -882,9 +1025,70 @@ def main():
              ]},
         ]))
 
+    @PrefixedPrint("test:minilanguage")
+    def test_substitute_package_selection_strings():
+        global TEST_CASE
+        TEST_CASE = "test_substitute_package_selection_strings"
+
+        module = __import__(MODULE)
+
+        script_args = namedtuple("script_args", ["prerelease_tag"])
+        script_args.prerelease_tag = "latest"
+
+        def _test_minilanguage(expected_short_sha=None, expected_date=None, expected_distance=None):
+            for package, expected_package in [
+                (
+                        "date-<COMMIT_DATE>.whl",
+                        "date-%s.whl" % expected_date
+                ),
+                (
+                        "shortsha-<COMMIT_SHORT_SHA>.whl",
+                        "shortsha-%s.whl" % expected_short_sha
+                ),
+                (
+                        "distance-<COMMIT_DISTANCE>.whl",
+                        "distance-%s.whl" % expected_distance
+                ),
+                (
+                        "distance-<COMMIT_DISTANCE>-shortsha-<COMMIT_SHORT_SHA>-date-<COMMIT_DATE>.whl",
+                        "distance-%s-shortsha-%s-date-%s.whl" % (expected_distance, expected_short_sha, expected_date)
+                ),
+            ]:
+                udpated_package = module._substitute_package_selection_strings(
+                    package, "minilanguage test input", script_args)
+
+                print("")
+                print("expected_package: %s" % expected_package)
+                print(" udpated_package: %s" % udpated_package)
+                assert expected_package == udpated_package
+
+        with PrefixedPrint(MODULE):
+
+            reset()  # 2017-01-01
+            do_commit(push=False)  # 2017-01-02
+
+            _test_minilanguage(
+                expected_short_sha=get_commit_short_sha(),
+                expected_date="20170102",
+                expected_distance="2"
+            )
+
+            do_commit(release_tag="latest", push=False)  # 2017-01-03
+            do_commit(push=False)  # 2017-01-04
+            do_commit(push=False)  # 2017-01-05
+            do_commit(push=False)  # 2017-01-06
+
+            _test_minilanguage(
+                expected_short_sha=get_commit_short_sha(),
+                expected_distance="3",
+                expected_date="20170106"
+            )
+
     test_prerelease_mode()
+    test_invalid_prerelease_sha_raise_exception()
     test_release_mode()
     test_dual_mode()
+    test_substitute_package_selection_strings()
 
 
 if __name__ == "__main__":

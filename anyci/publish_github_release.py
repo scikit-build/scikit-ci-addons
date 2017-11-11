@@ -3,6 +3,7 @@ This add-on allows to automatically create GitHub releases or prereleases
 and upload associated packages. It respectively provides a "release" and
 a "prerelease" sub-command.
 """
+from __future__ import print_function
 
 import argparse
 import datetime as dt
@@ -10,6 +11,7 @@ import errno
 import glob
 import os
 import platform
+import re
 import sys
 import subprocess
 import textwrap
@@ -17,6 +19,7 @@ import textwrap
 from github_release import (
     gh_asset_delete,
     gh_asset_upload,
+    gh_commit_get,
     get_refs,
     get_release_info,
     gh_release_create,
@@ -120,6 +123,39 @@ def get_commit_short_sha(ref="HEAD"):
     return output
 
 
+def get_commit_distance(tag):
+    """Return the distance to the given ``tag``. If ``tag`` is not found, it returns
+    the number of commits.
+    """
+    # Code adapted from python-versioneer/src/git/from_vcs.py
+    output, _ = run_command(
+        GITS, ["describe", "--tags", "--dirty", "--always", "--long", "--match", str(tag)])
+
+    # parse output. It will be like TAG-NUM-gHEX[-dirty] or HEX[-dirty]
+    # TAG might have hyphens.
+    git_describe = output
+
+    # look for -dirty suffix and remove it
+    if git_describe.endswith("-dirty"):
+        git_describe = git_describe[:git_describe.rindex("-dirty")]
+
+    # now we have TAG-NUM-gHEX or HEX
+    if "-" in git_describe:
+        # TAG-NUM-gHEX
+        mo = re.search(r'^.+-(\d+)-g[0-9a-f]+$', git_describe)
+
+        # distance: number of commits since tag
+        distance = int(mo.group(1))
+
+    else:
+        # HEX: no tags
+        output, _ = run_command(
+            GITS, ["rev-list", "HEAD", "--count"])
+        distance = int(output)  # total number of commits
+
+    return str(distance)
+
+
 #
 # Python
 #
@@ -135,31 +171,32 @@ def python_wheel_platform():
 # Mini-language for package selection
 #
 
-def _substitute_package_selection_strings(package, what):
+def _substitute_package_selection_strings(package, what, script_args):
     tokens = {
-        '<PYTHON_WHEEL_PLATFORM>': python_wheel_platform,
-        '<COMMIT_DATE>': get_commit_date,
-        '<COMMIT_SHORT_SHA>': get_commit_short_sha
+        '<PYTHON_WHEEL_PLATFORM>': (python_wheel_platform, [], {}),
+        '<COMMIT_DATE>': (get_commit_date, [], {}),
+        '<COMMIT_SHORT_SHA>': (get_commit_short_sha, [], {}),
+        '<COMMIT_DISTANCE>': (get_commit_distance, [script_args.prerelease_tag], {})
     }
     if any([token in package for token in tokens]):
         print("Updating %s [%s]" % (what, package))
-    for token, replace_func in tokens.items():
+    for token, (replace_func, func_args, func_kwargs) in tokens.items():
         if token in package:
-            updated_value = replace_func()
+            updated_value = replace_func(*func_args, **func_kwargs)
             print("  %s -> %s" % (token, updated_value))
             package = package.replace(token, updated_value)
     return package
 
 
-def _update_package_list(input_packages, what):
+def _update_package_list(input_packages, what, script_args):
     if input_packages is None:
         return input_packages
     packages = []
     if isinstance(input_packages, str):
-        return _substitute_package_selection_strings(input_packages, what)
+        return _substitute_package_selection_strings(input_packages, what, script_args)
     for package in input_packages:
         packages.append(
-            _substitute_package_selection_strings(package, what))
+            _substitute_package_selection_strings(package, what, script_args))
     return packages
 
 
@@ -243,17 +280,47 @@ def configure_parser(parser):
     )
 
 
-def _delete_matching_packages(repo_name, tag, packages):
+def _github_asset_name(asset_name):
+    """Asset uploaded on GitHub always have "plus" sign found
+    in their name replaced by a "dot".
+    """
+    return os.path.basename(asset_name.replace("+", "."))
+
+
+def _get_matching_packages(repo_name, tag, packages):
+    """Filter the list of ``packages`` removing the ones
+    already uploaded as assets for ``repo_name`` and ``tag``.
+
+    Packages can be a list of file paths or globbing expressions.
+    """
+    matching_packages = []
     release = get_release_info(repo_name, tag)
     asset_names = [asset['name'] for asset in release['assets']]
     for package in packages:
         for path in glob.glob(package):
-            local_asset_name = os.path.basename(path)
-            # XXX Asset uploaded on GitHub always have "plus" sign found
-            # in their name replaced by "dot".
-            local_asset_name = local_asset_name.replace("+", ".")
-            if local_asset_name in asset_names:
-                gh_asset_delete(repo_name, tag, local_asset_name)
+            if _github_asset_name(path) in asset_names:
+                matching_packages.append(path)
+    return matching_packages
+
+
+def _delete_matching_packages(repo_name, tag, packages):
+    """Delete all assets associated with ``repo_name`` and ``tag`` having
+    file names matching the one associated with given ``packages``.
+
+    Packages can be a list of file paths or globbing expressions.
+    """
+    for local_asset_name in _get_matching_packages(repo_name, tag, packages):
+        gh_asset_delete(repo_name, tag, _github_asset_name(local_asset_name))
+
+
+def _collect_packages(packages):
+    """Given a list of file paths or globbing expressions, returns all package
+    file paths found on the local filesystem.
+    """
+    file_paths = []
+    for package in packages:
+        file_paths.extend(glob.glob(package))
+    return file_paths
 
 
 def _upload_release(release_tag, args):
@@ -312,14 +379,28 @@ def _upload_prerelease(args):
         name=prerelease_name,
         publish=True, prerelease=True
     )
+
+    packages = _collect_packages(args.prerelease_packages)
+
     # Remove existing assets matching selected ones
     if args.re_upload:
         _delete_matching_packages(
-            args.repo_name, args.prerelease_tag, args.prerelease_packages)
+            args.repo_name, args.prerelease_tag, packages)
+    else:
+        # or skip upload of existing packages
+        matching_packages = _get_matching_packages(
+            args.repo_name, args.prerelease_tag, packages)
+        for matching_package in matching_packages:
+            if matching_package in packages:
+                print("skipping %s package "
+                      "(already uploaded)" % matching_package)
+                packages.remove(matching_package)
+        if matching_packages:
+            print("")
+
     # Upload packages
     gh_asset_upload(
-        args.repo_name, args.prerelease_tag, args.prerelease_packages,
-        args.dry_run
+        args.repo_name, args.prerelease_tag, packages, args.dry_run
     )
     # Remove obsolete assets
     if args.prerelease_packages_clear_pattern is not None:
@@ -340,16 +421,30 @@ def _upload_prerelease(args):
             branch = sha
             sha = refs[0]["object"]["sha"]
             print("resolved '%s' to '%s'" % (branch, sha))
+        # Check that sha exists
+        if gh_commit_get(args.repo_name, sha) is None:
+            raise ValueError("Failed to get commit associated with --prerelease-sha: %s" % sha)
+
         gh_release_edit(
             args.repo_name,
             args.prerelease_tag,
             target_commitish=sha
         )
-    # If needed, update name associated with the release
+
+    # Set a draft first, and switch to prerelease afterward so that
+    # the release date is current.
     gh_release_edit(
         args.repo_name,
         args.prerelease_tag,
-        name=prerelease_name
+        draft=True,
+    )
+    # Update draft, prerelease and name properties.
+    gh_release_edit(
+        args.repo_name,
+        args.prerelease_tag,
+        name=prerelease_name,
+        draft=False,
+        prerelease=True
     )
 
     _cancel_additional_appveyor_builds(args.prerelease_tag)
@@ -395,15 +490,15 @@ def main(argv=None):
 
     # Update package arguments
     args.release_packages = _update_package_list(
-        args.release_packages, "release package")
+        args.release_packages, "release package", args)
     args.prerelease_packages = _update_package_list(
-        args.prerelease_packages, "prerelease package")
+        args.prerelease_packages, "prerelease package", args)
     args.prerelease_packages_clear_pattern = _update_package_list(
         args.prerelease_packages_clear_pattern,
-        "prerelease package clear pattern")
+        "prerelease package clear pattern", args)
     args.prerelease_packages_keep_pattern = _update_package_list(
         args.prerelease_packages_keep_pattern,
-        "prerelease package keep pattern")
+        "prerelease package keep pattern", args)
 
     msg = "Checking if HEAD is a release tag"
     print(msg)
