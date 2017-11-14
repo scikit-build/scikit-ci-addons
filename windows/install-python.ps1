@@ -45,6 +45,30 @@ param (
   return ""
 }
 
+# Only for Python >= 3.6
+function Get-Python-Version {
+param (
+  [string]$pythonVersion,  # Version specified as "X.Y"
+  [string]$pythonArch      # Arch specified as "86" or "64"
+  )
+  $suffix = '-32'
+  if ($pythonArch.CompareTo('64') -eq 0) {
+    $suffix = ''
+  }
+  $roots = @("HKCU", "HKLM")
+  foreach ($root in $roots) {
+    $path = "$($root):\Software\Python\PythonCore\$pythonVersion$suffix"
+    if (Test-Path -Path $path -PathType Container) {
+      $properties = Get-ItemProperty -Path $path
+      if ($properties -And (Get-Member -InputObject $properties -Name 'Version')) {
+        $version = (Get-ItemProperty -Path $path -Name 'Version').'Version'
+        return $version
+      }
+    }
+  }
+  return ""
+}
+
 function Install-Python {
 param (
   [string]$installerPath,
@@ -202,11 +226,20 @@ foreach ($version in $exeVersions) {
     $pythonInstallPath = Get-Python-InstallPath $majorMinorDot "64"
     $targetInstallPath = "C:\Python$($majorMinor)-x64\"
     $installerPath = Join-Path $downloadDir "python-$($version)-amd64.exe"
+    $unInstallerPath = $installerPath
 
     if (!$pythonInstallPath.CompareTo($targetInstallPath) -eq 0) {
       if ($pythonInstallPath) {
+
+        $installedPythonVersion = Get-Python-Version $majorMinorDot "64"
+        if ($installedPythonVersion) {
+          Download-URL "https://www.python.org/ftp/python/$installedPythonVersion/python-$installedPythonVersion-amd64.exe" $downloadDir
+          $unInstallerPath = Join-Path $downloadDir "python-$installedPythonVersion-amd64.exe"
+        }
+
         Write-Host "Found a python installation in a different directory [$pythonInstallPath] - Uninstalling"
-        Start-Process $installerPath -ArgumentList "/uninstall /passive" -NoNewWindow -Wait
+        Start-Process $unInstallerPath -ArgumentList "/uninstall /passive" -NoNewWindow -Wait
+
       }
     } elseif ($pythonInstallPath) {
       Write-Host "Updating existing installation [$pythonInstallPath]"
@@ -219,17 +252,26 @@ foreach ($version in $exeVersions) {
 
   #
   # 32-bit
+  #
   if (!$pythonArch -Or $pythonArch.CompareTo("86") -eq 0) {
     Download-URL "https://www.python.org/ftp/python/$($version)/python-$($version).exe" $downloadDir
 
     $pythonInstallPath = Get-Python-InstallPath $majorMinorDot "86"
     $targetInstallPath = "C:\Python$($majorMinor)-x86\"
     $installerPath = Join-Path $downloadDir "python-$($version).exe"
+    $unInstallerPath = $installerPath
 
     if (!$pythonInstallPath.CompareTo($targetInstallPath) -eq 0) {
       if ($pythonInstallPath) {
+
+        $installedPythonVersion = Get-Python-Version $majorMinorDot "86"
+        if ($installedPythonVersion) {
+          Download-URL "https://www.python.org/ftp/python/$installedPythonVersion/python-$installedPythonVersion.exe" $downloadDir
+          $unInstallerPath = Join-Path $downloadDir "python-$installedPythonVersion.exe"
+        }
+
         Write-Host "Found a python installation in a different directory [$pythonInstallPath] - Uninstalling"
-        Start-Process $installerPath -ArgumentList "/uninstall /passive" -NoNewWindow -Wait
+        Start-Process $unInstallerPath -ArgumentList "/uninstall /passive" -NoNewWindow -Wait
       }
     } elseif ($pythonInstallPath) {
       Write-Host "Updating existing installation [$pythonInstallPath]"
