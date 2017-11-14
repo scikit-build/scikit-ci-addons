@@ -53,26 +53,32 @@ def install(cmake_version=DEFAULT_CMAKE_VERSION):
         pass
 
     name = "cmake-{}-Linux-x86_64".format(cmake_version)
-
     cmake_package = "{}.tar.gz".format(name)
 
     _log("Downloading", cmake_package)
 
-    if not os.path.exists(cmake_package):
+    download_dir = os.environ["HOME"] + "/downloads"
+    downloaded_package = os.path.join(download_dir, cmake_package)
+
+    if not os.path.exists(downloaded_package):
+
+        if not os.path.exists(download_dir):
+            os.makedirs(download_dir)
+
         cmake_version_major = cmake_version.split(".")[0]
         cmake_version_minor = cmake_version.split(".")[1]
 
         check_output([
             "wget", "--no-check-certificate", "--progress=dot",
-            "https://cmake.org/files/v{}.{}/{}".format(
-                cmake_version_major, cmake_version_minor, cmake_package)
+            "https://cmake.org/files/v{}.{}/{}".format(cmake_version_major, cmake_version_minor, cmake_package),
+            "-O", downloaded_package
         ], stderr=subprocess.STDOUT)
         _log("  ->", "done")
     else:
-        _log("  ->", "skipping download: found", cmake_package)
+        _log("  ->", "skipping download: found", downloaded_package)
 
-    _log("Extracting", cmake_package)
-    check_output(["tar", "xzf", name + ".tar.gz"])
+    _log("Extracting", downloaded_package)
+    check_output(["tar", "xzf", downloaded_package])
     _log("  ->", "done")
 
     _log("Installing", name, "into", cmake_directory)
