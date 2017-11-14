@@ -1,14 +1,17 @@
 trap { Write-Error $_; Exit 1 }
 
 #
-# By default, Python 2.7.12, 3.5.3 and 3.6.1 are installed.
+# By default, all version of python are installed.
 #
 # Setting $pythonVersion to "2.7", "3.4", "3.5" or "3.6" allows to install a specific version
 #
 # Setting $pythonArch to either "64" or "86" allows to install python for specific architecture.
 #
-# Setting $pythonPrependPath to 1 will add install and Scripts directories the PATH and .PY to PATHEXT. The variable
-# should be set only if $pythonVersion and $pythonArch are set. By default, the value is 0.
+# Setting $pythonPrependPath to 1 will:
+# - add install and Scripts directories to the PATH
+# - and .PY to PATHEXT.
+# The variable should be set only if $pythonVersion and $pythonArch are set.
+# By default, the value is 0.
 #
 
 if (![System.IO.File]::Exists(".\install-utils.ps1")) {
@@ -21,8 +24,8 @@ Import-Module .\install-utils.ps1 -Force
 
 function Get-Python-InstallPath {
 param (
-  [string]$pythonVersion,
-  [string]$pythonArch
+  [string]$pythonVersion,  # Version specified as "X.Y"
+  [string]$pythonArch      # Arch specified as "86" or "64"
   )
   $suffix = '-32'
   if ($pythonArch.CompareTo('64') -eq 0) {
@@ -36,6 +39,30 @@ param (
       if ($properties -And (Get-Member -InputObject $properties -Name '(Default)')) {
         $installPath = (Get-ItemProperty -Path $path -Name '(Default)').'(Default)'
         return (Resolve-Path(Join-Path $installPath "\\")).Path
+      }
+    }
+  }
+  return ""
+}
+
+# Only for Python >= 3.6
+function Get-Python-Version {
+param (
+  [string]$pythonVersion,  # Version specified as "X.Y"
+  [string]$pythonArch      # Arch specified as "86" or "64"
+  )
+  $suffix = '-32'
+  if ($pythonArch.CompareTo('64') -eq 0) {
+    $suffix = ''
+  }
+  $roots = @("HKCU", "HKLM")
+  foreach ($root in $roots) {
+    $path = "$($root):\Software\Python\PythonCore\$pythonVersion$suffix"
+    if (Test-Path -Path $path -PathType Container) {
+      $properties = Get-ItemProperty -Path $path
+      if ($properties -And (Get-Member -InputObject $properties -Name 'Version')) {
+        $version = (Get-ItemProperty -Path $path -Name 'Version').'Version'
+        return $version
       }
     }
   }
@@ -85,8 +112,11 @@ param (
   [string]$pythonDir,
   [string]$downloadDir
   )
-  Download-URL 'https://bootstrap.pypa.io/get-pip.py' $downloadDir
-
+  # Workaround https://github.com/scikit-build/scikit-ci-addons/issues/54
+  # Download-URL 'https://bootstrap.pypa.io/get-pip.py' $downloadDir
+  $url = 'https://gist.githubusercontent.com/jcfr/db7347e8708b9f32d45ab36125fad6d3/raw/0745d1152433573501909c16bcf78328a350f308/get-pip.py'
+  Download-URL $url $downloadDir
+  
   $get_pip_script = Join-Path $downloadDir "get-pip.py"
 
   $interpreter = Join-Path $pythonDir "python.exe"
@@ -135,7 +165,9 @@ if(!($pythonPrependPath -match "^(0|1)$")){
   throw "'$pythonPrependPath' variable incorrectly set to [$pythonPrependPath]. Hint: '0' or '1' value is expected."
 }
 
-
+#
+# Python 2.7, 3.3 and 3.4
+#
 $exeVersions = @("2.7.12", "3.3.5", "3.4.4")
 foreach ($version in $exeVersions) {
 
@@ -148,6 +180,9 @@ foreach ($version in $exeVersions) {
     continue
   }
 
+  #
+  # 64-bit
+  #
   if (!$pythonArch -Or $pythonArch.CompareTo("64") -eq 0) {
     $targetDir = "C:\Python$($majorMinor)-x64"
     $installerName = "python-$($version).amd64.msi"
@@ -155,6 +190,9 @@ foreach ($version in $exeVersions) {
     Install-Python-27-33-34 $targetDir $installerName $downloadURL
   }
 
+  #
+  # 32-bit
+  #
   if (!$pythonArch -Or $pythonArch.CompareTo("86") -eq 0) {
     $targetDir = "C:\Python$($majorMinor)-x86"
     $installerName = "python-$($version).msi"
@@ -163,6 +201,9 @@ foreach ($version in $exeVersions) {
   }
 }
 
+#
+# Python 3.5 and 3.6
+#
 $exeVersions = @("3.5.3", "3.6.1")
 foreach ($version in $exeVersions) {
 
@@ -175,6 +216,9 @@ foreach ($version in $exeVersions) {
     continue
   }
 
+  #
+  # 64-bit
+  #
   if (!$pythonArch -Or $pythonArch.CompareTo("64") -eq 0) {
 
     Download-URL "https://www.python.org/ftp/python/$($version)/python-$($version)-amd64.exe" $downloadDir
@@ -182,11 +226,20 @@ foreach ($version in $exeVersions) {
     $pythonInstallPath = Get-Python-InstallPath $majorMinorDot "64"
     $targetInstallPath = "C:\Python$($majorMinor)-x64\"
     $installerPath = Join-Path $downloadDir "python-$($version)-amd64.exe"
+    $unInstallerPath = $installerPath
 
     if (!$pythonInstallPath.CompareTo($targetInstallPath) -eq 0) {
       if ($pythonInstallPath) {
+
+        $installedPythonVersion = Get-Python-Version $majorMinorDot "64"
+        if ($installedPythonVersion) {
+          Download-URL "https://www.python.org/ftp/python/$installedPythonVersion/python-$installedPythonVersion-amd64.exe" $downloadDir
+          $unInstallerPath = Join-Path $downloadDir "python-$installedPythonVersion-amd64.exe"
+        }
+
         Write-Host "Found a python installation in a different directory [$pythonInstallPath] - Uninstalling"
-        Start-Process $installerPath -ArgumentList "/uninstall /passive" -NoNewWindow -Wait
+        Start-Process $unInstallerPath -ArgumentList "/uninstall /passive" -NoNewWindow -Wait
+
       }
     } elseif ($pythonInstallPath) {
       Write-Host "Updating existing installation [$pythonInstallPath]"
@@ -197,17 +250,28 @@ foreach ($version in $exeVersions) {
     Pip-Install $targetInstallPath 'virtualenv'
   }
 
+  #
+  # 32-bit
+  #
   if (!$pythonArch -Or $pythonArch.CompareTo("86") -eq 0) {
     Download-URL "https://www.python.org/ftp/python/$($version)/python-$($version).exe" $downloadDir
 
     $pythonInstallPath = Get-Python-InstallPath $majorMinorDot "86"
     $targetInstallPath = "C:\Python$($majorMinor)-x86\"
     $installerPath = Join-Path $downloadDir "python-$($version).exe"
+    $unInstallerPath = $installerPath
 
     if (!$pythonInstallPath.CompareTo($targetInstallPath) -eq 0) {
       if ($pythonInstallPath) {
+
+        $installedPythonVersion = Get-Python-Version $majorMinorDot "86"
+        if ($installedPythonVersion) {
+          Download-URL "https://www.python.org/ftp/python/$installedPythonVersion/python-$installedPythonVersion.exe" $downloadDir
+          $unInstallerPath = Join-Path $downloadDir "python-$installedPythonVersion.exe"
+        }
+
         Write-Host "Found a python installation in a different directory [$pythonInstallPath] - Uninstalling"
-        Start-Process $installerPath -ArgumentList "/uninstall /passive" -NoNewWindow -Wait
+        Start-Process $unInstallerPath -ArgumentList "/uninstall /passive" -NoNewWindow -Wait
       }
     } elseif ($pythonInstallPath) {
       Write-Host "Updating existing installation [$pythonInstallPath]"

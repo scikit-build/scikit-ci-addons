@@ -135,13 +135,24 @@ def test_addon_anyci_docker_get_valid_filename(filename, expected):
     assert anyci.docker.get_valid_filename(filename) == expected
 
 
-def has_docker():
+def has_docker_executable():
     """Return True if docker executable is found."""
     try:
         subprocess.check_output(["docker", "--version"])
         return True
     except (OSError, subprocess.CalledProcessError):
         return False
+
+
+def is_docker_daemon_running():
+    """Return True if the docker daemon is running."""
+    if not has_docker_executable():
+        return False
+    try:
+        subprocess.check_output(["docker", "ps"], stderr=subprocess.STDOUT)
+    except subprocess.CalledProcessError:
+        return False
+    return True
 
 
 def test_addon_anyci_docker(tmpdir):
@@ -152,10 +163,17 @@ def test_addon_anyci_docker(tmpdir):
 
     is_circleci = "CIRCLECI" in os.environ
     if is_circleci:
-        assert has_docker(), "docker is expected when running tests on CircleCI"
+        assert has_docker_executable(), \
+            "docker is expected when running tests on CircleCI"
+        assert is_docker_daemon_running(), \
+            "docker daemon is expected to be started " \
+            "when running tests on CircleCI"
 
-    if not has_docker():
+    if not has_docker_executable():
         pytest.skip("docker executable not found")
+
+    if not is_docker_daemon_running():
+        pytest.skip("docker daemon is not running")
 
     root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     environment = dict(os.environ)
