@@ -13,5 +13,11 @@ Example::
 
 .. note::
 
-    - The script will skip the download if current version matches the selected
-      one.
+    - The script will skip the download in two cases:
+
+      - if current version matches the selected one.
+
+      - if archive already exist in ``$HOME/downloads`` directory.
+
+    - Adding directory ``$HOME/downloads`` to the CircleCI cache can speed up
+      the build. For more details, see `Caching Dependencies <https://circleci.com/docs/2.0/caching/>`_.

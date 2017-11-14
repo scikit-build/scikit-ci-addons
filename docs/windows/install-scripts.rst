@@ -40,7 +40,7 @@ Install selected CMake version in ``C:\cmake-X.Y.Z``.
 
     - CMake is **NOT** added to the ``PATH``
     - setting ``$cmakeVersion`` to "X.Y.Z" before executing the script allows to select a specific CMake version.
-    - By default, install CMake 3.7.1 in directory ``C:\cmake-3.7.1``
+    - on AppVeyor, the download and install can be skipped by adding directory ``C:\cmake-X.Y.Z`` to the ``cache``. For more details, see https://www.appveyor.com/docs/build-cache/#configuring-cache-items
 
 
 ``install-git.ps1``
