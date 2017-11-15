@@ -1032,8 +1032,8 @@ def main():
 
         module = __import__(MODULE)
 
-        script_args = namedtuple("script_args", ["prerelease_tag"])
-        script_args.prerelease_tag = "latest"
+        script_args = namedtuple("script_args", ["prerelease_release_tag_pattern"])
+        script_args.prerelease_release_tag_pattern = "*.*.*"
 
         def _test_minilanguage(expected_short_sha=None, expected_date=None, expected_distance=None):
             for package, expected_package in [
@@ -1054,13 +1054,13 @@ def main():
                         "distance-%s-shortsha-%s-date-%s.whl" % (expected_distance, expected_short_sha, expected_date)
                 ),
             ]:
-                udpated_package = module._substitute_package_selection_strings(
+                updated_package = module._substitute_package_selection_strings(
                     package, "minilanguage test input", script_args)
 
                 print("")
                 print("expected_package: %s" % expected_package)
-                print(" udpated_package: %s" % udpated_package)
-                assert expected_package == udpated_package
+                print(" updated_package: %s" % updated_package)
+                assert expected_package == updated_package
 
         with PrefixedPrint(MODULE):
 
@@ -1073,15 +1073,16 @@ def main():
                 expected_distance="2"
             )
 
-            do_commit(release_tag="latest", push=False)  # 2017-01-03
-            do_commit(push=False)  # 2017-01-04
+            do_commit(release_tag="0.1.0", push=False)  # 2017-01-03
+            do_commit(release_tag="latest", push=False)  # 2017-01-04
             do_commit(push=False)  # 2017-01-05
             do_commit(push=False)  # 2017-01-06
+            do_commit(push=False)  # 2017-01-07
 
             _test_minilanguage(
                 expected_short_sha=get_commit_short_sha(),
-                expected_distance="3",
-                expected_date="20170106"
+                expected_distance="4",
+                expected_date="20170107"
             )
 
     test_prerelease_mode()

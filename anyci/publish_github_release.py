@@ -176,7 +176,7 @@ def _substitute_package_selection_strings(package, what, script_args):
         '<PYTHON_WHEEL_PLATFORM>': (python_wheel_platform, [], {}),
         '<COMMIT_DATE>': (get_commit_date, [], {}),
         '<COMMIT_SHORT_SHA>': (get_commit_short_sha, [], {}),
-        '<COMMIT_DISTANCE>': (get_commit_distance, [script_args.prerelease_tag], {})
+        '<COMMIT_DISTANCE>': (get_commit_distance, [script_args.prerelease_release_tag_pattern], {})
     }
     if any([token in package for token in tokens]):
         print("Updating %s [%s]" % (what, package))
@@ -247,6 +247,11 @@ def configure_parser(parser):
         help="Commit or branch name to associate with the pre-release "
              "(default: master)"
     )
+    prerelease_group.add_argument(
+        "--prerelease-release-tag-pattern", type=str,
+        help="Release tag used to compute <COMMIT_DISTANCE>"
+             "(default: *.*.*)"
+    )
     # Common arguments
     parser.add_argument(
         "--token", type=str, metavar="GITHUB_TOKEN",
@@ -276,7 +281,8 @@ def configure_parser(parser):
         prerelease_packages_keep_pattern=None,
         prerelease_name=None,
         prerelease_sha="master",
-        prerelease_tag="latest"
+        prerelease_tag="latest",
+        prerelease_release_tag_pattern="*.*.*"
     )
 
 
