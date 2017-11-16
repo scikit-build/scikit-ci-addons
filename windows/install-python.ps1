@@ -69,6 +69,29 @@ param (
   return ""
 }
 
+function Get-Python-Executable-Version{
+param (
+  [string]$pythonInstallPath  # Path to python install directory
+  )
+  $interpreter = Join-Path $pythonInstallPath "python.exe"
+
+  # See https://stackoverflow.com/a/8762068/1539918 and https://stackoverflow.com/a/11549817/1539918
+  $pinfo = New-Object System.Diagnostics.ProcessStartInfo
+  $pinfo.FileName = "$interpreter"
+  $pinfo.Arguments = "-c `"import sys;sys.stdout.write('%s.%s.%s' % sys.version_info[0:3])`""
+  $pinfo.UseShellExecute = $false
+  $pinfo.CreateNoWindow = $true
+  $pinfo.RedirectStandardError = $true
+  $pinfo.RedirectStandardOutput = $true
+  $process = New-Object System.Diagnostics.Process
+  $process.StartInfo = $pinfo
+  $process.Start() | Out-Null
+  $process.WaitForExit()
+  $pythonVersion = $process.StandardOutput.ReadToEnd()
+
+  return $pythonVersion
+}
+
 function Install-Python {
 param (
   [string]$installerPath,
@@ -230,7 +253,6 @@ foreach ($version in $exeVersions) {
 
     if (!$pythonInstallPath.CompareTo($targetInstallPath) -eq 0) {
       if ($pythonInstallPath) {
-
         $installedPythonVersion = Get-Python-Version $majorMinorDot "64"
         if ($installedPythonVersion) {
           Download-URL "https://www.python.org/ftp/python/$installedPythonVersion/python-$installedPythonVersion-amd64.exe" $downloadDir
@@ -242,7 +264,14 @@ foreach ($version in $exeVersions) {
 
       }
     } elseif ($pythonInstallPath) {
-      Write-Host "Updating existing installation [$pythonInstallPath]"
+      $installedPythonVersion = Get-Python-Executable-Version $pythonInstallPath
+      if (!$installedPythonVersion.CompareTo($version) -eq 0) {
+        Download-URL "https://www.python.org/ftp/python/$installedPythonVersion/python-$installedPythonVersion-amd64.exe" $downloadDir
+        $unInstallerPath = Join-Path $downloadDir "python-$installedPythonVersion-amd64.exe"
+
+        Write-Host "Updating existing installation [$pythonInstallPath] from $installedPythonVersion to $($version)"
+        Start-Process $unInstallerPath -ArgumentList "/uninstall /passive" -NoNewWindow -Wait
+        }
     }
 
     Install-Python $installerPath $targetInstallPath
@@ -274,7 +303,14 @@ foreach ($version in $exeVersions) {
         Start-Process $unInstallerPath -ArgumentList "/uninstall /passive" -NoNewWindow -Wait
       }
     } elseif ($pythonInstallPath) {
-      Write-Host "Updating existing installation [$pythonInstallPath]"
+      $installedPythonVersion = Get-Python-Executable-Version $pythonInstallPath
+      if (!$installedPythonVersion.CompareTo($version) -eq 0) {
+        Download-URL "https://www.python.org/ftp/python/$installedPythonVersion/python-$installedPythonVersion.exe" $downloadDir
+        $unInstallerPath = Join-Path $downloadDir "python-$installedPythonVersion.exe"
+
+        Write-Host "Updating existing installation [$pythonInstallPath] from $installedPythonVersion to $($version)"
+        Start-Process $unInstallerPath -ArgumentList "/uninstall /passive" -NoNewWindow -Wait
+      }
     }
 
     Install-Python  $installerPath $targetInstallPath
