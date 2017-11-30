@@ -102,7 +102,7 @@ param (
   $interpreter = Join-Path $targetDir "python.exe"
   if ([System.IO.Directory]::Exists($interpreter)) {
     Write-Host "-> skipping: found $interpreter"
-  return
+    return
   }
   if (![System.IO.Directory]::Exists($targetDir)) {
     [System.IO.Directory]::CreateDirectory($targetDir)
@@ -120,7 +120,7 @@ param (
   [string]$downloadURL
   )
   Download-URL $downloadURL $downloadDir
-  Install-MSI $installerName $downloadDir $targetDir
+  Always-Install-MSI $installerName $downloadDir $targetDir
   Install-Pip $targetDir $downloadDir
   Pip-Install $targetDir 'virtualenv'
   if ($pythonPrependPath -eq 1) {

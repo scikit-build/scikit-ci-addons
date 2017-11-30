@@ -37,6 +37,20 @@ param (
   Download-File $url $destFilePath
 }
 
+function Always-Install-MSI {
+param (
+  [string]$fileName,
+  [string]$downloadDir,
+  [string]$targetDir
+  )
+
+  if (![System.IO.Directory]::Exists($targetDir)) {
+    [System.IO.Directory]::CreateDirectory($targetDir)
+  }
+  $filePath = Join-Path $downloadDir $fileName
+  Start-Process msiexec -ArgumentList "/a `"$filePath`" TARGETDIR=`"$targetDir`" ALLUSERS=1 /qb" -NoNewWindow -Wait
+}
+
 function Install-MSI {
 param (
   [string]$fileName,
@@ -47,13 +61,10 @@ param (
   Write-Host "Installing $fileName into $targetDir"
   if ([System.IO.Directory]::Exists($targetDir)) {
     Write-Host "-> skipping: existing target directory"
-	return
+    return
   }
-  if (![System.IO.Directory]::Exists($targetDir)) {
-    [System.IO.Directory]::CreateDirectory($targetDir)
-  }
-  $filePath = Join-Path $downloadDir $fileName
-  Start-Process msiexec -ArgumentList "/a `"$filePath`" TARGETDIR=`"$targetDir`" ALLUSERS=1 /qb" -NoNewWindow -Wait
+
+  Always-Install-MSI $fileName $downloadDir $targetDir
 }
 
 function Which {
