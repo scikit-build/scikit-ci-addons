@@ -78,9 +78,9 @@ Usage:
     from `jcfr/docker-travis-cli <https://github.com/jcfr/docker-travis-cli>`_.
     It can easily be installed using::
 
-        curl https://raw.githubusercontent.com/caktux/travis-cli/master/travis-cli.sh \
-            -o ~/bin/travis-cli && \
-        chmod +x ~/bin/travis-cli
+	curl https://raw.githubusercontent.com/jcfr/docker-travis-cli/master/travis-cli.sh \
+	    -o ~/bin/travis-cli && \
+	chmod +x ~/bin/travis-cli
 
 Credits:
 
