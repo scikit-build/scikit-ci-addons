@@ -60,7 +60,8 @@ cache:
     - $HOME/.pyenv/versions/2.7.12
 
 install:
-  - pip install scikit-ci==0.15.0
+  - curl --silent --show-error https://bootstrap.pypa.io/get-pip.py | sudo -H python
+  - pip install -U scikit-ci
   - ci install
 
 script:
