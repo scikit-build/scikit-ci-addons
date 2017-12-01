@@ -1,0 +1,41 @@
+version: 2
+jobs:
+  python27:
+    docker:
+      - image: circleci/python:2.7.14-jessie
+    environment:
+      # Used for testing
+      - EXPECTED_PYTHON_VERSION: 2.7.11
+      - EXPECTED_PYTHON_ARCH: 64
+    steps:
+      - checkout
+      - run:
+          name: Initialize Virtual Environment
+          command: |
+            python -m virtualenv ../venv || python -m venv ../venv
+      - run:
+          name: Install scikit-ci
+          command: |
+            . ../venv/bin/activate
+            pip install -U scikit-ci
+            ci install
+      - run:
+          name: Run tests
+          command: |
+            . ../venv/bin/activate
+            ci test
+      - run:
+          name: Deployement
+          command: |
+            . ../venv/bin/activate
+            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
+              ci after_test
+            fi
+      - store_artifacts:
+          path: dist/*
+
+workflows:
+  version: 2
+  test-package-publish:
+    jobs:
+      - python27
