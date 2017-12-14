@@ -27,7 +27,7 @@ matrix:
     - os: linux
       python: "2.7"
       # Used for testing
-      env: EXPECTED_PYTHON_VERSION=2.7.13
+      env: EXPECTED_PYTHON_VERSION=2.7.14
 
     - os: osx
       language: generic
