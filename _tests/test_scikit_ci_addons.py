@@ -162,7 +162,8 @@ def test_addon_anyci_docker(tmpdir):
     test_image_id_filename = test_image + ".image_id"
 
     is_circleci = "CIRCLECI" in os.environ
-    if is_circleci:
+    is_circleci_2 = "CIRCLE_STAGE" in os.environ
+    if is_circleci and not is_circleci_2:
         assert has_docker_executable(), \
             "docker is expected when running tests on CircleCI"
         assert is_docker_daemon_running(), \

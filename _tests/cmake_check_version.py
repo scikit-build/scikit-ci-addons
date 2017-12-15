@@ -10,6 +10,10 @@ def _log(*args):
     sys.stdout.flush()
 
 
+if "CIRCLE_STAGE" in os.environ:
+    _log("skipping check: add-on not supoorted on CircleCI 2.0")
+    sys.exit(0)
+
 expected = sys.argv[1]
 _log("expected:", expected)
 

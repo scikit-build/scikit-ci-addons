@@ -25,6 +25,10 @@ def _log(*args):
 def install(cmake_version=DEFAULT_CMAKE_VERSION):
     """Download and install CMake into ``/usr/local``."""
 
+    if "CIRCLE_STAGE" in os.environ:
+        _log("add-on not supoorted on CircleCI 2.0")
+        return
+
     cmake_directory = "/usr/local"
 
     cmake_exe = os.path.join(cmake_directory, 'bin/cmake')

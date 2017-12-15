@@ -27,40 +27,41 @@ matrix:
     - os: linux
       python: "2.7"
       # Used for testing
-      env: EXPECTED_PYTHON_VERSION=2.7.13
+      env: EXPECTED_PYTHON_VERSION=2.7.14
 
     - os: osx
       language: generic
       env:
         # Used by pyenv
-        - PYTHON_VERSION=3.4.5
+        - PYTHON_VERSION=3.4.7
         # Used for testing
-        - EXPECTED_PYTHON_VERSION=3.4.5
+        - EXPECTED_PYTHON_VERSION=3.4.7
 
     - os: osx
       language: generic
       env:
         # Used by pyenv
-        - PYTHON_VERSION=3.3.6
+        - PYTHON_VERSION=3.3.7
         # Used for testing
-        - EXPECTED_PYTHON_VERSION=3.3.6
+        - EXPECTED_PYTHON_VERSION=3.3.7
 
     - os: osx
       language: generic
       env:
         # Used by pyenv
-        - PYTHON_VERSION=2.7.12
+        - PYTHON_VERSION=2.7.14
         # Used for testing
-        - EXPECTED_PYTHON_VERSION=2.7.12
+        - EXPECTED_PYTHON_VERSION=2.7.14
 
 cache:
   directories:
     - $HOME/.pyenv/versions/3.4.5
-    - $HOME/.pyenv/versions/3.3.6
-    - $HOME/.pyenv/versions/2.7.12
+    - $HOME/.pyenv/versions/3.3.7
+    - $HOME/.pyenv/versions/2.7.14
 
 install:
-  - pip install scikit-ci==0.15.0
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then mkdir $HOME/bin; ln -s $(which pip2) $HOME/bin/pip; fi
+  - pip install -U scikit-ci
   - ci install
 
 script:
