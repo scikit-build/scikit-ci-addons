@@ -16,8 +16,8 @@ if (!$cmakeVersion) {
 
 $version = $cmakeVersion
 
-$major = $version.Split(".")[0]
-$minor = $version.Split(".")[1]
+$major = [int]$version.Split(".")[0]
+$minor = [int]$version.Split(".")[1]
 
 $arch = "win64-x64"
 
