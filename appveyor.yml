@@ -24,7 +24,7 @@ environment:
       PYTHON_ARCH: "32"
       BLOCK: "0"
       # Used for testing
-      EXPECTED_PYTHON_VERSION: 2.7.14
+      EXPECTED_PYTHON_VERSION: 2.7.15
       EXPECTED_PYTHON_ARCH: 32
       # Test "windows/install-*.ps1" scripts only once
       WINDOWS_ADDON_TESTS: 1
@@ -34,7 +34,7 @@ environment:
       PYTHON_ARCH: "64"
       BLOCK: "0"
       # Used for testing
-      EXPECTED_PYTHON_VERSION: 2.7.14
+      EXPECTED_PYTHON_VERSION: 2.7.15
       EXPECTED_PYTHON_ARCH: 64
 
     - PYTHON_DIR: "C:\\Python35"
