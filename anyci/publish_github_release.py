@@ -172,6 +172,9 @@ def python_wheel_platform():
 #
 
 def _substitute_package_selection_strings(package, what, script_args):
+    """Return an updated package name where mini-language tokens
+    have been updated.
+    """
     tokens = {
         '<PYTHON_WHEEL_PLATFORM>': (python_wheel_platform, [], {}),
         '<COMMIT_DATE>': (get_commit_date, [], {}),
@@ -189,6 +192,9 @@ def _substitute_package_selection_strings(package, what, script_args):
 
 
 def _update_package_list(input_packages, what, script_args):
+    """Return an updated list of packages where mini-language
+    tokens have been replaced using :py:func:`_substitute_package_selection_strings`.
+    """
     if input_packages is None:
         return input_packages
     packages = []
@@ -330,6 +336,24 @@ def _collect_packages(packages):
 
 
 def _upload_release(release_tag, args):
+    """This function creates a release named ``release_tag`` and uploads
+    associated packages.
+
+    If ``args.re_upload`` is True, existing packages with matching names
+    are deleted first.
+
+    The ``args`` parameter is a dictionary where the following
+    keys are expected to be set:
+
+      * ``repo_name``: Specified as a string with the following format "<org_name>/<repo_name>".
+
+      * ``release_packages``: List of packages specified as relative or absolute paths.
+
+      * ``re_upload``: True or False. If True, existing packages with matching names are
+        deleted first using :py:func:`_delete_matching_packages`.
+
+      * ``dry_run``: True or False
+    """
     assert release_tag is not None
     # Create release
     gh_release_create(
@@ -386,6 +410,7 @@ def _upload_prerelease(args):
         publish=True, prerelease=True
     )
 
+    # Retrieve list of packages by evaluating globbing expressions if any.
     packages = _collect_packages(args.prerelease_packages)
 
     # Remove existing assets matching selected ones
@@ -494,7 +519,8 @@ def main(argv=None):
         exit(0 if args.exit_success_if_missing_token else 1)
     os.environ["GITHUB_TOKEN"] = args.token
 
-    # Update package arguments
+    # Update package arguments by substituting mini-language tokens with
+    # their corresponding values.
     args.release_packages = _update_package_list(
         args.release_packages, "release package", args)
     args.prerelease_packages = _update_package_list(
@@ -509,6 +535,7 @@ def main(argv=None):
     msg = "Checking if HEAD is a release tag"
     print(msg)
 
+    # Filter prerelease_tag from the list of existing releases.
     head_tags = get_tags()
     head_tags = list(filter(lambda tag: tag != args.prerelease_tag, head_tags))
 
@@ -521,8 +548,9 @@ def main(argv=None):
         # associated with the HEAD, we use the first one.
         release_tag = head_tags[0]
 
-    # Upload
     uploaded = False
+
+    # If relevant, upload release
     if upload_release:
         if is_release:
             print("%s - yes "
@@ -531,6 +559,7 @@ def main(argv=None):
         elif not dual:
             print("%s - no (skipping release upload)\n" % msg)
 
+    # If relevant, upload prerelease
     if not uploaded and upload_prerelease:
         if not is_release:
             print("%s - no (creating prerelease)\n" % msg)
