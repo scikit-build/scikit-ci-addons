@@ -2,9 +2,61 @@
 How to Make a Release
 =====================
 
-A core developer should use the following steps to create a release of
+A core developer should use the following steps to create a release `X.Y.Z` of
 **scikit-ci-addons**.
 
+-------------
+Prerequisites
+-------------
+
+* All CI tests are passing on `AppVeyor`_, `CircleCI`_ and `Travis CI`_.
+
+* You have a `GPG signing key <https://help.github.com/articles/generating-a-new-gpg-key/>`_.
+
+-------------------------
+Documentation conventions
+-------------------------
+
+The commands reported below should be evaluated in the same terminal session.
+
+Commands to evaluate starts with a dollar sign. For example::
+
+  $ echo "Hello"
+  Hello
+
+means that ``echo "Hello"`` should be copied and evaluated in the terminal.
+
+----------------------
+Setting up environment
+----------------------
+
+1. First, `register for an account on PyPI <https://pypi.org>`_.
+
+
+2. If not already the case, ask to be added as a ``Package Index Maintainer``.
+
+
+3. Create a ``~/.pypirc`` file with your login credentials::
+
+    [distutils]
+    index-servers =
+      pypi
+      pypitest
+
+    [pypi]
+    username=<your-username>
+    password=<your-password>
+
+    [pypitest]
+    repository=https://test.pypi.org/legacy/
+    username=<your-username>
+    password=<your-password>
+
+  where ``<your-username>`` and ``<your-password>`` correspond to your PyPI account.
+
+------------------
+PyPI: Step-by-step
+------------------
 
 1. Make sure that all CI tests are passing on `AppVeyor`_, `CircleCI`_ and `Travis CI`_.
 
@@ -43,7 +95,7 @@ A core developer should use the following steps to create a release of
 
   .. warning::
 
-      This step requires a GPG signing key.
+      This step requires a `GPG signing key <https://help.github.com/articles/generating-a-new-gpg-key/>`_.
 
 
 6. Create the source distribution and wheel
@@ -60,8 +112,7 @@ A core developer should use the following steps to create a release of
     $ git push origin ${release}
 
 
-8. After configuring `~/.pypirc <https://packaging.python.org/distributing/#uploading-your-project-to-pypi>`_,
-   upload the distributions on `PyPI`_
+8. Upload the distributions on `PyPI`_
 
   .. code::
 
