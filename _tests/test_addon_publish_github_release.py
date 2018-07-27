@@ -200,3 +200,22 @@ def test_missing_token(src_dir, mocker, capsys, monkeypatch):
 
         out, _ = capsys.readouterr()
         assert "skipping: A token is expected." in out
+
+
+@pytest.mark.parametrize("pgr_function", [
+    "get_tags",
+    "get_commit_date",
+    "get_commit_short_sha",
+    "get_commit_distance"
+])
+def test_missing_git_dir(pgr_function, tmpdir):
+    # Import addon to facilitate testing
+    sys.path.insert(0, os.path.join(ci_addons.home(), 'anyci'))
+
+    pgr = __import__('publish_github_release')
+
+    with push_dir(str(tmpdir)):
+        with pytest.raises(
+                RuntimeError,
+                match=r"Current directory is expected to contain a '.git' directory.*"):
+            getattr(pgr, pgr_function)()

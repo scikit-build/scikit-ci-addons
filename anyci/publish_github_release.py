@@ -16,6 +16,9 @@ import sys
 import subprocess
 import textwrap
 
+
+from functools import wraps
+
 from github_release import (
     gh_asset_delete,
     gh_asset_upload,
@@ -73,6 +76,20 @@ def run_command(commands, args, cwd=None, verbose=False, hide_stderr=False,
     return stdout, p.returncode
 
 
+def git_dir_required(func):
+    """This decorator raises :class:`RuntimeError` if the current
+    directory does not contain a ``.git`` subdirectory.
+    """
+    @wraps(func)
+    def func_wrapper(*args, **kwargs):
+        if not os.path.exists(".git"):
+            raise RuntimeError(
+                "Current directory is expected to contain a '.git' directory: %s" % os.getcwd())
+        return func(*args, **kwargs)
+    return func_wrapper
+
+
+@git_dir_required
 def get_tags(ref="HEAD"):
     """If any, return all tags associated with `ref`.
 
@@ -106,6 +123,7 @@ def get_current_date():
     return now.strftime("%Y-%m-%d %H:%m UTC")
 
 
+@git_dir_required
 def get_commit_date(ref="HEAD"):
     # 2017-06-14 22:53:31 -0400
     output, _ = run_command(
@@ -117,12 +135,14 @@ def get_commit_date(ref="HEAD"):
         output, "%Y-%m-%d %H:%M:%S").strftime("%Y%m%d")
 
 
+@git_dir_required
 def get_commit_short_sha(ref="HEAD"):
     output, _ = run_command(
         GITS, ["rev-parse", "--short=7", str(ref)])
     return output
 
 
+@git_dir_required
 def get_commit_distance(tag):
     """Return the distance to the given ``tag``. If ``tag`` is not found, it returns
     the number of commits.
