@@ -5,40 +5,109 @@ How to Make a Release
 A core developer should use the following steps to create a release of
 **scikit-ci-addons**.
 
-0. Configure `~/.pypirc` as described `here <https://packaging.python.org/distributing/#uploading-your-project-to-pypi>`_.
 
-1. Make sure that all CI tests are passing.
+1. Make sure that all CI tests are passing on `AppVeyor`_, `CircleCI`_ and `Travis CI`_.
 
-2. Tag the release. Requires a GPG key with signatures. For version *X.Y.Z*::
 
-    git tag -s -m "scikit-ci-addons X.Y.Z" X.Y.Z upstream/master
+2. List all tags sorted by version
 
-3. Create the source tarball and binary wheels::
+  .. code::
 
-    git checkout master
-    git fetch upstream
-    git reset --hard upstream/master
-    rm -rf dist/
-    python setup.py sdist bdist_wheel
+    $ git tag -l | sort -V
 
-4. Upload the packages to the testing PyPI instance::
+3. Choose the next release version number
 
-    twine upload --sign -r pypitest dist/*
+  .. code::
 
-5. Check the `PyPI testing package page <https://testpypi.python.org/pypi/scikit-ci-addons/>`_.
+    $ release=X.Y.Z
 
-6. Upload the packages to the PyPI instance::
+  .. warning::
 
-    twine upload --sign dist/*
+      To ensure the packages are uploaded on `PyPI`_, tags must match this regular
+      expression: ``^[0-9]+(\.[0-9]+)*(\.post[0-9]+)?$``.
 
-7. Check the `PyPI package page <https://pypi.python.org/pypi/scikit-ci-addons/>`_.
 
-8. Make sure the package can be installed::
+4. Download latest sources
 
-    mkvirtualenv test-pip-install
-    pip install scikit-ci-addons
-    rmvirtualenv test-pip-install
+  .. code::
 
-9. Push local changes::
+    $ cd /tmp && \
+      git clone git@github.com:scikit-build/scikit-ci-addons && \
+      cd scikit-ci-addons
 
-    git push upstream X.Y.Z
+5. Tag the release
+
+  .. code::
+
+    $ git tag --sign -m "scikit-ci-addons ${release}" ${release} origin/master
+
+  .. warning::
+
+      This step requires a GPG signing key.
+
+
+6. Create the source distribution and wheel
+
+  .. code::
+
+    $ python setup.py sdist bdist_wheel
+
+
+7. Publish the release tag
+
+  .. code::
+
+    $ git push origin ${release}
+
+
+8. After configuring `~/.pypirc <https://packaging.python.org/distributing/#uploading-your-project-to-pypi>`_,
+   upload the distributions on `PyPI`_
+
+  .. code::
+
+    twine upload dist/*
+
+  .. note::
+
+    To first upload on `TestPyPI`_ , do the following::
+
+        $ twine upload -r pypitest dist/*
+
+
+9. Create a clean testing environment to test the installation
+
+  .. code::
+
+    $ mkvirtualenv scikit-ci-addons-${release}-install-test && \
+      pip install scikit-ci-addons && \
+      ci_addons --list && \
+      ci_addons --version
+
+  .. note::
+
+    If the ``mkvirtualenv`` is not available, this means you do not have `virtualenvwrapper`_
+    installed, in that case, you could either install it or directly use `virtualenv`_ or `venv`_.
+
+    To install from `TestPyPI`_, do the following::
+
+        $ pip install -i https://test.pypi.org/simple scikit-ci-addons
+
+
+10. Cleanup
+
+  .. code::
+
+    $ deactivate  && \
+      rm -rf dist/* && \
+      rmvirtualenv scikit-ci-addons-${release}-install-test
+
+.. _virtualenvwrapper: https://virtualenvwrapper.readthedocs.io/
+.. _virtualenv: http://virtualenv.readthedocs.io
+.. _venv: https://docs.python.org/3/library/venv.html
+
+.. _AppVeyor: https://ci.appveyor.com/project/scikit-build/scikit-ci-addons/history
+.. _CircleCI: https://circleci.com/gh/scikit-build/scikit-ci-addons
+.. _Travis CI: https://travis-ci.org/scikit-build/scikit-ci-addons/builds
+
+.. _PyPI: https://pypi.org/project/scikit-ci-addons
+.. _TestPyPI: https://test.pypi.org/project/scikit-ci-addons
