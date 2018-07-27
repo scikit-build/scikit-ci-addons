@@ -20,6 +20,10 @@ before_install:
       commands:
         - python -m ci_addons travis/install_pyenv
 
+  circle:
+    commands:
+      - sudo apt-get install rsync
+
 install:
   commands:
     - python -m ci_addons $<CI_NAME>/install_cmake 3.6.2
