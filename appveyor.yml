@@ -1,12 +1,7 @@
----
-
 branches:
- only:
-  - master
- except:
-  # Exclude tags created by "ci_addons publish_github_release"
-  - latest
-  - latest-tmp
+  only:
+    - master
+    - /^[0-9]+(\.[0-9]+)*(\.post[0-9]+)?$/
 
 version: "0.0.1.{build}"
 
