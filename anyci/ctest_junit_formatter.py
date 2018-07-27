@@ -26,5 +26,6 @@ def main(build_dir):
         result_tree = transform(xml_doc)
         print(result_tree)
 
+
 if __name__ == "__main__":
     main(sys.argv[1])
