@@ -10,6 +10,7 @@ Usage::
 import os
 import subprocess
 import sys
+import textwrap
 
 from subprocess import CalledProcessError, check_output
 
@@ -25,9 +26,33 @@ def _log(*args):
 def install(cmake_version=DEFAULT_CMAKE_VERSION):
     """Download and install CMake into ``/usr/local``."""
 
-    if "CIRCLE_STAGE" in os.environ:
-        _log("add-on not supoorted on CircleCI 2.0")
-        return
+    missing_executables = []
+    for executable_name in ["rsync", "tar", "wget"]:
+        try:
+            subprocess.check_output([executable_name, "--version"])
+        except (OSError, CalledProcessError):
+            missing_executables.append(executable_name)
+
+    if missing_executables:
+        raise RuntimeError(textwrap.dedent(
+            """
+            The following executables are required to install CMake:
+
+              {missing_executables}
+
+            Few options to address this:
+
+            (1) install the missing executables using the system package manager. For example:
+
+                sudo apt-get install {missing_executables}
+
+            (2) install CMake wheel using pip. For example:
+
+                pip install cmake
+            """.format(
+                missing_executables=" ".join(missing_executables),
+            )
+        ))
 
     cmake_directory = "/usr/local"
 
@@ -43,7 +68,7 @@ def install(cmake_version=DEFAULT_CMAKE_VERSION):
     _log("Looking for cmake", cmake_version, "in PATH")
     try:
         output = check_output(
-            "cmake --version", shell=True).decode("utf-8")
+            ["cmake", "--version"]).decode("utf-8")
         current_cmake_version = output.splitlines()[0]
         if cmake_version in current_cmake_version:
             _log("  ->", "found %s:" % current_cmake_version,
