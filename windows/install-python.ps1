@@ -113,7 +113,7 @@ param (
   Start-Process $installerPath -ArgumentList "TargetDir=$targetDir DefaultAllUsersTargetDir=$targetDir InstallAllUsers=1 Include_launcher=0 PrependPath=$pythonPrependPath Shortcuts=0 /passive" -NoNewWindow -Wait
 }
 
-function Install-Python-27-33-34 {
+function Install-Python-27-34 {
 param (
   [string]$targetDir,
   [string]$installerName,
@@ -189,9 +189,9 @@ if(!($pythonPrependPath -match "^(0|1)$")){
 }
 
 #
-# Python 2.7, 3.3 and 3.4
+# Python 2.7 and 3.4
 #
-$exeVersions = @("2.7.12", "3.3.5", "3.4.4")
+$exeVersions = @("2.7.12", "3.4.4")
 foreach ($version in $exeVersions) {
 
   $split = $version.Split(".")
@@ -210,7 +210,7 @@ foreach ($version in $exeVersions) {
     $targetDir = "C:\Python$($majorMinor)-x64"
     $installerName = "python-$($version).amd64.msi"
     $downloadURL = "https://www.python.org/ftp/python/$($version)/$($installerName)"
-    Install-Python-27-33-34 $targetDir $installerName $downloadURL
+    Install-Python-27-34 $targetDir $installerName $downloadURL
   }
 
   #
@@ -220,7 +220,7 @@ foreach ($version in $exeVersions) {
     $targetDir = "C:\Python$($majorMinor)-x86"
     $installerName = "python-$($version).msi"
     $downloadURL = "https://www.python.org/ftp/python/$($version)/$($installerName)"
-    Install-Python-27-33-34 $targetDir $installerName $downloadURL
+    Install-Python-27-34 $targetDir $installerName $downloadURL
   }
 }
 
