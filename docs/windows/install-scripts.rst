@@ -109,14 +109,11 @@ Install NSIS 3.01 on the system.
 ``install-python.ps1``
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Install Python 2.7.12, 3.3.5, 3.4.4, 3.5.3 and 3.6.1 (32 and 64-bit) along with pip and virtualenv
+Install Python 2.7.12, 3.4.4, 3.5.3, 3.6.6 and 3.7.0 (32 and 64-bit) along with pip and virtualenv
 in the following directories: ::
 
     C:\Python27-x64
     C:\Python27-x86
-
-    C:\Python33-x64
-    C:\Python33-x86
 
     C:\Python34-x64
     C:\Python34-x86
@@ -127,10 +124,12 @@ in the following directories: ::
     C:\Python36-x64
     C:\Python36-x86
 
+    C:\Python37-x64
+    C:\Python37-x86
 
 .. note::
     - python interpreter is **NOT** added to the ``PATH``
-    - setting ``$pythonVersion`` to either "2.7", "3.3", "3.4", "3.5" or "3.6" before executing the script allows
+    - setting ``$pythonVersion`` to either "2.7", "3.4", "3.5", "3.6" or "3.7" before executing the script allows
       to install a specific version. By default, all are installed.
     - setting ``$pythonArch`` to either "86" or "64" before executing the script allows
       to install python for specific architecture. By default, both are installed.
@@ -138,7 +137,7 @@ in the following directories: ::
       variable should be set only if ``$pythonVersion`` and ``$pythonArch`` are set. By default, the value is 0.
 
 .. warning::
-    - The downloaded versions of python ``3.3`` and ``3.4`` are **NOT** the latest version including security patches.
+    - The downloaded versions of python may **NOT** be the latest version including security patches.
       If running in a production environment (e.g webserver), these versions should be built from source.
 
 ``install-python-27-x64.ps1``

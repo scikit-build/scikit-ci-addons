@@ -3,7 +3,7 @@ trap { Write-Error $_; Exit 1 }
 #
 # By default, all version of python are installed.
 #
-# Setting $pythonVersion to "2.7", "3.4", "3.5" or "3.6" allows to install a specific version
+# Setting $pythonVersion to "2.7", "3.4", "3.5", "3.6" or "3.7" allows to install a specific version
 #
 # Setting $pythonArch to either "64" or "86" allows to install python for specific architecture.
 #
