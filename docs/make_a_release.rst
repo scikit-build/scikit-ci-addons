@@ -1,9 +1,11 @@
-=====================
-How to Make a Release
-=====================
+.. _making_a_release:
+
+================
+Making a release
+================
 
 A core developer should use the following steps to create a release `X.Y.Z` of
-**scikit-ci-addons**.
+**scikit-ci-addons** on `PyPI`_.
 
 -------------
 Prerequisites
@@ -54,20 +56,32 @@ Setting up environment
 
   where ``<your-username>`` and ``<your-password>`` correspond to your PyPI account.
 
-------------------
-PyPI: Step-by-step
-------------------
+
+---------------------
+`PyPI`_: Step-by-step
+---------------------
 
 1. Make sure that all CI tests are passing on `AppVeyor`_, `CircleCI`_ and `Travis CI`_.
 
 
-2. List all tags sorted by version
+2. Download the latest sources
 
   .. code::
 
-    $ git tag -l | sort -V
+    $ cd /tmp && \
+      git clone git@github.com:scikit-build/scikit-ci-addons && \
+      cd scikit-ci-addons
 
-3. Choose the next release version number
+
+3. List all tags sorted by version
+
+  .. code::
+
+    $ git fetch --tags && \
+      git tag -l | sort -V
+
+
+4. Choose the next release version number
 
   .. code::
 
@@ -79,14 +93,6 @@ PyPI: Step-by-step
       expression: ``^[0-9]+(\.[0-9]+)*(\.post[0-9]+)?$``.
 
 
-4. Download latest sources
-
-  .. code::
-
-    $ cd /tmp && \
-      git clone git@github.com:scikit-build/scikit-ci-addons && \
-      cd scikit-ci-addons
-
 5. Tag the release
 
   .. code::
@@ -95,7 +101,8 @@ PyPI: Step-by-step
 
   .. warning::
 
-      This step requires a `GPG signing key <https://help.github.com/articles/generating-a-new-gpg-key/>`_.
+      We recommend using a `GPG signing key <https://help.github.com/articles/generating-a-new-gpg-key/>`_
+      to sign the tag.
 
 
 6. Create the source distribution and wheel
@@ -136,7 +143,7 @@ PyPI: Step-by-step
 
   .. note::
 
-    If the ``mkvirtualenv`` is not available, this means you do not have `virtualenvwrapper`_
+    If the ``mkvirtualenv`` command is not available, this means you do not have `virtualenvwrapper`_
     installed, in that case, you could either install it or directly use `virtualenv`_ or `venv`_.
 
     To install from `TestPyPI`_, do the following::
