@@ -93,11 +93,23 @@ Setting up environment
       expression: ``^[0-9]+(\.[0-9]+)*(\.post[0-9]+)?$``.
 
 
-5. Tag the release
+5. In `README.rst`, update `PyPI`_ download count after running `this big table query`_
+   and commit the changes.
 
   .. code::
 
-    $ git tag --sign -m "scikit-ci-addons ${release}" ${release} origin/master
+    $ git add README.rst && \
+      git commit -m "README: Update download stats [ci skip]"
+
+  ..  note::
+
+    To learn more about `pypi-stats`, see `How to get PyPI download statistics <https://kirankoduru.github.io/python/pypi-stats.html>`_.
+
+6. Tag the release
+
+  .. code::
+
+    $ git tag --sign -m "scikit-ci-addons ${release}" ${release} master
 
   .. warning::
 
@@ -105,21 +117,22 @@ Setting up environment
       to sign the tag.
 
 
-6. Create the source distribution and wheel
+7. Create the source distribution and wheel
 
   .. code::
 
     $ python setup.py sdist bdist_wheel
 
 
-7. Publish the release tag
+8. Publish the both release tag and the master branch
 
   .. code::
 
-    $ git push origin ${release}
+    $ git push origin ${release} && \
+      git push origin master
 
 
-8. Upload the distributions on `PyPI`_
+9. Upload the distributions on `PyPI`_
 
   .. code::
 
@@ -132,7 +145,7 @@ Setting up environment
         $ twine upload -r pypitest dist/*
 
 
-9. Create a clean testing environment to test the installation
+10. Create a clean testing environment to test the installation
 
   .. code::
 
@@ -151,13 +164,23 @@ Setting up environment
         $ pip install -i https://test.pypi.org/simple scikit-ci-addons
 
 
-10. Cleanup
+11. Cleanup
 
   .. code::
 
     $ deactivate  && \
       rm -rf dist/* && \
       rmvirtualenv scikit-ci-addons-${release}-install-test
+
+
+12. Add a ``Next Release`` section back in `CHANGES.rst`, commit and push local changes.
+
+  .. code::
+
+    $ git add CHANGES.rst && \
+      git commit -m "CHANGES.rst: Add \"Next Release\" section [ci skip]" && \
+      git push origin master
+
 
 .. _virtualenvwrapper: https://virtualenvwrapper.readthedocs.io/
 .. _virtualenv: http://virtualenv.readthedocs.io
@@ -169,3 +192,5 @@ Setting up environment
 
 .. _PyPI: https://pypi.org/project/scikit-ci-addons
 .. _TestPyPI: https://test.pypi.org/project/scikit-ci-addons
+
+.. _this big table query: https://bigquery.cloud.google.com/savedquery/280188050539:ce2c8d333d7d455aae8b76a7c0de7dae
