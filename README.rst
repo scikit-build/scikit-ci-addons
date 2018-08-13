@@ -12,6 +12,18 @@ drive the CI of projects leveraging services like Appveyor, CircleCI, or TravisC
 Originally developed to help install prerequisites for building Python
 extension, it is now useful to support other type of projects.
 
+Latest Release
+--------------
+
+.. table::
+
+  +------------------------------------------------------------------------------+----------------------------------------------------------------------------+
+  | Versions                                                                     | Downloads                                                                  |
+  +==============================================================================+============================================================================+
+  | .. image:: https://img.shields.io/pypi/v/scikit-ci-addons.svg?maxAge=2592000 | .. image:: https://img.shields.io/badge/downloads-65k%20total-green.svg    |
+  |     :target: https://pypi.python.org/pypi/scikit-ci-addons                   |     :target: https://pypi.python.org/pypi/scikit-ci-addons                 |
+  +------------------------------------------------------------------------------+----------------------------------------------------------------------------+
+
 Build Status
 ------------
 
