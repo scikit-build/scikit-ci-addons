@@ -1,6 +1,7 @@
 
 import datetime as dt
 import os
+import re
 import shlex
 import subprocess
 import sys
@@ -203,13 +204,30 @@ def test_missing_token(src_dir, mocker, capsys, monkeypatch):
         assert "skipping: A token is expected." in out
 
 
+@pytest.mark.parametrize("subdirectory", [
+    "",
+    "foo",
+    "foo/bar",
+])
+def test_get_commit_date(src_dir, subdirectory):
+    # Import addon to facilitate testing
+    sys.path.insert(0, os.path.join(ci_addons.home(), 'anyci'))
+
+    pgr = __import__('publish_github_release')
+
+    with push_dir(str(src_dir.ensure_dir(subdirectory))):
+        _do_commit()
+        output = getattr(pgr, 'get_commit_date')()
+        assert re.match(r"^\d{8}$", output)  # expected value of the form YYYYMMDD
+
+
 @pytest.mark.parametrize("pgr_function", [
     "get_tags",
     "get_commit_date",
     "get_commit_short_sha",
     "get_commit_distance"
 ])
-def test_missing_git_dir(pgr_function, tmpdir):
+def test_missing_git_repo(pgr_function, tmpdir):
     # Import addon to facilitate testing
     sys.path.insert(0, os.path.join(ci_addons.home(), 'anyci'))
 
@@ -218,5 +236,5 @@ def test_missing_git_dir(pgr_function, tmpdir):
     with push_dir(str(tmpdir)):
         with pytest.raises(
                 RuntimeError,
-                match=r"Current directory is expected to contain a '.git' directory.*"):
+                match=r"Current directory is expected to be inside a git working tree.*"):
             getattr(pgr, pgr_function)()
