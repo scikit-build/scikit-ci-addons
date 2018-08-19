@@ -42,6 +42,8 @@ Install selected CMake version in ``C:\cmake-X.Y.Z``.
     - setting ``$cmakeVersion`` to "X.Y.Z" before executing the script allows to select a specific CMake version.
     - on AppVeyor, the download and install can be skipped by adding directory ``C:\cmake-X.Y.Z`` to the ``cache``. For more details, see https://www.appveyor.com/docs/build-cache/#configuring-cache-items
 
+.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
+
 
 ``install-git.ps1``
 ^^^^^^^^^^^^^^^^^^^
@@ -63,6 +65,7 @@ Install Git 2.11.0 (including Git Bash) on the system.
 
     - Git executables are added to the ``PATH``
 
+.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
 
 ``install-ninja.ps1``
 ^^^^^^^^^^^^^^^^^^^^^
@@ -84,6 +87,8 @@ Install ninja executable v1.7.2 into ``C:\ninja-1.7.2``.
 
     - ninja executable is **NOT** added to the ``PATH``
 
+.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
+
 
 ``install-nsis.ps1``
 ^^^^^^^^^^^^^^^^^^^^
@@ -104,6 +109,8 @@ Install NSIS 3.01 on the system.
 .. note::
 
     - nsis executable is added to the ``PATH``
+
+.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
 
 
 ``install-python.ps1``
@@ -140,6 +147,9 @@ in the following directories: ::
     - The downloaded versions of python may **NOT** be the latest version including security patches.
       If running in a production environment (e.g webserver), these versions should be built from source.
 
+.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
+
+
 ``install-python-27-x64.ps1``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -167,6 +177,8 @@ This is equivalent to: ::
 .. note::
 
     - ``C:\Python27-x64`` and ``C:\Python27-x64\Scripts`` are prepended to the ``PATH``
+
+.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
 
 
 ``install-python-36-x64.ps1``
@@ -197,6 +209,8 @@ This is equivalent to: ::
 
     - ``C:\Python36-x64`` and ``C:\Python36-x64\Scripts`` are prepended to the ``PATH``
 
+.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
+
 
 ``install-svn.ps1``
 ^^^^^^^^^^^^^^^^^^^^
@@ -220,6 +234,8 @@ Install `Slik SVN <https://sliksvn.com/download/>`_ 1.9.5 in the following direc
 .. note::
 
     - svn executable is added to the ``PATH``
+
+.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
 
 
 ``install-utils.ps1``
@@ -271,3 +287,47 @@ provides convenience functions useful to download and install programs:
   ``Extract-Zip($filePath, $destDir)``:
 
     Extract zip file into `$destDir` only if `$destDir` does not exist.
+
+
+.. _addressing_underlying_connection_closed:
+
+Addressing "The underlying connection was closed" error
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    PS C:\Users\dashboard> iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
+
+    Error: 0
+    Description: The underlying connection was closed: An unexpected error occurred on a receive.
+
+
+As explained the `chololatey documentation <https://github.com/chocolatey/choco/wiki/Installation#installing-with-restricted-tls>`_,
+this most likely happens because the build script is attempting to download from a server that needs to use TLS 1.1 or
+TLS 1.2 and has restricted the use of TLS 1.0 and SSL v3.
+
+The first things to try is to use the following snippet replacing ``https://file/to/download`` with
+the appropriate value::
+
+    $securityProtocolSettingsOriginal = [System.Net.ServicePointManager]::SecurityProtocol
+
+    try {
+        # Set TLS 1.2 (3072), then TLS 1.1 (768), then TLS 1.0 (192), finally SSL 3.0 (48)
+        # Use integers because the enumeration values for TLS 1.2 and TLS 1.1 won't
+        # exist in .NET 4.0, even though they are addressable if .NET 4.5+ is
+        # installed (.NET 4.5 is an in-place upgrade).
+        [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+    } catch {
+        Write-Warning 'Unable to set PowerShell to use TLS 1.2 and TLS 1.1 due to old .NET Framework installed. If you see underlying connection closed or trust errors, you may need to upgrade to .NET Framework 4.5 and PowerShell v3'
+    }
+
+    iex ((new-object net.webclient).DownloadString('https://file/to/download'))
+
+    [System.Net.ServicePointManager]::SecurityProtocol = $securityProtocolSettingsOriginal
+
+
+If that does not address the problem, you should update the version of `.NET` installed and install
+a newer version of PowerShell:
+
+* https://en.wikipedia.org/wiki/.NET_Framework_version_history#Overview
+* https://social.technet.microsoft.com/wiki/contents/articles/21016.how-to-install-windows-powershell-4-0.aspx

@@ -82,10 +82,33 @@ language = None
 #
 # today_fmt = '%B %d, %Y'
 
+# Adding the indexed documents to the list of excluded patterns
+# addresses the warning "duplicate label" warning when including reference
+# in the documents.
+# See https://stackoverflow.com/a/35541748/1539918
+included_documents = [
+    'appveyor/patch_vs2008_py.rst',
+    'appveyor/tweak_environment_py.rst',
+    'appveyor/run-with-visual-studio_cmd.rst',
+    'appveyor/rolling-build_ps1.rst',
+    'appveyor/install_cmake_py.rst',
+    'appveyor/enable-worker-remote-access_ps1.rst',
+    'circle/install_cmake_py.rst',
+    'anyci/run_sh.rst',
+    'anyci/ctest_junit_formatter.rst',
+    'anyci/publish_github_release_py.rst',
+    'anyci/noop_py.rst',
+    'anyci/docker_py.rst',
+    'travis/pyenv.rst',
+    'travis/enable-worker-remote-access_sh.rst',
+    'travis/install_cmake_py.rst',
+    'windows/install-scripts.rst'
+]
+
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store'] + included_documents
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
