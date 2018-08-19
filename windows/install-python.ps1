@@ -14,13 +14,16 @@ trap { Write-Error $_; Exit 1 }
 # By default, the value is 0.
 #
 
-if (![System.IO.File]::Exists(".\install-utils.ps1")) {
+$downloadDir = "C:/Downloads"
+
+New-Item -ItemType Directory -Force -Path $downloadDir;
+
+if (![System.IO.File]::Exists("$downloadDir\install-utils.ps1")) {
   Write-Host "Download install-utils.ps1"
   $url = "https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-utils.ps1"
-  $cwd = (Get-Item -Path ".\" -Verbose).FullName
-  (new-object net.webclient).DownloadFile($url, "$cwd\install-utils.ps1")
+  (new-object net.webclient).DownloadFile($url, "$downloadDir\install-utils.ps1")
 }
-Import-Module .\install-utils.ps1 -Force
+Import-Module "$downloadDir\install-utils.ps1" -Force
 
 function Get-Python-InstallPath {
 param (
@@ -159,8 +162,6 @@ param (
 
   Start-Process $interpreter -ArgumentList "-m pip install `"$package`"" -NoNewWindow -Wait
 }
-
-$downloadDir = "C:/Downloads"
 
 if ($pythonVersion) {
   $pythonVersion = [string]::Join("", $pythonVersion.Split("."), 0, 2)
