@@ -67,6 +67,30 @@ Install Git 2.11.0 (including Git Bash) on the system.
 
 .. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
 
+
+``install-miniconda3.ps1``
+^^^^^^^^^^^^^^^^^^^^^
+
+Install latest miniconda3 environment into ``C:\Miniconda3``.
+
+* from a windows command terminal open as administrator ::
+
+    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-miniconda3.ps1'))"
+
+
+* from a powershell terminal open as administrator: ::
+
+    Set-ExecutionPolicy Unrestricted
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-miniconda3.ps1'))
+
+
+.. note::
+
+    - miniconda environment is **NOT** added to the ``PATH`` and registry.
+
+.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
+
+
 ``install-ninja.ps1``
 ^^^^^^^^^^^^^^^^^^^^^
 
