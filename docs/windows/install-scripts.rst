@@ -9,7 +9,7 @@ install them:
 
 * or from a powershell terminal open as administrator: ::
 
-    Set-ExecutionPolicy Unrestricted
+    Set-ExecutionPolicy Unrestricted -Force
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-36-x64.ps1'))
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-git.ps1'))
 
@@ -32,7 +32,7 @@ Install selected CMake version in ``C:\cmake-X.Y.Z``.
 
 * from a powershell terminal open as administrator: ::
 
-    Set-ExecutionPolicy Unrestricted
+    Set-ExecutionPolicy Unrestricted -Force
     $cmakeVersion="3.8.1"
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-cmake.ps1'))
 
@@ -41,6 +41,29 @@ Install selected CMake version in ``C:\cmake-X.Y.Z``.
     - CMake is **NOT** added to the ``PATH``
     - setting ``$cmakeVersion`` to "X.Y.Z" before executing the script allows to select a specific CMake version.
     - on AppVeyor, the download and install can be skipped by adding directory ``C:\cmake-X.Y.Z`` to the ``cache``. For more details, see https://www.appveyor.com/docs/build-cache/#configuring-cache-items
+
+.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
+
+
+``install-flang.ps1``
+^^^^^^^^^^^^^^^^^^^^^
+
+Install latest ``flang`` in a new conda environment named `flang-env`.
+
+* from a windows command terminal open as administrator ::
+
+    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-flang.ps1'))"
+
+
+* from a powershell terminal open as administrator: ::
+
+    Set-ExecutionPolicy Unrestricted -Force
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-flang.ps1'))
+
+Flang is a Fortran compiler targeting LLVM, it was `announced <https://www.llnl.gov/news/nnsa-national-labs-team-nvidia-develop-open-source-fortran-compiler-technology>`_
+in 2015.
+
+Source code is hosted on GitHub at https://github.com/flang-compiler/flang, the windows fork is hosted as https://github.com/isuruf/flang
 
 .. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
 
@@ -57,7 +80,7 @@ Install Git 2.11.0 (including Git Bash) on the system.
 
 * from a powershell terminal open as administrator: ::
 
-    Set-ExecutionPolicy Unrestricted
+    Set-ExecutionPolicy Unrestricted -Force
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-git.ps1'))
 
 
@@ -69,7 +92,7 @@ Install Git 2.11.0 (including Git Bash) on the system.
 
 
 ``install-miniconda3.ps1``
-^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Install latest miniconda3 environment into ``C:\Miniconda3``.
 
@@ -80,7 +103,7 @@ Install latest miniconda3 environment into ``C:\Miniconda3``.
 
 * from a powershell terminal open as administrator: ::
 
-    Set-ExecutionPolicy Unrestricted
+    Set-ExecutionPolicy Unrestricted -Force
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-miniconda3.ps1'))
 
 
@@ -103,7 +126,7 @@ Install ninja executable v1.7.2 into ``C:\ninja-1.7.2``.
 
 * from a powershell terminal open as administrator: ::
 
-    Set-ExecutionPolicy Unrestricted
+    Set-ExecutionPolicy Unrestricted -Force
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-ninja.ps1'))
 
 
@@ -126,7 +149,7 @@ Install NSIS 3.01 on the system.
 
 * from a powershell terminal open as administrator: ::
 
-    Set-ExecutionPolicy Unrestricted
+    Set-ExecutionPolicy Unrestricted -Force
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-nsis.ps1'))
 
 
@@ -186,13 +209,13 @@ Install Python 2.7 64-bit and update the PATH.
 
 * from a powershell terminal open as administrator: ::
 
-    Set-ExecutionPolicy Unrestricted
+    Set-ExecutionPolicy Unrestricted -Force
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-27-x64.ps1'))
 
 
 This is equivalent to: ::
 
-    Set-ExecutionPolicy Unrestricted
+    Set-ExecutionPolicy Unrestricted -Force
     $pythonVersion = "2.7"
     $pythonArch = "64"
     $pythonPrependPath = "1"
@@ -217,13 +240,13 @@ Install Python 3.6 64-bit and update the PATH.
 
 * from a powershell terminal open as administrator: ::
 
-    Set-ExecutionPolicy Unrestricted
+    Set-ExecutionPolicy Unrestricted -Force
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-36-x64.ps1'))
 
 
 This is equivalent to: ::
 
-    Set-ExecutionPolicy Unrestricted
+    Set-ExecutionPolicy Unrestricted -Force
     $pythonVersion = "3.6"
     $pythonArch = "64"
     $pythonPrependPath = "1"
@@ -251,7 +274,7 @@ Install `Slik SVN <https://sliksvn.com/download/>`_ 1.9.5 in the following direc
 
 * from a powershell terminal open as administrator: ::
 
-    Set-ExecutionPolicy Unrestricted
+    Set-ExecutionPolicy Unrestricted -Force
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-svn.ps1'))
 
 
