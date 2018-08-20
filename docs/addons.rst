@@ -2,7 +2,7 @@
 Add-ons
 =======
 
-Each category is named after a CI worker (e.g appveyor) or operating system (e.g Windows)
+Each category is named after a CI worker (e.g AppVeyor) or operating system (e.g Windows)
 and references add-ons designed to be used on the associated continuous integration service
 or system.
 
@@ -54,7 +54,7 @@ Windows
 -------
 
 These scripts are designed to work on any windows workstation running Windows 7 and above and can
-be directly used from either command line terminal or a powershell terminal using a simple one-liner.
+be directly used from a powershell terminal (or command line terminal) using a simple one-liner.
 
 Content of the scripts can easily be inspected in the `associated source repository <https://github.com/scikit-build/scikit-ci-addons/tree/master/windows>`_.
 
