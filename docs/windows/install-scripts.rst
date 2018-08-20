@@ -1,15 +1,9 @@
-For example, on a new system without python or git installed, the following can be done to
-install them:
-
-* from a windows command terminal open as administrator ::
-
-    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-36-x64.ps1'))"
-    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-git.ps1'))"
-
-
-* or from a powershell terminal open as administrator: ::
+For example, on a new system without python or git installed, they can be installed from a powershell terminal
+open as administrator: ::
 
     Set-ExecutionPolicy Unrestricted -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-36-x64.ps1'))
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-git.ps1'))
 
@@ -25,14 +19,11 @@ Details for each ``install-*.ps1`` scripts are reported below.
 
 Install selected CMake version in ``C:\cmake-X.Y.Z``.
 
-* from a windows command terminal open as administrator ::
-
-    @powershell -ExecutionPolicy Unrestricted "$cmakeVersion='3.8.1'; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-cmake.ps1'))"
-
-
-* from a powershell terminal open as administrator: ::
+From a powershell terminal open as administrator: ::
 
     Set-ExecutionPolicy Unrestricted -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+
     $cmakeVersion="3.8.1"
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-cmake.ps1'))
 
@@ -42,22 +33,20 @@ Install selected CMake version in ``C:\cmake-X.Y.Z``.
     - setting ``$cmakeVersion`` to "X.Y.Z" before executing the script allows to select a specific CMake version.
     - on AppVeyor, the download and install can be skipped by adding directory ``C:\cmake-X.Y.Z`` to the ``cache``. For more details, see https://www.appveyor.com/docs/build-cache/#configuring-cache-items
 
-.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
+.. note::
 
+    - to understand why ``SecurityProtocol`` is set, see :ref:`addressing_underlying_connection_closed`
 
 ``install-flang.ps1``
 ^^^^^^^^^^^^^^^^^^^^^
 
 Install latest ``flang`` in a new conda environment named `flang-env`.
 
-* from a windows command terminal open as administrator ::
-
-    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-flang.ps1'))"
-
-
-* from a powershell terminal open as administrator: ::
+From a powershell terminal open as administrator: ::
 
     Set-ExecutionPolicy Unrestricted -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-flang.ps1'))
 
 Flang is a Fortran compiler targeting LLVM, it was `announced <https://www.llnl.gov/news/nnsa-national-labs-team-nvidia-develop-open-source-fortran-compiler-technology>`_
@@ -65,22 +54,20 @@ in 2015.
 
 Source code is hosted on GitHub at https://github.com/flang-compiler/flang, the windows fork is hosted as https://github.com/isuruf/flang
 
-.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
+.. note::
 
+    - to understand why ``SecurityProtocol`` is set, see :ref:`addressing_underlying_connection_closed`
 
 ``install-git.ps1``
 ^^^^^^^^^^^^^^^^^^^
 
 Install Git 2.11.0 (including Git Bash) on the system.
 
-* from a windows command terminal open as administrator ::
-
-    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-git.ps1'))"
-
-
-* from a powershell terminal open as administrator: ::
+From a powershell terminal open as administrator: ::
 
     Set-ExecutionPolicy Unrestricted -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-git.ps1'))
 
 
@@ -88,22 +75,20 @@ Install Git 2.11.0 (including Git Bash) on the system.
 
     - Git executables are added to the ``PATH``
 
-.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
+.. note::
 
+    - to understand why ``SecurityProtocol`` is set, see :ref:`addressing_underlying_connection_closed`
 
 ``install-miniconda3.ps1``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Install latest miniconda3 environment into ``C:\Miniconda3``.
 
-* from a windows command terminal open as administrator ::
-
-    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-miniconda3.ps1'))"
-
-
-* from a powershell terminal open as administrator: ::
+From a powershell terminal open as administrator: ::
 
     Set-ExecutionPolicy Unrestricted -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-miniconda3.ps1'))
 
 
@@ -111,22 +96,20 @@ Install latest miniconda3 environment into ``C:\Miniconda3``.
 
     - miniconda environment is **NOT** added to the ``PATH`` and registry.
 
-.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
+.. note::
 
+    - to understand why ``SecurityProtocol`` is set, see :ref:`addressing_underlying_connection_closed`
 
 ``install-ninja.ps1``
 ^^^^^^^^^^^^^^^^^^^^^
 
 Install ninja executable v1.7.2 into ``C:\ninja-1.7.2``.
 
-* from a windows command terminal open as administrator ::
-
-    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-ninja.ps1'))"
-
-
-* from a powershell terminal open as administrator: ::
+From a powershell terminal open as administrator: ::
 
     Set-ExecutionPolicy Unrestricted -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-ninja.ps1'))
 
 
@@ -134,22 +117,20 @@ Install ninja executable v1.7.2 into ``C:\ninja-1.7.2``.
 
     - ninja executable is **NOT** added to the ``PATH``
 
-.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
+.. note::
 
+    - to understand why ``SecurityProtocol`` is set, see :ref:`addressing_underlying_connection_closed`
 
 ``install-nsis.ps1``
 ^^^^^^^^^^^^^^^^^^^^
 
 Install NSIS 3.01 on the system.
 
-* from a windows command terminal open as administrator ::
-
-    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-nsis.ps1'))"
-
-
-* from a powershell terminal open as administrator: ::
+From a powershell terminal open as administrator: ::
 
     Set-ExecutionPolicy Unrestricted -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-nsis.ps1'))
 
 
@@ -157,8 +138,9 @@ Install NSIS 3.01 on the system.
 
     - nsis executable is added to the ``PATH``
 
-.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
+.. note::
 
+    - to understand why ``SecurityProtocol`` is set, see :ref:`addressing_underlying_connection_closed`
 
 ``install-python.ps1``
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -190,11 +172,13 @@ in the following directories: ::
     - setting ``$pythonPrependPath`` to 1 will add install and Scripts directories the PATH and .PY to PATHEXT. This
       variable should be set only if ``$pythonVersion`` and ``$pythonArch`` are set. By default, the value is 0.
 
+.. note::
+
+    - to understand why ``SecurityProtocol`` is set, see :ref:`addressing_underlying_connection_closed`
+
 .. warning::
     - The downloaded versions of python may **NOT** be the latest version including security patches.
       If running in a production environment (e.g webserver), these versions should be built from source.
-
-.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
 
 
 ``install-python-27-x64.ps1``
@@ -202,20 +186,19 @@ in the following directories: ::
 
 Install Python 2.7 64-bit and update the PATH.
 
-* from a windows command terminal open as administrator ::
-
-    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-27-x64.ps1'))"
-
-
-* from a powershell terminal open as administrator: ::
+From a powershell terminal open as administrator: ::
 
     Set-ExecutionPolicy Unrestricted -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-27-x64.ps1'))
 
 
 This is equivalent to: ::
 
     Set-ExecutionPolicy Unrestricted -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+
     $pythonVersion = "2.7"
     $pythonArch = "64"
     $pythonPrependPath = "1"
@@ -225,7 +208,9 @@ This is equivalent to: ::
 
     - ``C:\Python27-x64`` and ``C:\Python27-x64\Scripts`` are prepended to the ``PATH``
 
-.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
+.. note::
+
+    - to understand why ``SecurityProtocol`` is set, see :ref:`addressing_underlying_connection_closed`
 
 
 ``install-python-36-x64.ps1``
@@ -233,20 +218,19 @@ This is equivalent to: ::
 
 Install Python 3.6 64-bit and update the PATH.
 
-* from a windows command terminal open as administrator ::
-
-    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-36-x64.ps1'))"
-
-
-* from a powershell terminal open as administrator: ::
+From a powershell terminal open as administrator: ::
 
     Set-ExecutionPolicy Unrestricted -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-36-x64.ps1'))
 
 
 This is equivalent to: ::
 
     Set-ExecutionPolicy Unrestricted -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+
     $pythonVersion = "3.6"
     $pythonArch = "64"
     $pythonPrependPath = "1"
@@ -256,7 +240,9 @@ This is equivalent to: ::
 
     - ``C:\Python36-x64`` and ``C:\Python36-x64\Scripts`` are prepended to the ``PATH``
 
-.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
+.. note::
+
+    - to understand why ``SecurityProtocol`` is set, see :ref:`addressing_underlying_connection_closed`
 
 
 ``install-svn.ps1``
@@ -267,14 +253,11 @@ Install `Slik SVN <https://sliksvn.com/download/>`_ 1.9.5 in the following direc
     C:\SlikSvn
 
 
-* from a windows command terminal open as administrator ::
-
-    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-svn.ps1'))"
-
-
-* from a powershell terminal open as administrator: ::
+From a powershell terminal open as administrator: ::
 
     Set-ExecutionPolicy Unrestricted -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-svn.ps1'))
 
 
@@ -282,7 +265,9 @@ Install `Slik SVN <https://sliksvn.com/download/>`_ 1.9.5 in the following direc
 
     - svn executable is added to the ``PATH``
 
-.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
+.. note::
+
+    - to understand why ``SecurityProtocol`` is set, see :ref:`addressing_underlying_connection_closed`
 
 
 ``install-utils.ps1``
@@ -336,10 +321,21 @@ provides convenience functions useful to download and install programs:
     Extract zip file into `$destDir` only if `$destDir` does not exist.
 
 
+Frequently Asked Questions
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Installing add-on from a Windows command line terminal
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+This can be using the following syntax::
+
+    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-ninja.ps1'))"
+
+
 .. _addressing_underlying_connection_closed:
 
 Addressing "The underlying connection was closed" error
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 ::
 
