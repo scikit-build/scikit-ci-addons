@@ -84,7 +84,7 @@ test:
                         cwd=os.path.abspath("./windows")
                     )
 
-                for addon in ["cmake", "git", "miniconda3", "ninja", "nsis",
+                for addon in ["cmake", "git", "miniconda3", "flang", "ninja", "nsis",
                               "python", "python-36-x64", "python-27-x64", "svn"]:
                     exec_addon(".\install-%s.ps1" % addon)
 

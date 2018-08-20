@@ -45,6 +45,29 @@ Install selected CMake version in ``C:\cmake-X.Y.Z``.
 .. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
 
 
+``install-flang.ps1``
+^^^^^^^^^^^^^^^^^^^^^
+
+Install latest ``flang`` in a new conda environment named `flang-env`.
+
+* from a windows command terminal open as administrator ::
+
+    @powershell -ExecutionPolicy Unrestricted "iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-flang.ps1'))"
+
+
+* from a powershell terminal open as administrator: ::
+
+    Set-ExecutionPolicy Unrestricted -Force
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-flang.ps1'))
+
+Flang is a Fortran compiler targeting LLVM, it was `announced <https://www.llnl.gov/news/nnsa-national-labs-team-nvidia-develop-open-source-fortran-compiler-technology>`_
+in 2015.
+
+Source code is hosted on GitHub at https://github.com/flang-compiler/flang, the windows fork is hosted as https://github.com/isuruf/flang
+
+.. important:: In case of installation problem, see :ref:`addressing_underlying_connection_closed`
+
+
 ``install-git.ps1``
 ^^^^^^^^^^^^^^^^^^^
 
