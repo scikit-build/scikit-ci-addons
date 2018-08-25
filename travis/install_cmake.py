@@ -61,12 +61,20 @@ def install(cmake_version=DEFAULT_CMAKE_VERSION, is_darwin=False):
         _log("  ->", "done")
 
         _log("Downloading", cmake_package)
-        check_output([
-            "wget", "--no-check-certificate", "--progress=dot",
-            "https://cmake.org/files/v{}.{}/{}".format(
-                cmake_version_major, cmake_version_minor, cmake_package),
-            "-P", download_dir
-        ], stderr=subprocess.STDOUT)
+        try:
+            check_output([
+                "wget", "--no-check-certificate", "--progress=dot",
+                "https://cmake.org/files/v{}.{}/{}".format(
+                    cmake_version_major, cmake_version_minor, cmake_package),
+                "-P", download_dir
+            ], stderr=subprocess.STDOUT)
+        except (OSError, CalledProcessError):
+            check_output([
+                "curl", "--progress-bar", "-L",
+                "https://cmake.org/files/v{}.{}/{}".format(
+                    cmake_version_major, cmake_version_minor, cmake_package),
+                "-o", downloaded_package
+            ], stderr=subprocess.STDOUT)
         _log("  ->", "done")
 
     else:
