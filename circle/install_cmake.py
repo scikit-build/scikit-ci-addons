@@ -23,11 +23,13 @@ def _log(*args):
     sys.stdout.flush()
 
 
-def install(cmake_version=DEFAULT_CMAKE_VERSION):
-    """Download and install CMake into ``/usr/local``."""
-
+def _check_executables_availability(executables):
+    """Try to run each executable with the `--version` argument. If at least
+    one could not be executed, it raises :exception:`RuntimeError` suggesting
+    approaches to mitigate the problem.
+    """
     missing_executables = []
-    for executable_name in ["rsync", "tar", "wget"]:
+    for executable_name in executables:
         try:
             subprocess.check_output([executable_name, "--version"])
         except (OSError, CalledProcessError):
@@ -53,6 +55,12 @@ def install(cmake_version=DEFAULT_CMAKE_VERSION):
                 missing_executables=" ".join(missing_executables),
             )
         ))
+
+
+def install(cmake_version=DEFAULT_CMAKE_VERSION):
+    """Download and install CMake into ``/usr/local``."""
+
+    _check_executables_availability(["rsync", "tar", "wget"])
 
     cmake_directory = "/usr/local"
 
@@ -81,7 +89,9 @@ def install(cmake_version=DEFAULT_CMAKE_VERSION):
         _log("  ->", "not found")
         pass
 
-    name = "cmake-{}-Linux-x86_64".format(cmake_version)
+    cmake_arch = "x86_64"
+
+    name = "cmake-{}-Linux-{}".format(cmake_version, cmake_arch)
     cmake_package = "{}.tar.gz".format(name)
 
     _log("Downloading", cmake_package)
@@ -97,11 +107,19 @@ def install(cmake_version=DEFAULT_CMAKE_VERSION):
         cmake_version_major = cmake_version.split(".")[0]
         cmake_version_minor = cmake_version.split(".")[1]
 
-        check_output([
-            "wget", "--no-check-certificate", "--progress=dot",
-            "https://cmake.org/files/v{}.{}/{}".format(cmake_version_major, cmake_version_minor, cmake_package),
-            "-O", downloaded_package
-        ], stderr=subprocess.STDOUT)
+        try:
+            check_output([
+                "wget", "--no-check-certificate", "--progress=dot",
+                "https://cmake.org/files/v{}.{}/{}".format(cmake_version_major, cmake_version_minor, cmake_package),
+                "-O", downloaded_package
+            ], stderr=subprocess.STDOUT)
+        except (OSError, CalledProcessError):
+            _check_executables_availability(['curl'])
+            check_output([
+                "curl", "--progress-bar", "-L",
+                "https://cmake.org/files/v{}.{}/{}".format(cmake_version_major, cmake_version_minor, cmake_package),
+                "-o", downloaded_package
+            ], stderr=subprocess.STDOUT)
         _log("  ->", "done")
     else:
         _log("  ->", "skipping download: found", downloaded_package)
