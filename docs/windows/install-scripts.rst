@@ -145,7 +145,7 @@ From a powershell terminal open as administrator: ::
 ``install-python.ps1``
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Install Python 2.7.12, 3.4.4, 3.5.3, 3.6.6 and 3.7.0 (32 and 64-bit) along with pip and virtualenv
+Install Python 2.7.15, 3.4.4, 3.5.4, 3.6.7, 3.7.2 and 3.8.0a2 (32 and 64-bit) along with pip and virtualenv
 in the following directories: ::
 
     C:\Python27-x64
@@ -163,9 +163,12 @@ in the following directories: ::
     C:\Python37-x64
     C:\Python37-x86
 
+    C:\Python38-x64
+    C:\Python38-x86
+
 .. note::
     - python interpreter is **NOT** added to the ``PATH``
-    - setting ``$pythonVersion`` to either "2.7", "3.4", "3.5", "3.6" or "3.7" before executing the script allows
+    - setting ``$pythonVersion`` to either "2.7", "3.4", "3.5", "3.6", "3.7" or "3.8" before executing the script allows
       to install a specific version. By default, all are installed.
     - setting ``$pythonArch`` to either "86" or "64" before executing the script allows
       to install python for specific architecture. By default, both are installed.
