@@ -192,7 +192,9 @@ if(!($pythonPrependPath -match "^(0|1)$")){
 #
 # Python 2.7 and 3.4
 #
-$exeVersions = @("2.7.12", "3.4.4")
+# * 3.4.4 is last version released in binary form
+#
+$exeVersions = @("2.7.15", "3.4.4")
 foreach ($version in $exeVersions) {
 
   $split = $version.Split(".")
@@ -228,7 +230,8 @@ foreach ($version in $exeVersions) {
 #
 # Python 3.5, 3.6, and 3.7
 #
-$exeVersions = @("3.5.3", "3.6.6", "3.7.0")
+# * 3.5.4 is last version released in binary form
+$exeVersions = @("3.5.4", "3.6.7", "3.7.2")
 foreach ($version in $exeVersions) {
 
   $split = $version.Split(".")
