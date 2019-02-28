@@ -13,6 +13,9 @@ environment:
 
   matrix:
 
+    # EXPECTED_PYTHON_* are set to the version installed on AppVeyor
+    # See https://www.appveyor.com/docs/windows-images-software/#python
+
     # Visual Studio (Python 2 & 3, 32 & 64 bit)
     - PYTHON_DIR: "C:\\Python27"
       PYTHON_VERSION: "2.7.x"
@@ -37,7 +40,7 @@ environment:
       PYTHON_ARCH: "32"
       BLOCK: "0"
       # Used for testing
-      EXPECTED_PYTHON_VERSION: 3.5.3
+      EXPECTED_PYTHON_VERSION: 3.5.4
       EXPECTED_PYTHON_ARCH: 32
 
     - PYTHON_DIR: "C:\\Python35-x64"
@@ -45,7 +48,23 @@ environment:
       PYTHON_ARCH: "64"
       BLOCK: "0"
       # Used for testing
-      EXPECTED_PYTHON_VERSION: 3.5.3
+      EXPECTED_PYTHON_VERSION: 3.5.4
+      EXPECTED_PYTHON_ARCH: 64
+
+    - PYTHON_DIR: "C:\\Python37"
+      PYTHON_VERSION: "3.7.x"
+      PYTHON_ARCH: "32"
+      BLOCK: "0"
+      # Used for testing
+      EXPECTED_PYTHON_VERSION: 3.7.2
+      EXPECTED_PYTHON_ARCH: 32
+
+    - PYTHON_DIR: "C:\\Python37-x64"
+      PYTHON_VERSION: "3.7.x"
+      PYTHON_ARCH: "64"
+      BLOCK: "0"
+      # Used for testing
+      EXPECTED_PYTHON_VERSION: 3.7.2
       EXPECTED_PYTHON_ARCH: 64
 
 cache:

@@ -3,7 +3,7 @@ trap { Write-Error $_; Exit 1 }
 #
 # By default, all version of python are installed.
 #
-# Setting $pythonVersion to "2.7", "3.4", "3.5", "3.6" or "3.7" allows to install a specific version
+# Setting $pythonVersion to "2.7", "3.4", "3.5", "3.6", "3.7" or "3.8" allows to install a specific version
 #
 # Setting $pythonArch to either "64" or "86" allows to install python for specific architecture.
 #
@@ -192,7 +192,9 @@ if(!($pythonPrependPath -match "^(0|1)$")){
 #
 # Python 2.7 and 3.4
 #
-$exeVersions = @("2.7.12", "3.4.4")
+# * 3.4.4 is last 3.4.x version released in binary form
+#
+$exeVersions = @("2.7.15", "3.4.4")
 foreach ($version in $exeVersions) {
 
   $split = $version.Split(".")
@@ -226,14 +228,17 @@ foreach ($version in $exeVersions) {
 }
 
 #
-# Python 3.5, 3.6, and 3.7
+# Python 3.5, 3.6, 3.7 and 3.8
 #
-$exeVersions = @("3.5.3", "3.6.6", "3.7.0")
+# * 3.5.4 is last 3.5.x version released in binary form
+#
+$exeVersions = @("3.5.4", "3.6.7", "3.7.2", "3.8.0a2")
 foreach ($version in $exeVersions) {
 
   $split = $version.Split(".")
   $majorMinor = [string]::Join("", $split, 0, 2)
   $majorMinorDot = [string]::Join(".", $split, 0, 2)
+  $xyzVersion = [regex]::Replace($version, "(\d+\.\d+\.\d+).+", '$1')
 
   if($pythonVersion -And ! $pythonVersion.CompareTo($majorMinor) -eq 0) {
     Write-Host "Skipping $majorMinor"
@@ -245,7 +250,7 @@ foreach ($version in $exeVersions) {
   #
   if (!$pythonArch -Or $pythonArch.CompareTo("64") -eq 0) {
 
-    Download-URL "https://www.python.org/ftp/python/$($version)/python-$($version)-amd64.exe" $downloadDir
+    Download-URL "https://www.python.org/ftp/python/$($xyzVersion)/python-$($version)-amd64.exe" $downloadDir
 
     $pythonInstallPath = Get-Python-InstallPath $majorMinorDot "64"
     $targetInstallPath = "C:\Python$($majorMinor)-x64\"
@@ -284,7 +289,7 @@ foreach ($version in $exeVersions) {
   # 32-bit
   #
   if (!$pythonArch -Or $pythonArch.CompareTo("86") -eq 0) {
-    Download-URL "https://www.python.org/ftp/python/$($version)/python-$($version).exe" $downloadDir
+    Download-URL "https://www.python.org/ftp/python/$($xyzVersion)/python-$($version).exe" $downloadDir
 
     $pythonInstallPath = Get-Python-InstallPath $majorMinorDot "86"
     $targetInstallPath = "C:\Python$($majorMinor)-x86\"
