@@ -23,7 +23,7 @@ references:
           name: Deployement
           command: |
             . ../venv/bin/activate
-            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
+            if [[ "${CIRCLE_BRANCH}" == "master" && "${PRERELEASE_UPLOAD}" == "1" ]]; then
               ci after_test
             fi
       - store_artifacts:
@@ -45,6 +45,8 @@ jobs:
       # Used for testing
       - EXPECTED_PYTHON_VERSION: 3.7.2
       - EXPECTED_PYTHON_ARCH: 64
+      # Attempt to upload pre-release only once
+      - PRERELEASE_UPLOAD: 1
     <<: *ci-steps
 
 workflows:
