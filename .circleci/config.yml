@@ -1,12 +1,7 @@
 version: 2
-jobs:
-  python27:
-    docker:
-      - image: circleci/python:2.7.14-jessie
-    environment:
-      # Used for testing
-      - EXPECTED_PYTHON_VERSION: 2.7.14
-      - EXPECTED_PYTHON_ARCH: 64
+
+references:
+  ci-steps: &ci-steps
     steps:
       - checkout
       - run:
@@ -34,8 +29,27 @@ jobs:
       - store_artifacts:
           path: dist/*
 
+jobs:
+  python27:
+    docker:
+      - image: circleci/python:2.7.14-jessie
+    environment:
+      # Used for testing
+      - EXPECTED_PYTHON_VERSION: 2.7.14
+      - EXPECTED_PYTHON_ARCH: 64
+    <<: *ci-steps
+  python37:
+    docker:
+      - image: circleci/python:3.7.2-stretch-browsers
+    environment:
+      # Used for testing
+      - EXPECTED_PYTHON_VERSION: 3.7.2
+      - EXPECTED_PYTHON_ARCH: 64
+    <<: *ci-steps
+
 workflows:
   version: 2
   test-package-publish:
     jobs:
       - python27
+      - python37

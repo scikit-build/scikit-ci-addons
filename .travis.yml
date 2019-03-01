@@ -28,6 +28,14 @@ matrix:
       language: generic
       env:
         # Used by pyenv
+        - PYTHON_VERSION=3.7.2
+        # Used for testing
+        - EXPECTED_PYTHON_VERSION=3.7.2
+
+    - os: osx
+      language: generic
+      env:
+        # Used by pyenv
         - PYTHON_VERSION=3.4.8
         # Used for testing
         - EXPECTED_PYTHON_VERSION=3.4.8
