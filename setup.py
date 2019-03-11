@@ -43,7 +43,7 @@ setup(
 
     entry_points={'console_scripts': ['ci_addons=ci_addons.__main__:main']},
 
-    packages=['anyci', 'appveyor', 'ci_addons', 'circle', 'travis'],
+    packages=['anyci', 'appveyor', 'ci_addons', 'circle', 'travis', 'windows'],
     include_package_data=True,
     zip_safe=False,
 
