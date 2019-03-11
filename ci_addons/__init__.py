@@ -18,7 +18,7 @@ __email__ = 'scikit-build@googlegroups.com'
 __version__ = get_versions()['version']
 del get_versions
 
-DIR_NAMES = ['anyci', 'appveyor', 'circle', 'travis']
+DIR_NAMES = ['anyci', 'appveyor', 'circle', 'travis', 'windows']
 
 
 class SKAddonsError(RuntimeError):

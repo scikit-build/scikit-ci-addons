@@ -35,7 +35,10 @@ For example:
 
     $ ci_addons --list
 
+    anyci/ctest_junit_formatter.py
+    anyci/publish_github_release.py
     anyci/run.sh
+    anyci/ctest_junit_formatter.xsl
     anyci/noop.py
     anyci/docker.py
 
@@ -45,6 +48,7 @@ For example:
     appveyor/run.cmd
     appveyor/patch_vs2008.py
     appveyor/run-with-mingw.cmd
+    appveyor/cancel-queued-build.ps1
     appveyor/rolling-build.ps1
     appveyor/tweak_environment.py
     appveyor/run-with-visual-studio.cmd
@@ -52,8 +56,21 @@ For example:
     circle/install_cmake.py
 
     travis/install_cmake.py
+    travis/enable-worker-remote-access.sh
     travis/run-with-pyenv.sh
     travis/install_pyenv.py
+
+    windows/install-miniconda3.ps1
+    windows/install-utils.ps1
+    windows/install-cmake.ps1
+    windows/install-python-27-x64.ps1
+    windows/install-nsis.ps1
+    windows/install-svn.ps1
+    windows/install-ninja.ps1
+    windows/install-python.ps1
+    windows/install-python-36-x64.ps1
+    windows/install-git.ps1
+    windows/install-flang.ps1
 
 .. note::
 
@@ -90,7 +107,10 @@ For example:
 .. code-block:: bash
 
     $ ci_addons --install /tmp
+    /tmp/anyci/ctest_junit_formatter.py
+    /tmp/anyci/publish_github_release.py
     /tmp/anyci/run.sh
+    /tmp/anyci/ctest_junit_formatter.xsl
     /tmp/anyci/noop.py
     /tmp/anyci/docker.py
     /tmp/appveyor/enable-worker-remote-access.ps1
@@ -99,13 +119,26 @@ For example:
     /tmp/appveyor/run.cmd
     /tmp/appveyor/patch_vs2008.py
     /tmp/appveyor/run-with-mingw.cmd
+    /tmp/appveyor/cancel-queued-build.ps1
     /tmp/appveyor/rolling-build.ps1
     /tmp/appveyor/tweak_environment.py
     /tmp/appveyor/run-with-visual-studio.cmd
     /tmp/circle/install_cmake.py
     /tmp/travis/install_cmake.py
+    /tmp/travis/enable-worker-remote-access.sh
     /tmp/travis/run-with-pyenv.sh
     /tmp/travis/install_pyenv.py
+    /tmp/windows/install-miniconda3.ps1
+    /tmp/windows/install-utils.ps1
+    /tmp/windows/install-cmake.ps1
+    /tmp/windows/install-python-27-x64.ps1
+    /tmp/windows/install-nsis.ps1
+    /tmp/windows/install-svn.ps1
+    /tmp/windows/install-ninja.ps1
+    /tmp/windows/install-python.ps1
+    /tmp/windows/install-python-36-x64.ps1
+    /tmp/windows/install-git.ps1
+    /tmp/windows/install-flang.ps1
 
 
 Getting full path of an add-on
