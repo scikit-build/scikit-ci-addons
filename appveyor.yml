@@ -17,7 +17,8 @@ environment:
     # See https://www.appveyor.com/docs/windows-images-software/#python
 
     # Visual Studio (Python 2 & 3, 32 & 64 bit)
-    - PYTHON_DIR: "C:\\Python27"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      PYTHON_DIR: "C:\\Python27"
       PYTHON_VERSION: "2.7.x"
       PYTHON_ARCH: "32"
       BLOCK: "0"
@@ -27,7 +28,8 @@ environment:
       # Test "windows/install-*.ps1" scripts only once
       WINDOWS_ADDON_TESTS: 1
 
-    - PYTHON_DIR: "C:\\Python27-x64"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      PYTHON_DIR: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7.x"
       PYTHON_ARCH: "64"
       BLOCK: "0"
@@ -35,7 +37,8 @@ environment:
       EXPECTED_PYTHON_VERSION: 2.7.15
       EXPECTED_PYTHON_ARCH: 64
 
-    - PYTHON_DIR: "C:\\Python35"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      PYTHON_DIR: "C:\\Python35"
       PYTHON_VERSION: "3.5.x"
       PYTHON_ARCH: "32"
       BLOCK: "0"
@@ -43,7 +46,8 @@ environment:
       EXPECTED_PYTHON_VERSION: 3.5.4
       EXPECTED_PYTHON_ARCH: 32
 
-    - PYTHON_DIR: "C:\\Python35-x64"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      PYTHON_DIR: "C:\\Python35-x64"
       PYTHON_VERSION: "3.5.x"
       PYTHON_ARCH: "64"
       BLOCK: "0"
@@ -51,7 +55,8 @@ environment:
       EXPECTED_PYTHON_VERSION: 3.5.4
       EXPECTED_PYTHON_ARCH: 64
 
-    - PYTHON_DIR: "C:\\Python37"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      PYTHON_DIR: "C:\\Python37"
       PYTHON_VERSION: "3.7.x"
       PYTHON_ARCH: "32"
       BLOCK: "0"
@@ -59,12 +64,31 @@ environment:
       EXPECTED_PYTHON_VERSION: 3.7.2
       EXPECTED_PYTHON_ARCH: 32
 
-    - PYTHON_DIR: "C:\\Python37-x64"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      PYTHON_DIR: "C:\\Python37-x64"
       PYTHON_VERSION: "3.7.x"
       PYTHON_ARCH: "64"
       BLOCK: "0"
       # Used for testing
       EXPECTED_PYTHON_VERSION: 3.7.2
+      EXPECTED_PYTHON_ARCH: 64
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      PYTHON_DIR: "C:\\Python38"
+      PYTHON_VERSION: "3.8.x"
+      PYTHON_ARCH: "32"
+      BLOCK: "0"
+      # Used for testing
+      EXPECTED_PYTHON_VERSION: 3.8.0a2
+      EXPECTED_PYTHON_ARCH: 32
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      PYTHON_DIR: "C:\\Python38-x64"
+      PYTHON_VERSION: "3.8.x"
+      PYTHON_ARCH: "64"
+      BLOCK: "0"
+      # Used for testing
+      EXPECTED_PYTHON_VERSION: 3.8.0a2
       EXPECTED_PYTHON_ARCH: 64
 
 cache:
@@ -72,6 +96,12 @@ cache:
   - C:\\Downloads
 
 install:
+  - ps: |
+      if ($env:PYTHON_VERSION -eq "3.8.x") {
+        $pythonVersion = "3.8"
+        $pythonArch = "$env:PYTHON_ARCH"
+        Invoke-Expression "windows\install-python.ps1"
+      }
   - ps: appveyor/rolling-build.ps1
   - python -m pip install scikit-ci==0.15.0
   - python -m ci install
