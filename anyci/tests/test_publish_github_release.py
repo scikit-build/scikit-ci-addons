@@ -646,7 +646,7 @@ def lookup_module_path():
 
 
 @PrefixedPrint("test")  # noqa: C901
-def main():
+def main():  # noqa: C901
     global INTERACTIVE
     global REPO_NAME
 
