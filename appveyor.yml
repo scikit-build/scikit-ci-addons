@@ -56,7 +56,7 @@ environment:
       EXPECTED_PYTHON_ARCH: 64
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      PYTHON_DIR: "C:\\Python38"
+      PYTHON_DIR: "C:\\Python38-x86"
       PYTHON_VERSION: "3.8.x"
       PYTHON_ARCH: "32"
       BLOCK: "0"
