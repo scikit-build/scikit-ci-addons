@@ -170,8 +170,9 @@ in the following directories: ::
     - python interpreter is **NOT** added to the ``PATH``
     - setting ``$pythonVersion`` to either "2.7", "3.4", "3.5", "3.6", "3.7" or "3.8" before executing the script allows
       to install a specific version. By default, all are installed.
-    - setting ``$pythonArch`` to either "86" or "64" before executing the script allows
+    - setting ``$pythonArch`` to either "86", "32" or "64" before executing the script allows
       to install python for specific architecture. By default, both are installed.
+      Values "86" and "32" correspond to the same architecture.
     - setting ``$pythonPrependPath`` to 1 will add install and Scripts directories the PATH and .PY to PATHEXT. This
       variable should be set only if ``$pythonVersion`` and ``$pythonArch`` are set. By default, the value is 0.
 
