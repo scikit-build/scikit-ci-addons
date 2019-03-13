@@ -61,7 +61,7 @@ environment:
       PYTHON_ARCH: "32"
       BLOCK: "0"
       # Used for testing
-      EXPECTED_PYTHON_VERSION: 3.8.0a2
+      EXPECTED_PYTHON_VERSION: 3.8.0
       EXPECTED_PYTHON_ARCH: 32
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
@@ -70,7 +70,7 @@ environment:
       PYTHON_ARCH: "64"
       BLOCK: "0"
       # Used for testing
-      EXPECTED_PYTHON_VERSION: 3.8.0a2
+      EXPECTED_PYTHON_VERSION: 3.8.0
       EXPECTED_PYTHON_ARCH: 64
 
 cache:
