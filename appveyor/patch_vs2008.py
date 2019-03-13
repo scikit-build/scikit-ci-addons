@@ -32,6 +32,11 @@ def _log(*args):
 def apply_patch():
     """Implement workaround for 64-bit Visual Studio 2008"""
 
+    vc_dir = "C:\\Program Files (x86)\\Microsoft Visual Studio 9.0\\VC\\vcpackages"
+    if not os.path.exists(vc_dir):
+        _log("Skipping 64-bit Visual Studio Fix: '%s' does not exist" % vc_dir)
+        return
+
     if os.environ["PYTHON_ARCH"] == "64":
         _log("Downloading 64-bit Visual Studio Fix")
         remote_zip = urlopen(PATCH_URL)

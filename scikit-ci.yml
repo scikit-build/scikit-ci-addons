@@ -51,9 +51,14 @@ test:
     - $<RUN_ENV> python --version
     - $<RUN_ENV> python _tests/python_check_version.py
     - $<RUN_ENV> python _tests/python_check_arch.py
+    # The following test is similar to 'python_check_version.py' and is used
+    # to confirm execution of python code using "python:" syntax.
     - python: |
               import os
               import sys
+
+              from pprint import pprint as pp
+              pp(os.environ['PATH'].split(os.path.pathsep))
 
               current_version = list(sys.version_info[:3])
               print("current: %s" % str(current_version))
@@ -63,9 +68,6 @@ test:
               print("expected: %s" % str(expected_version))
 
               assert current_version == expected_version
-
-              from pprint import pprint as pp
-              pp(os.environ['PATH'].split(os.path.pathsep))
 
   appveyor:
     commands:

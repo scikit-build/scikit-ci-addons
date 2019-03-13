@@ -8,7 +8,10 @@ import shutil
 import subprocess
 import sys
 
-from lxml import etree
+try:
+    from lxml import etree
+except ImportError:
+    pass
 
 from . import captured_lines, format_args_for_display
 
@@ -261,6 +264,8 @@ def test_addon_anyci_docker(tmpdir):
     assert tmpdir.join("cache", test_image_filename).exists()
 
 
+@pytest.mark.skipif(sys.version_info >= (3, 8),
+                    reason="requires python 3.7 or lower")
 def test_addon_anyci_ctest_junit_formatter(tmpdir):
     testing_dir = tmpdir.mkdir("Testing")
     tag = "20170426-0546"

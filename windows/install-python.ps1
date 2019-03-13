@@ -5,7 +5,8 @@ trap { Write-Error $_; Exit 1 }
 #
 # Setting $pythonVersion to "2.7", "3.4", "3.5", "3.6", "3.7" or "3.8" allows to install a specific version
 #
-# Setting $pythonArch to either "64" or "86" allows to install python for specific architecture.
+# Setting $pythonArch to either "64", "86" or "32" allows to install python for specific architecture.
+# Values "86" and "32" correspond to the same architecture.
 #
 # Setting $pythonPrependPath to 1 will:
 # - add install and Scripts directories to the PATH
@@ -52,7 +53,7 @@ param (
 function Get-Python-Version {
 param (
   [string]$pythonVersion,  # Version specified as "X.Y"
-  [string]$pythonArch      # Arch specified as "86" or "64"
+  [string]$pythonArch      # Arch specified as "86", "32" or "64"
   )
   $suffix = '-32'
   if ($pythonArch.CompareTo('64') -eq 0) {
@@ -169,8 +170,8 @@ if ($pythonVersion) {
 }
 
 if ($pythonArch) {
-  if(!($pythonArch -match "^(64|86)$")){
-    throw "'pythonArch' variable incorrectly set to [$pythonArch]. Hint: '64' or '86' value is expected."
+  if(!($pythonArch -match "^(64|86|32)$")){
+    throw "'pythonArch' variable incorrectly set to [$pythonArch]. Hint: '64', '86' or '32' value is expected."
   }
   Write-Host "Installing Python for architecture x$pythonArch"
 }
@@ -219,7 +220,7 @@ foreach ($version in $exeVersions) {
   #
   # 32-bit
   #
-  if (!$pythonArch -Or $pythonArch.CompareTo("86") -eq 0) {
+  if (!$pythonArch -Or $pythonArch.CompareTo("86") -eq 0 -Or $pythonArch.CompareTo("32") -eq 0) {
     $targetDir = "C:\Python$($majorMinor)-x86"
     $installerName = "python-$($version).msi"
     $downloadURL = "https://www.python.org/ftp/python/$($version)/$($installerName)"
@@ -288,7 +289,7 @@ foreach ($version in $exeVersions) {
   #
   # 32-bit
   #
-  if (!$pythonArch -Or $pythonArch.CompareTo("86") -eq 0) {
+  if (!$pythonArch -Or $pythonArch.CompareTo("86") -eq 0 -Or $pythonArch.CompareTo("32") -eq 0) {
     Download-URL "https://www.python.org/ftp/python/$($xyzVersion)/python-$($version).exe" $downloadDir
 
     $pythonInstallPath = Get-Python-InstallPath $majorMinorDot "86"
