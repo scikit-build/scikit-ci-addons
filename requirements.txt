@@ -1,2 +1,2 @@
 githubrelease>=1.5.7
-lxml
+lxml;python_version<'3.8'
