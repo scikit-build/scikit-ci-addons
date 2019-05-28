@@ -166,6 +166,14 @@ in the following directories: ::
     C:\Python38-x64
     C:\Python38-x86
 
+From a powershell terminal open as administrator: ::
+
+    Set-ExecutionPolicy Unrestricted -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
+
+
 .. note::
     - python interpreter is **NOT** added to the ``PATH``
     - setting ``$pythonVersion`` to either "2.7", "3.4", "3.5", "3.6", "3.7" or "3.8" before executing the script allows
