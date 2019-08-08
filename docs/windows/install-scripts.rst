@@ -58,6 +58,9 @@ Source code is hosted on GitHub at https://github.com/flang-compiler/flang, the 
 
     - to understand why ``SecurityProtocol`` is set, see :ref:`addressing_underlying_connection_closed`
 
+.. note::
+    - this script is intended to work with Miniconda 4.5.4
+
 ``install-git.ps1``
 ^^^^^^^^^^^^^^^^^^^
 
@@ -90,6 +93,27 @@ From a powershell terminal open as administrator: ::
     [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
 
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-miniconda3.ps1'))
+
+
+.. note::
+
+    - miniconda environment is **NOT** added to the ``PATH`` and registry.
+
+.. note::
+
+    - to understand why ``SecurityProtocol`` is set, see :ref:`addressing_underlying_connection_closed`
+
+``install-miniconda3-4-5-4.ps1``
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Install Miniconda3 4.5.4 environment into ``C:\Miniconda3``.
+
+From a powershell terminal open as administrator: ::
+
+    Set-ExecutionPolicy Unrestricted -Force
+    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+
+    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-miniconda3-4-5-4.ps1'))
 
 
 .. note::
