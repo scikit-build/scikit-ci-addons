@@ -169,7 +169,7 @@ From a powershell terminal open as administrator: ::
 ``install-python.ps1``
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Install Python 2.7.15, 3.4.4, 3.5.4, 3.6.8, 3.7.2 and 3.8.0a2 (32 and 64-bit) along with pip and virtualenv
+Install Python 2.7.15, 3.4.4, 3.5.4, 3.6.8, 3.7.2 and 3.8.0 (32 and 64-bit) along with pip and virtualenv
 in the following directories: ::
 
     C:\Python27-x64
