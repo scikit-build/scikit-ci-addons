@@ -23,7 +23,7 @@ environment:
       PYTHON_ARCH: "32"
       BLOCK: "0"
       # Used for testing
-      EXPECTED_PYTHON_VERSION: 2.7.15
+      EXPECTED_PYTHON_VERSION: 2.7.17
       EXPECTED_PYTHON_ARCH: 32
       # Test "windows/install-*.ps1" scripts only once
       WINDOWS_ADDON_TESTS: 1
@@ -34,7 +34,7 @@ environment:
       PYTHON_ARCH: "64"
       BLOCK: "0"
       # Used for testing
-      EXPECTED_PYTHON_VERSION: 2.7.15
+      EXPECTED_PYTHON_VERSION: 2.7.17
       EXPECTED_PYTHON_ARCH: 64
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
@@ -43,7 +43,7 @@ environment:
       PYTHON_ARCH: "32"
       BLOCK: "0"
       # Used for testing
-      EXPECTED_PYTHON_VERSION: 3.7.2
+      EXPECTED_PYTHON_VERSION: 3.7.5
       EXPECTED_PYTHON_ARCH: 32
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
@@ -52,7 +52,7 @@ environment:
       PYTHON_ARCH: "64"
       BLOCK: "0"
       # Used for testing
-      EXPECTED_PYTHON_VERSION: 3.7.2
+      EXPECTED_PYTHON_VERSION: 3.7.5
       EXPECTED_PYTHON_ARCH: 64
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
