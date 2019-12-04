@@ -19,7 +19,8 @@ def main():
     version_str = ("This is scikit-ci-addons version %s, imported from %s\n" %
                    (ci_addons.__version__, os.path.abspath(ci_addons.__file__)))
 
-    parser = argparse.ArgumentParser(description=ci_addons.__doc__)
+    parser = argparse.ArgumentParser(description=ci_addons.__doc__, prog='ci_addons')
+
     parser.add_argument(
         'addon', metavar='ADDON', type=str, nargs='?',
         help='name of add-on to execute'
