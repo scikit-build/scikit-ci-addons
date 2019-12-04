@@ -32,10 +32,10 @@ references:
 jobs:
   python27:
     docker:
-      - image: circleci/python:2.7.14-jessie
+      - image: circleci/python:2.7.17-stretch-browsers
     environment:
       # Used for testing
-      - EXPECTED_PYTHON_VERSION: 2.7.14
+      - EXPECTED_PYTHON_VERSION: 2.7.17
       - EXPECTED_PYTHON_ARCH: 64
     <<: *ci-steps
   python37:
