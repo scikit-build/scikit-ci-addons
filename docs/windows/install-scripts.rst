@@ -169,14 +169,11 @@ From a powershell terminal open as administrator: ::
 ``install-python.ps1``
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Install Python 2.7.15, 3.4.4, 3.5.4, 3.6.8, 3.7.2 and 3.8.0 (32 and 64-bit) along with pip and virtualenv
+Install Python 2.7.15, 3.4.4, 3.5.4, 3.6.8, 3.7.2, 3.8.6, and 3.9.0 (32 and 64-bit) along with pip and virtualenv
 in the following directories: ::
 
     C:\Python27-x64
     C:\Python27-x86
-
-    C:\Python34-x64
-    C:\Python34-x86
 
     C:\Python35-x64
     C:\Python35-x86
@@ -190,6 +187,9 @@ in the following directories: ::
     C:\Python38-x64
     C:\Python38-x86
 
+    C:\Python39-x64
+    C:\Python39-x86
+
 From a powershell terminal open as administrator: ::
 
     Set-ExecutionPolicy Unrestricted -Force
@@ -200,7 +200,7 @@ From a powershell terminal open as administrator: ::
 
 .. note::
     - python interpreter is **NOT** added to the ``PATH``
-    - setting ``$pythonVersion`` to either "2.7", "3.4", "3.5", "3.6", "3.7" or "3.8" before executing the script allows
+    - setting ``$pythonVersion`` to either "2.7", "3.5", "3.6", "3.7", "3.8" or "3.9" before executing the script allows
       to install a specific version. By default, all are installed.
     - setting ``$pythonArch`` to either "86", "32" or "64" before executing the script allows
       to install python for specific architecture. By default, both are installed.
