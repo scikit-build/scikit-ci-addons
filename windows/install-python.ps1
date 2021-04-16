@@ -233,7 +233,7 @@ foreach ($version in $exeVersions) {
 #
 # * 3.5.4 is last 3.5.x version released in binary form
 #
-$exeVersions = @("3.5.4", "3.6.8", "3.7.2", "3.8.6", "3.9.0")
+$exeVersions = @("3.5.4", "3.6.8", "3.7.2", "3.8.6", "3.9.4")
 foreach ($version in $exeVersions) {
 
   $split = $version.Split(".")
