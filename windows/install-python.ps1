@@ -3,7 +3,7 @@ trap { Write-Error $_; Exit 1 }
 #
 # By default, all version of python are installed.
 #
-# Setting $pythonVersion to "2.7", "3.4", "3.5", "3.6", "3.7", "3.8", or "3.9" allows to install a specific version
+# Setting $pythonVersion to "2.7", "3.6", "3.7", "3.8", "3.9", "3.10" allows to install a specific version
 #
 # Setting $pythonArch to either "64", "86" or "32" allows to install python for specific architecture.
 # Values "86" and "32" correspond to the same architecture.
@@ -191,11 +191,9 @@ if(!($pythonPrependPath -match "^(0|1)$")){
 }
 
 #
-# Python 2.7 and 3.4
+# Python 2.7
 #
-# * 3.4.4 is last 3.4.x version released in binary form
-#
-$exeVersions = @("2.7.15", "3.4.4")
+$exeVersions = @("2.7.15")
 foreach ($version in $exeVersions) {
 
   $split = $version.Split(".")
@@ -229,11 +227,9 @@ foreach ($version in $exeVersions) {
 }
 
 #
-# Python 3.5, 3.6, 3.7, 3.8, 3.9
+# Python 3.6, 3.7, 3.8, 3.9, 3.10
 #
-# * 3.5.4 is last 3.5.x version released in binary form
-#
-$exeVersions = @("3.5.4", "3.6.8", "3.7.2", "3.8.6", "3.9.4")
+$exeVersions = @("3.6.8", "3.7.2", "3.8.6", "3.9.4", "3.10.0")
 foreach ($version in $exeVersions) {
 
   $split = $version.Split(".")
