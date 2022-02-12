@@ -11,7 +11,7 @@ if (![System.IO.File]::Exists("$downloadDir\install-utils.ps1")) {
 Import-Module "$downloadDir\install-utils.ps1" -Force
 
 if (!$cmakeVersion) {
-  $cmakeVersion = "3.7.1"
+  $cmakeVersion = "3.22.2"
 }
 
 $version = $cmakeVersion

@@ -24,7 +24,7 @@ From a powershell terminal open as administrator: ::
     Set-ExecutionPolicy Unrestricted -Force
     [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
 
-    $cmakeVersion="3.8.1"
+    $cmakeVersion="3.22.2"
     iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-cmake.ps1'))
 
 .. note::
