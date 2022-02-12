@@ -32,18 +32,18 @@ references:
 jobs:
   python27:
     docker:
-      - image: circleci/python:2.7.17-stretch-browsers
+      - image: cimg/python:2.7.16
     environment:
       # Used for testing
-      - EXPECTED_PYTHON_VERSION: 2.7.17
+      - EXPECTED_PYTHON_VERSION: 2.7.16
       - EXPECTED_PYTHON_ARCH: 64
     <<: *ci-steps
   python37:
     docker:
-      - image: circleci/python:3.7.2-stretch-browsers
+      - image: cimg/python:3.7.12
     environment:
       # Used for testing
-      - EXPECTED_PYTHON_VERSION: 3.7.2
+      - EXPECTED_PYTHON_VERSION: 3.7.12
       - EXPECTED_PYTHON_ARCH: 64
       # Attempt to upload pre-release only once
       - PRERELEASE_UPLOAD: 1
