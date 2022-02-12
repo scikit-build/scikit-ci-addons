@@ -1,0 +1,25 @@
+name: CI for Windows add-ons
+
+on:
+  pull_request:
+  push:
+    branches:
+    - master
+
+jobs:
+  tests:
+    runs-on: windows-2022
+    name: windows-2022
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Python 3.8 x64
+      run: |
+        $pythonVersion = "3.8"
+        $pythonArch = "64"
+        Invoke-Expression "windows\install-python.ps1"
+      shell: powershell
+
+    - name: Run Python 3.8 x64
+      run:  |
+        C:\Python38-x64\python.exe --version
