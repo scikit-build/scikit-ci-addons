@@ -21,6 +21,7 @@ matrix:
       env: EXPECTED_PYTHON_VERSION=2.7.15
 
     - os: osx
+      osx_image: xcode11.6
       language: generic
       env:
         # Used by pyenv
@@ -29,6 +30,7 @@ matrix:
         - EXPECTED_PYTHON_VERSION=3.7.5
 
     - os: osx
+      osx_image: xcode11.6
       language: generic
       env:
         # Used by pyenv
