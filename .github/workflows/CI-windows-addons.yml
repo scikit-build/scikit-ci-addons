@@ -80,3 +80,19 @@ jobs:
       shell: powershell
       env:
         ADDON: ${{ matrix.add-on }}
+
+  test-miniconda3-flang-add-ons:
+    runs-on: windows-2022
+    name: add-ons miniconda3 & flang
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install miniconda3
+      run: |
+        Invoke-Expression "windows\install-miniconda3.ps1"
+      shell: powershell
+
+    - name: Install flang
+      run: |
+        Invoke-Expression "windows\install-flang.ps1"
+      shell: powershell
