@@ -87,12 +87,6 @@ language = None
 # in the documents.
 # See https://stackoverflow.com/a/35541748/1539918
 included_documents = [
-    'appveyor/patch_vs2008_py.rst',
-    'appveyor/tweak_environment_py.rst',
-    'appveyor/run-with-visual-studio_cmd.rst',
-    'appveyor/rolling-build_ps1.rst',
-    'appveyor/install_cmake_py.rst',
-    'appveyor/enable-worker-remote-access_ps1.rst',
     'circle/install_cmake_py.rst',
     'anyci/run_sh.rst',
     'anyci/ctest_junit_formatter.rst',

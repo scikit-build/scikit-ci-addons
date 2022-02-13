@@ -36,14 +36,14 @@ setup(
 
     url='https://github.com/scikit-build/scikit-ci-addons',
 
-    description='scikit-ci-addons is a command line tool and a set of scripts'
-                ' useful to help drive the CI of projects leveraging services'
-                ' like Appveyor, CircleCI, or TravisCI.',
+    description='scikit-ci-addons is a set of scripts useful to easily install selected'
+                ' software packages as well as helping drive the CI of projects leveraging'
+                ' services like CircleCI, or TravisCI.',
     long_description=readme + '\n\n' + history,
 
     entry_points={'console_scripts': ['ci_addons=ci_addons.__main__:main']},
 
-    packages=['anyci', 'appveyor', 'ci_addons', 'circle', 'travis', 'windows'],
+    packages=['anyci', 'ci_addons', 'circle', 'travis', 'windows'],
     include_package_data=True,
     zip_safe=False,
 
@@ -67,7 +67,7 @@ setup(
 
     license="Apache",
 
-    keywords='CI Appveyor CircleCI Travis',
+    keywords='CI CircleCI Travis',
 
     setup_requires=setup_requires,
     install_requires=requirements,

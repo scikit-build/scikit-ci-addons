@@ -395,30 +395,6 @@ def _upload_release(release_tag, args):
     return True
 
 
-def _cancel_additional_appveyor_builds(prerelease_tag):
-    """
-    This function is a workaround for
-    https://github.com/scikit-build/scikit-ci-addons/issues/45
-    """
-    appveyor = os.environ.get("APPVEYOR", "").lower()
-    if appveyor != "true":
-        return
-    print("")
-    script_name = "cancel-queued-build.ps1"
-    script = os.path.join(os.path.dirname(__file__), "../appveyor", script_name)
-    if not os.path.exists(script):
-        print("skipping AppVeyor job cancellation: "
-              "script %s not found" % script)
-        return
-
-    tag_pattern = "^%s(-tmp)?$" % prerelease_tag
-
-    subprocess.check_call([
-        "powershell", "-ExecutionPolicy", "Unrestricted",
-        "-file", script, "-tag_pattern", tag_pattern
-    ])
-
-
 def _upload_prerelease(args):
     # Set default prerelease name
     prerelease_name = args.prerelease_name
@@ -501,8 +477,6 @@ def _upload_prerelease(args):
         draft=False,
         prerelease=True
     )
-
-    _cancel_additional_appveyor_builds(args.prerelease_tag)
 
     return True
 
