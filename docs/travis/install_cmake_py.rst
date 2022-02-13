@@ -5,11 +5,11 @@ Download and install in the PATH the specified version of CMake binaries.
 
 Usage::
 
-    ci_addons appveyor/install_cmake.py X.Y.Z
+    ci_addons travis/install_cmake.py X.Y.Z
 
 Example::
 
-    $ ci_addons appveyor/install_cmake.py 3.6.2
+    $ ci_addons travis/install_cmake.py 3.6.2
 
 
 .. note::

@@ -64,7 +64,6 @@ Usage:
         ls
         LICENSE
         README.md
-        appveyor.yml
         circle.yml
         images
         ngrok

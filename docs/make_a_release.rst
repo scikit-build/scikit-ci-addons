@@ -11,7 +11,7 @@ A core developer should use the following steps to create a release `X.Y.Z` of
 Prerequisites
 -------------
 
-* All CI tests are passing on `AppVeyor`_, `CircleCI`_ and `Travis CI`_.
+* All CI tests are passing.
 
 * You have a `GPG signing key <https://help.github.com/articles/generating-a-new-gpg-key/>`_.
 
@@ -61,7 +61,7 @@ Setting up environment
 `PyPI`_: Step-by-step
 ---------------------
 
-1. Make sure that all CI tests are passing on `AppVeyor`_, `CircleCI`_ and `Travis CI`_.
+1. Make sure that all CI tests are passing.
 
 
 2. Download the latest sources
@@ -185,10 +185,6 @@ Setting up environment
 .. _virtualenvwrapper: https://virtualenvwrapper.readthedocs.io/
 .. _virtualenv: http://virtualenv.readthedocs.io
 .. _venv: https://docs.python.org/3/library/venv.html
-
-.. _AppVeyor: https://ci.appveyor.com/project/scikit-build/scikit-ci-addons/history
-.. _CircleCI: https://circleci.com/gh/scikit-build/scikit-ci-addons
-.. _Travis CI: https://travis-ci.org/scikit-build/scikit-ci-addons/builds
 
 .. _PyPI: https://pypi.org/project/scikit-ci-addons
 .. _TestPyPI: https://test.pypi.org/project/scikit-ci-addons

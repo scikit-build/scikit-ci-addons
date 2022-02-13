@@ -26,8 +26,8 @@ def test_home():
     ('anyci/noop.py',  '.py', None, ""),
     ('noop', '.py', None, "anyci"),
     ('noop.py',  '.py', None, "anyci"),
-    ('appveyor/patch_vs2008',  '.py', None, ""),
-    (os.path.join(ci_addons.home(), 'appveyor/patch_vs2008'),  '.py', None, ""),
+    ('circle/install_cmake',  '.py', None, ""),
+    (os.path.join(ci_addons.home(), 'circle/install_cmake'),  '.py', None, ""),
     ('travis/run-with-pyenv.sh',  '.sh', None, ""),
     ('install_cmake',  '.py', RuntimeError, ""),
     ('nonexistent',  '', RuntimeError, ""),
@@ -76,7 +76,7 @@ def test_install(tmpdir, capfd):
         assert tmpdir.join(addon).exists()
 
     assert str(noop) + ' (skipped)' in output_lines
-    assert str(tmpdir.join('appveyor', 'patch_vs2008.py')) in output_lines
+    assert str(tmpdir.join('circle', 'install_cmake.py')) in output_lines
 
     #
     # Check specifying --force overwrite add-ons already installed
@@ -124,7 +124,6 @@ def test_cli():
     # Check that at least one add-on of each service is reported
     for addon in [
         "anyci/run.sh",
-        "appveyor/rolling-build.ps1",
         "circle/install_cmake.py",
         "travis/run-with-pyenv.sh"
     ]:

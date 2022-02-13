@@ -5,14 +5,6 @@ before_install:
   environment:
     RUN_ENV: anyci/run.sh
 
-  appveyor:
-    environment:
-      PATH: $<PYTHON_DIR>;$<PYTHON_DIR>\\Scripts;$<PATH>
-      RUN_ENV: .\\appveyor\\run-with-visual-studio.cmd
-    commands:
-      - python -m ci_addons appveyor/patch_vs2008
-      - python -m ci_addons appveyor/tweak_environment
-
   travis:
     osx:
       environment:
@@ -70,27 +62,6 @@ test:
               print("expected: %s" % str(expected_version))
 
               assert current_version == expected_version
-
-  appveyor:
-    commands:
-      - python: |
-                import os
-                import subprocess as sp
-                import sys
-
-                if not os.environ.get("WINDOWS_ADDON_TESTS", False):
-                    print("Skip windows addon tests [WINDOWS_ADDON_TESTS: False]")
-                    sys.exit(0)
-
-                def exec_addon(addon):
-                    sp.check_call(
-                        ["powershell", "-ExecutionPolicy", "Unrestricted", addon],
-                        cwd=os.path.abspath("./windows")
-                    )
-
-                for addon in ["cmake", "git", "miniconda3", "flang", "ninja", "nsis",
-                              "python", "python-36-x64", "python-27-x64", "svn"]:
-                    exec_addon(".\install-%s.ps1" % addon)
 
 after_test:
   commands:
