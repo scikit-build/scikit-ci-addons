@@ -9,7 +9,7 @@ if (![System.IO.File]::Exists("$downloadDir\install-utils.ps1")) {
   $url = "https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-utils.ps1"
   (new-object net.webclient).DownloadFile($url, "$downloadDir\install-utils.ps1")
 }
-Import-Module .\install-utils.ps1 -Force
+Import-Module "$downloadDir\install-utils.ps1" -Force
 
 $version = "1.7.2"
 $archiveName = "ninja-win"

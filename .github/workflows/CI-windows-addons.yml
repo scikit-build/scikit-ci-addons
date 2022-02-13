@@ -63,3 +63,20 @@ jobs:
         python _tests/python_check_arch.py
       env:
         EXPECTED_PYTHON_ARCH: ${{ env.PYTHON_ARCH }}
+
+  test-add-ons:
+    runs-on: windows-2022
+    name: add-on
+    strategy:
+      matrix:
+        add-on: ["cmake", "git", "ninja", "nsis", "svn"]
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install add-on
+      run: |
+        $addon = "windows\install-" + $env:ADDON + ".ps1"
+        Invoke-Expression "$addon"
+      shell: powershell
+      env:
+        ADDON: ${{ matrix.add-on }}
