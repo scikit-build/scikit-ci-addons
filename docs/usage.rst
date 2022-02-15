@@ -44,11 +44,6 @@ For example:
 
     circle/install_cmake.py
 
-    travis/install_cmake.py
-    travis/enable-worker-remote-access.sh
-    travis/run-with-pyenv.sh
-    travis/install_pyenv.py
-
     windows/install-miniconda3.ps1
     windows/install-utils.ps1
     windows/install-cmake.ps1
@@ -103,10 +98,6 @@ For example:
     /tmp/anyci/noop.py
     /tmp/anyci/docker.py
     /tmp/circle/install_cmake.py
-    /tmp/travis/install_cmake.py
-    /tmp/travis/enable-worker-remote-access.sh
-    /tmp/travis/run-with-pyenv.sh
-    /tmp/travis/install_pyenv.py
     /tmp/windows/install-miniconda3.ps1
     /tmp/windows/install-utils.ps1
     /tmp/windows/install-cmake.ps1

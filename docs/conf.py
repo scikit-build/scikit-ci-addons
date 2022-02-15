@@ -93,9 +93,6 @@ included_documents = [
     'anyci/publish_github_release_py.rst',
     'anyci/noop_py.rst',
     'anyci/docker_py.rst',
-    'travis/pyenv.rst',
-    'travis/enable-worker-remote-access_sh.rst',
-    'travis/install_cmake_py.rst',
     'windows/install-scripts.rst'
 ]
 

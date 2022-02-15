@@ -7,7 +7,7 @@ scikit-ci-addons
     :alt: Documentation Status
 
 scikit-ci-addons is a set of scripts useful to easily install selected software packages
-as well as helping drive the CI of projects leveraging services like CircleCI, or TravisCI.
+as well as helping drive the CI of projects leveraging CircleCI.
 
 Originally developed to help install prerequisites for building Python
 extension, it is now useful to support other type of projects.
@@ -29,12 +29,12 @@ Build Status
 
 .. table::
 
-+------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------+
-| CircleCI                                                                                    | Travis CI                                                                                      | GitHub Actions                                                                                                |
-+==========================================================================================+=============================================================================================+========================================================================================================+
-| .. image:: https://circleci.com/gh/scikit-build/scikit-ci-addons.svg?style=shield        | .. image:: https://img.shields.io/travis/scikit-build/scikit-ci-addons.svg?maxAge=2592000   | .. image:: https://github.com/scikit-build/scikit-ci-addons/actions/workflows/CI-windows-addons.yml/badge.svg                       |
-  |               |     :target: https://circleci.com/gh/scikit-build/scikit-ci-addons                       |     :target: https://travis-ci.org/scikit-build/scikit-ci-addons                            |    :target: https://github.com/scikit-build/scikit-ci-addons/actions/workflows/CI-windows-addons.yml                |
-+------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------+
++------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------+
+| CircleCI                                                                                    | GitHub Actions                                                                                                |
++==========================================================================================+========================================================================================================+
+| .. image:: https://circleci.com/gh/scikit-build/scikit-ci-addons.svg?style=shield        | .. image:: https://github.com/scikit-build/scikit-ci-addons/actions/workflows/CI-windows-addons.yml/badge.svg                       |
+  |               |     :target: https://circleci.com/gh/scikit-build/scikit-ci-addons                       |    :target: https://github.com/scikit-build/scikit-ci-addons/actions/workflows/CI-windows-addons.yml                |
++------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------+
 
 [![Windows Add-ons](https://github.com/scikit-build/scikit-ci-addons/actions/workflows/CI-windows-addons.yml/badge.svg)](https://github.com/scikit-build/scikit-ci-addons/actions/workflows/CI-windows-addons.yml)
 

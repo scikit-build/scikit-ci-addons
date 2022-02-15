@@ -5,13 +5,6 @@ before_install:
   environment:
     RUN_ENV: anyci/run.sh
 
-  travis:
-    osx:
-      environment:
-        PATH: $<HOME>/.pyenv/versions/$<PYTHON_VERSION>/bin:$<PATH>
-      commands:
-        - python -m ci_addons travis/install_pyenv
-
   circle:
     commands:
       - |

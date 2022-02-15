@@ -7,7 +7,7 @@ Welcome to scikit-ci-addons's documentation!
 ============================================
 
 scikit-ci-addons is a set of scripts useful to easily install selected software packages
-as well as helping drive the CI of projects leveraging services like `CircleCI`_, or `Travis CI`_.
+as well as helping drive the CI of projects leveraging `CircleCI`_.
 
 Originally developed to help install prerequisites for building Python
 extension, it is now useful to support other type of projects.
@@ -48,4 +48,3 @@ Resources
 
 
 .. _CircleCI: https://circleci.com
-.. _Travis CI: https://travis-ci.com

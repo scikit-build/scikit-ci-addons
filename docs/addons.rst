@@ -61,11 +61,23 @@ These scripts are designed to work on worker from http://circleci.com/
 Travis
 ------
 
-These scripts are designed to work on worker from http://travis-ci.org/
+.. warning::
 
-.. include:: travis/install_cmake_py.rst
-.. include:: travis/pyenv.rst
-.. include:: travis/enable-worker-remote-access_sh.rst
+  These scripts were designed to work on worker from http://travis-ci.org/
+
+  They have been retired and are available only in scikit-ci-addons <= 0.25.0
+
+  See https://scikit-ci-addons.readthedocs.io/en/0.25.0/addons.html#appveyor
+
+
+``install_cmake.py``
+^^^^^^^^^^^^^^^^^^^^
+
+``install_pyenv.py``
+^^^^^^^^^^^^^^^^^^^^
+
+``enable-worker-remote-access.sh``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Windows
 -------

@@ -2,7 +2,7 @@
 
 """
 scikit-ci-addons is a set of scripts useful to easily install selected software packages
-as well as helping drive the CI of projects leveraging services like CircleCI, or TravisCI.
+as well as helping drive the CI of projects leveraging CircleCI.
 """
 
 import os
@@ -18,7 +18,7 @@ __email__ = 'scikit-build@googlegroups.com'
 __version__ = get_versions()['version']
 del get_versions
 
-DIR_NAMES = ['anyci', 'circle', 'travis', 'windows']
+DIR_NAMES = ['anyci', 'circle', 'windows']
 
 
 class SKAddonsError(RuntimeError):
