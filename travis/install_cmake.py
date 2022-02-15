@@ -14,7 +14,7 @@ import sys
 
 from subprocess import CalledProcessError, check_output
 
-DEFAULT_CMAKE_VERSION = "3.5.0"
+DEFAULT_CMAKE_VERSION = "3.22.2"
 
 
 def _log(*args):
@@ -26,11 +26,20 @@ def _log(*args):
 def install(cmake_version=DEFAULT_CMAKE_VERSION, is_darwin=False):
     """Download and install CMake into ``/usr/local``."""
 
-    cmake_os = "Darwin" if is_darwin else "Linux"
-    cmake_name = "cmake-{}-{}-x86_64".format(cmake_version, cmake_os)
-    cmake_package = ".".join((cmake_name, "tar", "gz"))
     cmake_version_major = cmake_version.split(".")[0]
     cmake_version_minor = cmake_version.split(".")[1]
+    cmake_version_patch = cmake_version.split(".")[2]
+
+    cmake_os = "Darwin" if is_darwin else "Linux"
+    cmake_arch = "x86_64"
+    if is_darwin and cmake_version_major >= 3 and cmake_version_minor >= 19 and cmake_version_patch >= 2:
+        cmake_os = "macos"
+        cmake_arch = "universal"
+    if not is_darwin and cmake_version_major >= 3 and cmake_version_minor >= 20:
+        cmake_os = "linux"
+
+    cmake_name = "cmake-{}-{}-{}".format(cmake_version, cmake_os, cmake_arch)
+    cmake_package = ".".join((cmake_name, "tar", "gz"))
 
     _log("Looking for cmake", cmake_version, "in PATH")
     try:
