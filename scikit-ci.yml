@@ -20,7 +20,7 @@ before_install:
 
 install:
   commands:
-    - python -m ci_addons $<CI_NAME>/install_cmake 3.6.2
+    - python -m ci_addons $<CI_NAME>/install_cmake 3.22.2
     - $<RUN_ENV> python -m pip install --disable-pip-version-check --upgrade pip
     - $<RUN_ENV> pip install -r requirements.txt
     - $<RUN_ENV> pip install -r requirements-dev.txt
@@ -38,7 +38,7 @@ test:
     - $<RUN_ENV> python setup.py test
 
     # Check CMake version
-    - python _tests/cmake_check_version.py 3.6.2
+    - python _tests/cmake_check_version.py 3.22.2
 
     # Check python interpreter found using $<RUN_ENV> wrapper script
     # is the expected one
