@@ -25,9 +25,9 @@ matrix:
       language: generic
       env:
         # Used by pyenv
-        - PYTHON_VERSION=3.7.12
+        - PYTHON_VERSION=3.7.5
         # Used for testing
-        - EXPECTED_PYTHON_VERSION=3.7.12
+        - EXPECTED_PYTHON_VERSION=3.7.5
 
     - os: osx
       osx_image: xcode11.6
@@ -40,7 +40,7 @@ matrix:
 
 cache:
   directories:
-    - $HOME/.pyenv/versions/3.7.12
+    - $HOME/.pyenv/versions/3.7.5
     - $HOME/.pyenv/versions/2.7.17
 
 install:

@@ -102,6 +102,11 @@ def install(py_version, update_brew=False):
     check_output(cmd, shell=True)
     _log("  -> done")
 
+    cmd = "pyenv install --list"
+    _log("Executing:", cmd)
+    check_output(cmd, shell=True)
+    _log("  -> done")
+
     _log("Looking for pyenv", py_version)
     if is_pyenv_installed(py_version) and pyenv_executable_exists(py_version):
         _log("  ->", "found")
