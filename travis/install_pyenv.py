@@ -80,7 +80,7 @@ def pyenv_executable_exists(py_version, executable="python"):
     return os.path.exists(pyenv_executable_path(py_version, executable))
 
 
-def install(py_version):
+def install(py_version, update_brew=False):
     """Update and install ``pyenv``."""
 
     _log("Looking for", pyenv_executable_path(py_version))
@@ -91,10 +91,11 @@ def install(py_version):
     else:
         _log("  ->", "not found")
 
-    cmd = "brew update"
-    _log("Executing:", cmd)
-    check_output(cmd, shell=True)
-    _log("  -> done")
+    if update_brew:
+        cmd = "brew update"
+        _log("Executing:", cmd)
+        check_output(cmd, shell=True)
+        _log("  -> done")
 
     cmd = "brew outdated pyenv || brew upgrade pyenv"
     _log("Executing:", cmd)
