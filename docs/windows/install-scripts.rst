@@ -169,11 +169,8 @@ From a powershell terminal open as administrator: ::
 ``install-python.ps1``
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Install Python 2.7.15, 3.4.4, 3.5.4, 3.6.8, 3.7.2, 3.8.6, and 3.9.0 (32 and 64-bit) along with pip and virtualenv
+Install Python 3.4.4, 3.5.4, 3.6.8, 3.7.2, 3.8.6, and 3.9.0 (32 and 64-bit) along with pip and virtualenv
 in the following directories: ::
-
-    C:\Python27-x64
-    C:\Python27-x86
 
     C:\Python35-x64
     C:\Python35-x86
@@ -200,7 +197,7 @@ From a powershell terminal open as administrator: ::
 
 .. note::
     - python interpreter is **NOT** added to the ``PATH``
-    - setting ``$pythonVersion`` to either "2.7", "3.5", "3.6", "3.7", "3.8" or "3.9" before executing the script allows
+    - setting ``$pythonVersion`` to either "3.5", "3.6", "3.7", "3.8" or "3.9" before executing the script allows
       to install a specific version. By default, all are installed.
     - setting ``$pythonArch`` to either "86", "32" or "64" before executing the script allows
       to install python for specific architecture. By default, both are installed.
@@ -215,38 +212,6 @@ From a powershell terminal open as administrator: ::
 .. warning::
     - The downloaded versions of python may **NOT** be the latest version including security patches.
       If running in a production environment (e.g webserver), these versions should be built from source.
-
-
-``install-python-27-x64.ps1``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Install Python 2.7 64-bit and update the PATH.
-
-From a powershell terminal open as administrator: ::
-
-    Set-ExecutionPolicy Unrestricted -Force
-    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
-
-    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-27-x64.ps1'))
-
-
-This is equivalent to: ::
-
-    Set-ExecutionPolicy Unrestricted -Force
-    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
-
-    $pythonVersion = "2.7"
-    $pythonArch = "64"
-    $pythonPrependPath = "1"
-    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
-
-.. note::
-
-    - ``C:\Python27-x64`` and ``C:\Python27-x64\Scripts`` are prepended to the ``PATH``
-
-.. note::
-
-    - to understand why ``SecurityProtocol`` is set, see :ref:`addressing_underlying_connection_closed`
 
 
 ``install-python-36-x64.ps1``

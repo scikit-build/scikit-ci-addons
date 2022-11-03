@@ -47,7 +47,6 @@ For example:
     windows/install-miniconda3.ps1
     windows/install-utils.ps1
     windows/install-cmake.ps1
-    windows/install-python-27-x64.ps1
     windows/install-nsis.ps1
     windows/install-svn.ps1
     windows/install-ninja.ps1
@@ -74,7 +73,7 @@ For example:
 .. code-block:: bash
 
     $ ci_addons --home
-    /home/jcfr/.virtualenvs/test/local/lib/python2.7/site-packages
+    /home/jcfr/.virtualenvs/test/lib/python3.8/site-packages
 
 
 Installing add-ons into selected directory
@@ -101,7 +100,6 @@ For example:
     /tmp/windows/install-miniconda3.ps1
     /tmp/windows/install-utils.ps1
     /tmp/windows/install-cmake.ps1
-    /tmp/windows/install-python-27-x64.ps1
     /tmp/windows/install-nsis.ps1
     /tmp/windows/install-svn.ps1
     /tmp/windows/install-ninja.ps1
@@ -134,7 +132,7 @@ For example:
 .. code-block:: bash
 
     $ ci_addons --path circle/install_cmake.py
-    /home/jcfr/.virtualenvs/test/local/lib/python2.7/site-packages/circle/install_cmake.py
+    /home/jcfr/.virtualenvs/test/lib/python3.8/site-packages/circle/install_cmake.py
 
 .. note::
 

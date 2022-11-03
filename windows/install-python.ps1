@@ -3,7 +3,7 @@ trap { Write-Error $_; Exit 1 }
 #
 # By default, all version of python are installed.
 #
-# Setting $pythonVersion to "2.7", "3.6", "3.7", "3.8", "3.9", "3.10", "3.11" allows to install a specific version
+# Setting $pythonVersion to "3.6", "3.7", "3.8", "3.9", "3.10", "3.11" allows to install a specific version
 #
 # Setting $pythonArch to either "64", "86" or "32" allows to install python for specific architecture.
 # Values "86" and "32" correspond to the same architecture.
@@ -188,42 +188,6 @@ if (!$pythonPrependPath) {
 
 if(!($pythonPrependPath -match "^(0|1)$")){
   throw "'$pythonPrependPath' variable incorrectly set to [$pythonPrependPath]. Hint: '0' or '1' value is expected."
-}
-
-#
-# Python 2.7
-#
-$exeVersions = @("2.7.15")
-foreach ($version in $exeVersions) {
-
-  $split = $version.Split(".")
-  $majorMinor = [string]::Join("", $split, 0, 2)
-  $majorMinorDot = [string]::Join(".", $split, 0, 2)
-
-  if($pythonVersion -And ! $pythonVersion.CompareTo($majorMinor) -eq 0) {
-    Write-Host "Skipping $majorMinor"
-    continue
-  }
-
-  #
-  # 64-bit
-  #
-  if (!$pythonArch -Or $pythonArch.CompareTo("64") -eq 0) {
-    $targetDir = "C:\Python$($majorMinor)-x64"
-    $installerName = "python-$($version).amd64.msi"
-    $downloadURL = "https://www.python.org/ftp/python/$($version)/$($installerName)"
-    Install-Python-27-34 $targetDir $installerName $downloadURL
-  }
-
-  #
-  # 32-bit
-  #
-  if (!$pythonArch -Or $pythonArch.CompareTo("86") -eq 0 -Or $pythonArch.CompareTo("32") -eq 0) {
-    $targetDir = "C:\Python$($majorMinor)-x86"
-    $installerName = "python-$($version).msi"
-    $downloadURL = "https://www.python.org/ftp/python/$($version)/$($installerName)"
-    Install-Python-27-34 $targetDir $installerName $downloadURL
-  }
 }
 
 #
