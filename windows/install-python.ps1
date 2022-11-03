@@ -193,6 +193,11 @@ if(!($pythonPrependPath -match "^(0|1)$")){
 #
 # Python 3.6, 3.7, 3.8, 3.9, 3.10, 3.11
 #
+# Maintainer:
+#
+# - If you add/remove/update python versions, consider updating the
+#   file `.github/workflows/CI-windows-addons.yml`.
+#
 $exeVersions = @("3.6.8", "3.7.9", "3.8.10", "3.9.13", "3.10.8", "3.11.0")
 foreach ($version in $exeVersions) {
 

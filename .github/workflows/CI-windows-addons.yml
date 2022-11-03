@@ -18,16 +18,16 @@ jobs:
             expected: "3.6.8"
 
           - version: "3.7"
-            expected: "3.7.2"
+            expected: "3.7.9"
 
           - version: "3.8"
-            expected: "3.8.6"
+            expected: "3.8.10"
 
           - version: "3.9"
-            expected: "3.9.4"
+            expected: "3.9.13"
 
           - version: "3.10"
-            expected: "3.10.0"
+            expected: "3.10.8"
 
           - version: "3.11"
             expected: "3.11.0"
