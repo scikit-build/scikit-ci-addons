@@ -199,7 +199,7 @@ foreach ($version in $exeVersions) {
   $split = $version.Split(".")
   $majorMinor = [string]::Join("", $split, 0, 2)
   $majorMinorDot = [string]::Join(".", $split, 0, 2)
-  $xyzVersion = [regex]::Replace($version, "(\d+\.\d+\.\d+).+", '$1')
+  $xyzVersion = [regex]::Replace($version, "(\d+\.\d+\.\d+).*", '$1')
 
   if($pythonVersion -And ! $pythonVersion.CompareTo($majorMinor) -eq 0) {
     Write-Host "Skipping $majorMinor"
