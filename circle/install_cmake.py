@@ -89,9 +89,16 @@ def install(cmake_version=DEFAULT_CMAKE_VERSION):
         _log("  ->", "not found")
         pass
 
+    cmake_version_major = int(cmake_version.split(".")[0])
+    cmake_version_minor = int(cmake_version.split(".")[1])
+
+    cmake_os = "linux"
+    if (cmake_version_major, cmake_version_minor) <= (3, 19):
+        cmake_os = "Linux"
+
     cmake_arch = "x86_64"
 
-    name = "cmake-{}-Linux-{}".format(cmake_version, cmake_arch)
+    name = "cmake-{}-{}-{}".format(cmake_version, cmake_os, cmake_arch)
     cmake_package = "{}.tar.gz".format(name)
 
     _log("Downloading", cmake_package)
@@ -103,9 +110,6 @@ def install(cmake_version=DEFAULT_CMAKE_VERSION):
 
         if not os.path.exists(download_dir):
             os.makedirs(download_dir)
-
-        cmake_version_major = cmake_version.split(".")[0]
-        cmake_version_minor = cmake_version.split(".")[1]
 
         try:
             check_output([
