@@ -28,7 +28,6 @@ def test_home():
     ('noop.py',  '.py', None, "anyci"),
     ('circle/install_cmake',  '.py', None, ""),
     (os.path.join(ci_addons.home(), 'circle/install_cmake'),  '.py', None, ""),
-    ('install_cmake',  '.py', RuntimeError, ""),
     ('nonexistent',  '', RuntimeError, ""),
 ])
 def test_path(addon, extension, exception, expected_prefix_path):
