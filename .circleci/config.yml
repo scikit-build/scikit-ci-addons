@@ -4,6 +4,11 @@ references:
   ci-steps: &ci-steps
     steps:
       - checkout
+
+      - setup_remote_docker:
+          version: 20.10.18
+          docker_layer_caching: true
+
       - run:
           name: Initialize Virtual Environment
           command: |
@@ -30,20 +35,12 @@ references:
           path: dist/*
 
 jobs:
-  python27:
-    docker:
-      - image: circleci/python:2.7.17-stretch-browsers
-    environment:
-      # Used for testing
-      - EXPECTED_PYTHON_VERSION: 2.7.17
-      - EXPECTED_PYTHON_ARCH: 64
-    <<: *ci-steps
   python37:
     docker:
-      - image: circleci/python:3.7.2-stretch-browsers
+      - image: cimg/python:3.7.12
     environment:
       # Used for testing
-      - EXPECTED_PYTHON_VERSION: 3.7.2
+      - EXPECTED_PYTHON_VERSION: 3.7.12
       - EXPECTED_PYTHON_ARCH: 64
       # Attempt to upload pre-release only once
       - PRERELEASE_UPLOAD: 1
@@ -53,5 +50,4 @@ workflows:
   version: 2
   test-package-publish:
     jobs:
-      - python27
       - python37

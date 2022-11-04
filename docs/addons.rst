@@ -24,15 +24,32 @@ range of CI services.
 Appveyor
 --------
 
-These scripts are designed to work on worker from http://appveyor.com/
+.. warning::
+
+  These scripts were designed to work on worker from http://appveyor.com/
+
+  They have been retired and are available only in scikit-ci-addons <= 0.25.0
+
+  See https://scikit-ci-addons.readthedocs.io/en/0.25.0/addons.html#appveyor
 
 
-.. include:: appveyor/enable-worker-remote-access_ps1.rst
-.. include:: appveyor/install_cmake_py.rst
-.. include:: appveyor/run-with-visual-studio_cmd.rst
-.. include:: appveyor/patch_vs2008_py.rst
-.. include:: appveyor/rolling-build_ps1.rst
-.. include:: appveyor/tweak_environment_py.rst
+``enable-worker-remote-access.ps1``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``install_cmake.py``
+^^^^^^^^^^^^^^^^^^^^
+
+``run-with-visual-studio.cmd``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``patch_vs2008.py``
+^^^^^^^^^^^^^^^^^^^
+
+``rolling-build.ps1``
+^^^^^^^^^^^^^^^^^^^^^
+
+``tweak_environment.py``
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Circle
 ------
@@ -44,11 +61,23 @@ These scripts are designed to work on worker from http://circleci.com/
 Travis
 ------
 
-These scripts are designed to work on worker from http://travis-ci.org/
+.. warning::
 
-.. include:: travis/install_cmake_py.rst
-.. include:: travis/pyenv.rst
-.. include:: travis/enable-worker-remote-access_sh.rst
+  These scripts were designed to work on worker from http://travis-ci.org/
+
+  They have been retired and are available only in scikit-ci-addons <= 0.25.0
+
+  See https://scikit-ci-addons.readthedocs.io/en/0.25.0/addons.html#appveyor
+
+
+``install_cmake.py``
+^^^^^^^^^^^^^^^^^^^^
+
+``install_pyenv.py``
+^^^^^^^^^^^^^^^^^^^^
+
+``enable-worker-remote-access.sh``
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Windows
 -------

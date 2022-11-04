@@ -18,7 +18,7 @@ For example:
 
 .. code-block:: bash
 
-    $ ci_addons appveyor/patch_vs2008
+    $ ci_addons circle/install_cmake
 
 
 Listing available add-ons
@@ -42,28 +42,11 @@ For example:
     anyci/noop.py
     anyci/docker.py
 
-    appveyor/enable-worker-remote-access.ps1
-    appveyor/install_cmake.py
-    appveyor/apply_mingw_path_fix.py
-    appveyor/run.cmd
-    appveyor/patch_vs2008.py
-    appveyor/run-with-mingw.cmd
-    appveyor/cancel-queued-build.ps1
-    appveyor/rolling-build.ps1
-    appveyor/tweak_environment.py
-    appveyor/run-with-visual-studio.cmd
-
     circle/install_cmake.py
-
-    travis/install_cmake.py
-    travis/enable-worker-remote-access.sh
-    travis/run-with-pyenv.sh
-    travis/install_pyenv.py
 
     windows/install-miniconda3.ps1
     windows/install-utils.ps1
     windows/install-cmake.ps1
-    windows/install-python-27-x64.ps1
     windows/install-nsis.ps1
     windows/install-svn.ps1
     windows/install-ninja.ps1
@@ -90,7 +73,7 @@ For example:
 .. code-block:: bash
 
     $ ci_addons --home
-    /home/jcfr/.virtualenvs/test/local/lib/python2.7/site-packages
+    /home/jcfr/.virtualenvs/test/lib/python3.8/site-packages
 
 
 Installing add-ons into selected directory
@@ -113,25 +96,10 @@ For example:
     /tmp/anyci/ctest_junit_formatter.xsl
     /tmp/anyci/noop.py
     /tmp/anyci/docker.py
-    /tmp/appveyor/enable-worker-remote-access.ps1
-    /tmp/appveyor/install_cmake.py
-    /tmp/appveyor/apply_mingw_path_fix.py
-    /tmp/appveyor/run.cmd
-    /tmp/appveyor/patch_vs2008.py
-    /tmp/appveyor/run-with-mingw.cmd
-    /tmp/appveyor/cancel-queued-build.ps1
-    /tmp/appveyor/rolling-build.ps1
-    /tmp/appveyor/tweak_environment.py
-    /tmp/appveyor/run-with-visual-studio.cmd
     /tmp/circle/install_cmake.py
-    /tmp/travis/install_cmake.py
-    /tmp/travis/enable-worker-remote-access.sh
-    /tmp/travis/run-with-pyenv.sh
-    /tmp/travis/install_pyenv.py
     /tmp/windows/install-miniconda3.ps1
     /tmp/windows/install-utils.ps1
     /tmp/windows/install-cmake.ps1
-    /tmp/windows/install-python-27-x64.ps1
     /tmp/windows/install-nsis.ps1
     /tmp/windows/install-svn.ps1
     /tmp/windows/install-ninja.ps1
@@ -150,12 +118,12 @@ Getting full path of an add-on
 
 where ``PATH`` can be any of these:
 
-- relative path with or without extension (e.g ``appveyor/patch_vs2008.py``
-  or ``appveyor/patch_vs2008.py``)
+- relative path with or without extension (e.g ``circle/install_cmake.py``
+  or ``circle/install_cmake.py``)
 
-- full path (e.g ``/path/to/appveyor/patch_vs2008.py``)
+- full path (e.g ``/path/to/circle/install_cmake.py``)
 
-- script name with or without extension (e.g ``patch_vs2008.py``
+- script name with or without extension (e.g ``install_cmake.py``
   or ``patch_vs2008``). If there are multiple add-ons with the same bame,
   ``ci_addons`` reports an error message listing the add-ons to choose from.
 
@@ -163,8 +131,8 @@ For example:
 
 .. code-block:: bash
 
-    $ ci_addons --path appveyor/patch_vs2008.py
-    /home/jcfr/.virtualenvs/test/local/lib/python2.7/site-packages/appveyor/patch_vs2008.py
+    $ ci_addons --path circle/install_cmake.py
+    /home/jcfr/.virtualenvs/test/lib/python3.8/site-packages/circle/install_cmake.py
 
 .. note::
 

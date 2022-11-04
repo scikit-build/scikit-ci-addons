@@ -11,7 +11,7 @@ if (![System.IO.File]::Exists("$downloadDir\install-utils.ps1")) {
 Import-Module "$downloadDir\install-utils.ps1" -Force
 
 if (!$cmakeVersion) {
-  $cmakeVersion = "3.7.1"
+  $cmakeVersion = "3.22.2"
 }
 
 $version = $cmakeVersion
@@ -19,10 +19,14 @@ $version = $cmakeVersion
 $major = [int]$version.Split(".")[0]
 $minor = [int]$version.Split(".")[1]
 
-$arch = "win64-x64"
+$arch = "windows-x86_64"
 
+# windows-x86_64 archives were introduced with CMake 3.20
+if ($major -le 3 -And $minor -lt 20) {
+  $arch = "win32-x64"
+}
 # win64-x64 archives were introduced with CMake 3.6
-if ($major -le 3 -And $minor -lt 6) {
+elseif ($major -le 3 -And $minor -lt 6) {
   $arch = "win32-x86"
 }
 

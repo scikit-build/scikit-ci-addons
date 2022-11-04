@@ -1,0 +1,98 @@
+name: Windows Add-ons
+
+on:
+  pull_request:
+  push:
+    branches:
+    - master
+
+jobs:
+  test-install-python-add-on:
+    runs-on: windows-2022
+    name: add-on install-python
+    strategy:
+      matrix:
+        version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
+        include:
+          - version: "3.6"
+            expected: "3.6.8"
+
+          - version: "3.7"
+            expected: "3.7.9"
+
+          - version: "3.8"
+            expected: "3.8.10"
+
+          - version: "3.9"
+            expected: "3.9.13"
+
+          - version: "3.10"
+            expected: "3.10.8"
+
+          - version: "3.11"
+            expected: "3.11.0"
+    env:
+      PYTHON_VERSION: "${{ matrix.version }}"
+      PYTHON_ARCH: "64"
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install python
+      run: |
+        $pythonVersion = $env:PYTHON_VERSION
+        $pythonArch = $env:PYTHON_ARCH
+        Invoke-Expression "windows\install-python.ps1"
+
+        $xy = [string]::Join("", $pythonVersion.Split("."), 0, 2) # Convert from X.Y.Z to XY
+        $pythonDir = "C:\Python" + $xy + "-x" + $pythonArch
+
+        # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#environment-files
+        echo $pythonDir | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        echo $pythonDir + "\Scripts" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+      shell: powershell
+
+    - name: Check python version
+      run:  |
+        python _tests/python_check_version.py
+      env:
+        EXPECTED_PYTHON_VERSION: ${{ matrix.expected }}
+
+    - name: Check python arch
+      run:  |
+        python _tests/python_check_arch.py
+      env:
+        EXPECTED_PYTHON_ARCH: ${{ env.PYTHON_ARCH }}
+
+  test-add-ons:
+    runs-on: windows-2022
+    name: add-on
+    strategy:
+      matrix:
+        add-on: ["cmake", "git", "ninja", "nsis", "svn"]
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install add-on
+      run: |
+        $addon = "windows\install-" + $env:ADDON + ".ps1"
+        Invoke-Expression "$addon"
+      shell: powershell
+      env:
+        ADDON: ${{ matrix.add-on }}
+
+  test-miniconda3-flang-add-ons:
+    runs-on: windows-2022
+    name: add-ons miniconda3 & flang
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install miniconda3
+      run: |
+        Invoke-Expression "windows\install-miniconda3.ps1"
+      shell: powershell
+
+    - name: Install flang
+      run: |
+        Invoke-Expression "windows\install-flang.ps1"
+      shell: powershell

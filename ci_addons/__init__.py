@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-scikit-ci-addons is a command line tool and a set of scripts useful to install
-prerequisites for building Python extension on CI services.
+scikit-ci-addons is a set of scripts useful to easily install selected software packages
+as well as helping drive the CI of projects leveraging CircleCI.
 """
 
 import os
@@ -18,7 +18,7 @@ __email__ = 'scikit-build@googlegroups.com'
 __version__ = get_versions()['version']
 del get_versions
 
-DIR_NAMES = ['anyci', 'appveyor', 'circle', 'travis', 'windows']
+DIR_NAMES = ['anyci', 'circle', 'windows']
 
 
 class SKAddonsError(RuntimeError):
@@ -59,11 +59,11 @@ def path(addon_name):
     """Return path of ``addon_name``.
 
     Supported values for ``addon_name`` are listed below:
-    - relative path with or without extension (e.g ``appveyor/patch_vs2008.py``
-      or ``appveyor/patch_vs2008.py``)
-    - full path (e.g ``/path/to/appveyor/patch_vs2008.py``
-    - script name with or without extension (e.g ``patch_vs2008.py``
-      or ``patch_vs2008``). If there are multiple matching scripts, a
+    - relative path with or without extension (e.g ``circle/install_cmake.py``
+      or ``circle/install_cmake``)
+    - full path (e.g ``/path/to/circle/install_cmake.py``
+    - script name with or without extension (e.g ``install_pyenv.py``
+      or ``install_pyenv``). If there are multiple matching scripts, a
       ``SKAddonsError`` exception is raised.
     """
     def _path(_addon_name):

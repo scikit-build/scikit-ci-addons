@@ -35,15 +35,14 @@ setup(
     author_email='scikit-build@googlegroups.com',
 
     url='https://github.com/scikit-build/scikit-ci-addons',
-
-    description='scikit-ci-addons is a command line tool and a set of scripts'
-                ' useful to help drive the CI of projects leveraging services'
-                ' like Appveyor, CircleCI, or TravisCI.',
+    description='scikit-ci-addons is a set of scripts useful to easily install selected'
+                ' software packages as well as helping drive the CI of projects leveraging'
+                ' CircleCI.',
     long_description=readme + '\n\n' + history,
 
     entry_points={'console_scripts': ['ci_addons=ci_addons.__main__:main']},
 
-    packages=['anyci', 'appveyor', 'ci_addons', 'circle', 'travis', 'windows'],
+    packages=['anyci', 'ci_addons', 'circle', 'windows'],
     include_package_data=True,
     zip_safe=False,
 
@@ -54,20 +53,17 @@ setup(
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
         'Operating System :: OS Independent',
-        "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Topic :: Software Development :: Build Tools'
     ],
 
     license="Apache",
 
-    keywords='CI Appveyor CircleCI Travis',
+    keywords='CI CircleCI Windows',
 
     setup_requires=setup_requires,
     install_requires=requirements,
