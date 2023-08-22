@@ -1,8 +1,8 @@
-codecov==2.0.5
-coverage==4.2
+codecov==2.0.15
+coverage==4.5.3
 flake8==3.7.7
-pytest==3.0.3
-pytest-cov==2.4.0
-pytest-mock>=1.4.0
-pytest-runner==2.9
-wheel==0.29.0
+pytest==4.5.0
+pytest-cov==2.7.1
+pytest-mock>=1.10.4
+pytest-runner==5.1
+wheel==0.33.4
