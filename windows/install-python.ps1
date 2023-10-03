@@ -3,7 +3,7 @@ trap { Write-Error $_; Exit 1 }
 #
 # By default, all version of python are installed.
 #
-# Setting $pythonVersion to "3.6", "3.7", "3.8", "3.9", "3.10", "3.11" allows to install a specific version
+# Setting $pythonVersion to "3.7", "3.8", "3.9", "3.10", "3.11", "3.12" allows to install a specific version
 #
 # Setting $pythonArch to either "64", "86" or "32" allows to install python for specific architecture.
 # Values "86" and "32" correspond to the same architecture.
@@ -207,14 +207,14 @@ if(!($pythonPrependPath -match "^(0|1)$")){
 }
 
 #
-# Python 3.6, 3.7, 3.8, 3.9, 3.10, 3.11
+# Python 3.7, 3.8, 3.9, 3.10, 3.11, 3.12
 #
 # Maintainer:
 #
 # - If you add/remove/update python versions, consider updating the
 #   file `.github/workflows/CI-windows-addons.yml`.
 #
-$exeVersions = @("3.6.8", "3.7.9", "3.8.10", "3.9.13", "3.10.8", "3.11.0")
+$exeVersions = @("3.7.9", "3.8.10", "3.9.13", "3.10.8", "3.11.6", "3.12.0")
 foreach ($version in $exeVersions) {
 
   $split = $version.Split(".")
