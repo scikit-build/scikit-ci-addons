@@ -214,38 +214,6 @@ From a powershell terminal open as administrator: ::
       If running in a production environment (e.g webserver), these versions should be built from source.
 
 
-``install-python-36-x64.ps1``
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Install Python 3.6 64-bit and update the PATH.
-
-From a powershell terminal open as administrator: ::
-
-    Set-ExecutionPolicy Unrestricted -Force
-    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
-
-    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python-36-x64.ps1'))
-
-
-This is equivalent to: ::
-
-    Set-ExecutionPolicy Unrestricted -Force
-    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
-
-    $pythonVersion = "3.6"
-    $pythonArch = "64"
-    $pythonPrependPath = "1"
-    iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/scikit-build/scikit-ci-addons/master/windows/install-python.ps1'))
-
-.. note::
-
-    - ``C:\Python36-x64`` and ``C:\Python36-x64\Scripts`` are prepended to the ``PATH``
-
-.. note::
-
-    - to understand why ``SecurityProtocol`` is set, see :ref:`addressing_underlying_connection_closed`
-
-
 ``install-svn.ps1``
 ^^^^^^^^^^^^^^^^^^^^
 
