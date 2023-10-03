@@ -12,11 +12,8 @@ jobs:
     name: add-on install-python
     strategy:
       matrix:
-        version: ["3.6", "3.7", "3.8", "3.9", "3.10", "3.11"]
+        version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
         include:
-          - version: "3.6"
-            expected: "3.6.8"
-
           - version: "3.7"
             expected: "3.7.9"
 
@@ -30,7 +27,10 @@ jobs:
             expected: "3.10.8"
 
           - version: "3.11"
-            expected: "3.11.0"
+            expected: "3.11.6"
+
+          - version: "3.12"
+            expected: "3.12.0"
     env:
       PYTHON_VERSION: "${{ matrix.version }}"
       PYTHON_ARCH: "64"
